@@ -21,7 +21,7 @@ First and foremost, this isn't a replacement for any of the other amazing moddin
 
 ### Installation
 
-First, download the extension from GitHub or Nexus Mods and save the archive.
+First, download the extension from [GitHub](https://github.com/agc93/beatvortex/actions) or [Nexus Mods](https://www.nexusmods.com/site/mods/96/) and save the archive.
 
 You will need to have Advanced mode enabled in Vortex to install extensions.
 
@@ -63,4 +63,4 @@ Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so yo
 
 ---
 
-Disclaimer: This project is not associated with any of the authors of Mod Assistant (or other modding tools/mods), nor with Nexus Mods.
+**Disclaimer**: This project is not associated with any of the authors of Mod Assistant (or other modding tools/mods), nor with Nexus Mods.
