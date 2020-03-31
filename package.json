@@ -3,18 +3,24 @@
   "version": "0.0.1",
   "description": "Beat Saber support for Vortex",
   "main": "./dist/index.js",
-  "repository": "",
   "scripts": {
     "webpack": "node ./node_modules/webpack/bin/webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "bundle7z": "7z a -t7z game-beatsaber.7z .\\dist\\index.js .\\dist\\info.json .\\gameart.png",
     "build": "npm run webpack && extractInfo"
   },
-  "author": "",
-  "license": "GPL-3.0",
+  "config": {
+    "name": "Beat Saber"
+  },
+  "author": "agc93",
+  "license": "MIT",
   "babel": {
     "presets": [
       "es2015"
     ]
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/agc93/beatvortex.git"
   },
   "devDependencies": {
     "7z-bin": "Nexus-Mods/7z-bin",
