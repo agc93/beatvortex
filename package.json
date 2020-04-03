@@ -19,8 +19,8 @@
     ]
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/agc93/beatvortex.git"
+    "type": "git",
+    "url": "https://github.com/agc93/beatvortex.git"
   },
   "devDependencies": {
     "7z-bin": "Nexus-Mods/7z-bin",
