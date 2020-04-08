@@ -1,0 +1,23 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha Release</title><link>/blog/2020/04/08/alpha-release/</link><pubDate>Wed, 08 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/08/alpha-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release is the first full alpha of the BeatVortex extension. If you can install and test this extension, all feedback (on Nexus Mods or GitHub) is very appreciated!&lt;/p>
+&lt;p>This release adds a ton of missing features from the initial pre-alpha including:&lt;/p>
+&lt;ul>
+&lt;li>Preview support for OneClick installs from BeatSaver and BeastSaber&lt;/li>
+&lt;li>Improved handling of game mods to improve deployments&lt;/li>
+&lt;li>Supports pulling mod metadata from BeatSaver and BeatMods&lt;/li>
+&lt;li>Improved download support that should improve installs from BeatMods/BeatSaver&lt;/li>
+&lt;li>Configurable profile features&lt;sup>preview&lt;/sup>&lt;/li>
+&lt;li>Improved metadata handling including covers for maps, where available&lt;/li>
+&lt;li>Major under-the-hood refactorings that should improve performance and cut down on errors&lt;/li>
+&lt;/ul>
+&lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Initial Release</title><link>/blog/2020/03/31/initial-release/</link><pubDate>Tue, 31 Mar 2020 00:00:00 +0000</pubDate><guid>/blog/2020/03/31/initial-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release is the first pre-alpha of the BeatVortex extension. While you can install this release into Vortex, be aware that it's functionality is &lt;em>very&lt;/em> limited in this version.&lt;/p>
+&lt;p>Mods will be installed and deployed, but install behaviour is not well-defined and you may encounter some unhandled issues. Additionally, this release only supports installing mods from archives and does not support mod metadata. These will be added in future releases.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,104 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Documentation</title><link>/docs/</link><description>Recent content in Documentation on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Frequently Asked Questions</title><link>/docs/introduction/faq/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/introduction/faq/</guid><description>
+&lt;p>Below is a collection of frequent questions and the best answers I can give.&lt;/p>
+&lt;h4 id="why-do-i-need-vortex-for-this">Why do I need Vortex for this?&lt;/h4>
+&lt;p>You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, including dependency resolution.&lt;/p>
+&lt;p>BeatVortex is just an alternate method of installing mods for those who are more familiar with Vortex already.&lt;/p>
+&lt;h4 id="why-not-just-use-mod-assistant">Why not just use Mod Assistant?&lt;/h4>
+&lt;p>See above ⬆. Use what you prefer! Prefer the familiarity of Vortex? Use BeatVortex. Prefer the extra features of Mod Assistant? Use that. Got your own set of tools? Use those.&lt;/p>
+&lt;p>In fact, generally speaking, you should be able to use BeatVortex alongside those other tools without any major problems.&lt;/p>
+&lt;h4 id="im-a-modpack-author-how-do-i-make-mods-compatible-with-vortex">I’m a mod/pack author, how do I make mods compatible with Vortex?&lt;/h4>
+&lt;p>They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory, and that’s basically it.&lt;/p>
+&lt;blockquote>
+&lt;p>A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those mod lists neat. The directory in the install folder will have a terrible name, though.&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="why-cant-i-download-mods-from-the-nexus">Why can’t I download mods from the Nexus?&lt;/h4>
+&lt;p>Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.&lt;/p></description></item><item><title>Docs: Installing BeatVortex</title><link>/docs/usage/installation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/installation/</guid><description>
+&lt;h2 id="installing-beatvortex">Installing BeatVortex&lt;/h2>
+&lt;p>There's a couple of different ways to install BeatVortex! Unless you've got a pretty specific use case, you'll probably want one of the two automatic methods, but manual installation is available as well.&lt;/p>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>Most of the steps shown below will require Advanced Mode to be enabled in Vortex!&lt;/p>
+&lt;p>Enable it in the Settings window, under Interface &amp;gt; Advanced &amp;gt; Enable Advanced Mode.&lt;/p>
+&lt;/div>
+&lt;h3 id="automatic-installation">Automatic Installation&lt;/h3>
+&lt;blockquote>
+&lt;p>This is the easiest way to install!&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>Open up Vortex, and open the Extensions panel from the left sidebar.&lt;/li>
+&lt;li>Click &lt;strong>Find more&lt;/strong> to open the list of Extensions&lt;/li>
+&lt;li>Find &lt;strong>Beat Saber Support&lt;/strong> and click &lt;em>Install&lt;/em>&lt;/li>
+&lt;li>Wait for the extension to install and &lt;strong>restart Vortex&lt;/strong> when prompted.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="../install_1.png" alt="installation process">&lt;/p>
+&lt;p>Once Vortex has restarted, just click the Manage button on Beat Saber in your Games screen and you're ready to &lt;a href="../docs/usage/mods">install some mods&lt;/a>!&lt;/p>
+&lt;h3 id="semi-automatic-installation">Semi-Automatic Installation&lt;/h3>
+&lt;p>If you can't install directly from the Extensions screen, you can instead install from the archive.&lt;/p>
+&lt;ol>
+&lt;li>Download the archive from &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">Nexus Mods&lt;/a> or &lt;a href="https://https://github.com/agc93/beatvortex/actions">GitHub&lt;/a>&lt;/li>
+&lt;li>Open the Extensions panel in Vortex&lt;/li>
+&lt;li>Click on the &lt;em>Drop File(s)&lt;/em> box in the corner and locate the archive you downloaded.&lt;/li>
+&lt;li>Wait for the extension to install and &lt;strong>restart Vortex&lt;/strong> when prompted.&lt;/li>
+&lt;/ol>
+&lt;p>Once Vortex has restarted, just click the Manage button on Beat Saber in your Games screen and you're ready to &lt;a href="../docs/usage/mods">install some mods&lt;/a>!&lt;/p>
+&lt;h3 id="manual-installation">Manual Installation&lt;/h3>
+&lt;blockquote>
+&lt;p>Only attempt this if you &lt;em>absolutely&lt;/em> have to. It becomes much harder to debug and much harder to upgrade.&lt;/p>
+&lt;/blockquote>
+&lt;p>If you don’t want to enable Advanced Mode for Vortex or want to install the extension yourself, you will have to install the extension files manually. Make sure you close Vortex before proceeding.&lt;/p>
+&lt;p>First, download the archive from &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">Nexus Mods&lt;/a> or &lt;a href="https://https://github.com/agc93/beatvortex/actions">GitHub&lt;/a>.&lt;/p>
+&lt;p>Next, unpack the archive to somewhere convenient. You should have a directory named &lt;code>game-beatsaber&lt;/code> with three files inside:&lt;/p>
+&lt;ul>
+&lt;li>info.json&lt;/li>
+&lt;li>index.js&lt;/li>
+&lt;li>gameart.png&lt;/li>
+&lt;/ul>
+&lt;p>Now, copy the whole directory to your Vortex folder. You can easily open your Vortex folder by opening a new File Explorer window and entering the following in to the location bar: &lt;code>%APPDATA%/Vortex&lt;/code> and then opening the &lt;code>plugins&lt;/code> directory (create it if it doesn’t exist).&lt;/p>
+&lt;p>Once you’re done, you should have three files at the following locations:&lt;/p>
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-text" data-lang="text">C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game-beatsaber\info.json
+C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game-beatsaber\index.js
+C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game-beatsaber\gameart.png
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>With those files in place, you're clear to start Vortex and you should see the Beat Saber icon in the Games screen light up.&lt;/p></description></item><item><title>Docs: Installing Mods</title><link>/docs/usage/mods/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/mods/</guid><description>
+&lt;p>At it's core, installing mods is roughly the same as any Vortex-enabled game, just without the convenience of installing from Nexus Mods. Make sure you've added Beat Saber as a managed game in Vortex.&lt;/p>
+&lt;blockquote>
+&lt;p>If you haven't already, open the Games screen and click the &lt;strong>Manage&lt;/strong> button on the Beat Saber icon under &lt;em>Unmanaged&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;p>There's three main ways to install mods:&lt;/p>
+&lt;ul>
+&lt;li>OneClick installs&lt;sup>&lt;em>preview&lt;/em>&lt;/sup>&lt;/li>
+&lt;li>Download in Vortex&lt;/li>
+&lt;li>Install from archives&lt;/li>
+&lt;/ul>
+&lt;h2 id="oneclick-installationsuppreviewsup">OneClick Installation&lt;sup>&lt;em>preview&lt;/em>&lt;/sup>&lt;/h2>
+&lt;p>One-click installation of custom songs from BeastSaber or BeatSaver requires first enabling it in your Vortex profile settings.&lt;/p>
+&lt;blockquote>
+&lt;p>Enabling one-click installs in Vortex will most likely prevent Mod Assistant from handling one-click installs!&lt;/p>
+&lt;/blockquote>
+&lt;p>From the Profiles menu on the left, click the &lt;em>Edit&lt;/em> button on your current profile (generally called &lt;strong>Beat Saber - Default&lt;/strong>), and check the box to &amp;ldquo;Enable Vortex to handle Mod Assistant One-Click links&amp;rdquo;.&lt;/p>
+&lt;p>You then need to restart Vortex (sorry!) and you're good to go. Open up BeatSaver or BeastSaber and click any of the OneClick install links: Vortex should pick up the link in the background, fetch the song details and download the map directly into your mod list. Install and Enable as per usual to deploy the map into your game.&lt;/p>
+&lt;h2 id="download-in-vortex">Download in Vortex&lt;/h2>
+&lt;p>Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You won't have any mods here, but if you click on the &lt;em>But don't worry, I know a place&amp;hellip;&lt;/em> dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.&lt;/p>
+&lt;blockquote>
+&lt;p>This option will move to the &lt;em>Get more mods&lt;/em> drop-down after you have installed your first mod.&lt;/p>
+&lt;/blockquote>
+&lt;p>You can browse mods using the built-in browser that appears and if you download the ZIP archive of any song (from BeastSaber) or mod (from BeatMods), Vortex will attempt to install it in the background for you. Close the browser to go back to your mod list then Install and Enable your mods as usual to use them in-game.&lt;/p>
+&lt;h2 id="install-from-archives">Install from archives&lt;/h2>
+&lt;p>You can also download mod/map archives directly from BeastSaber, BeatSaver, BeatMods or anywhere else you like and install them with Vortex. Simply use the &lt;em>Install From File&lt;/em> button in the toolbar or drop them onto the drop zone at the bottom of the Vortex window.&lt;/p>
+&lt;blockquote>
+&lt;p>Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.&lt;/p>
+&lt;/blockquote>
+&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by TrickSaber) will not work properly. Only archives are supported at this time.&lt;/p></description></item><item><title>Docs: Configuration</title><link>/docs/usage/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/configuration/</guid><description>
+&lt;h3 id="customising-metadata">Customising metadata&lt;/h3>
+&lt;p>You can customise the basic metadata of any of your mods (name, author, notes etc) using Vortex's built-in sidebar. Just double-click on the name of any mod in your mod list and you'll get a small dialog where you can change the name and author, or add some notes for yourself. It's not recommended to change the source or mod type as these control how mods are handled internally.&lt;/p>
+&lt;h3 id="profiles">Profiles&lt;/h3>
+&lt;p>Just like any other Vortex game, you can have multiple profiles configured for different mod selections. Don't want your streaming mods enabled when you're offline? Set up two profiles and switch over when you're playing with an audience. You can create a new profile from the Profiles screen by either cloning your exising one (from the Edit dropdown menu), or clicking &lt;em>Add &amp;ldquo;Beat Saber&amp;rdquo; Profile&lt;/em>.&lt;/p>
+&lt;blockquote>
+&lt;p>Please note that one-click installs will only be enabled at startup if the &lt;em>current&lt;/em> profile has it enabled in the profile settings.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="removing-or-resetting-beatvortex">Removing or resetting BeatVortex&lt;/h3>
+&lt;p>If you want to completely reset BeatVortex so that you can start over from scratch, first uninstall all your currently installed mods from the Mods list. Once you've done that (and deployed!) jump to the Profiles screen, and choose &lt;em>Remove&lt;/em> from the dropdown menu beside the edit button for the &amp;ldquo;&lt;strong>Beat Saber - Default&lt;/strong>&amp;rdquo; profile. This will effectively reset your Vortex so that Beat Saber will reappear as an available, unmanaged game in the Games list.&lt;/p>
+&lt;p>To remove BeatVortex entirely, you should uninstall and remove all your installed mods from the Mods list first. After deploying, you can then remove the Default profile (see above), and finally uninstall the extension itself by clicking over to the Extensions screen. BeatVortex will appear near the end of the list as &amp;ldquo;&lt;strong>Game: Beat Saber&lt;/strong>&amp;quot;. Click Remove to uninstall BeatVortex.&lt;/p>
+&lt;blockquote>
+&lt;p>Note that Beat Saber will still show up in your Games list since Vortex can redownload the extension from Nexus Mods.&lt;/p>
+&lt;/blockquote></description></item><item><title>Docs: Docs Contributions</title><link>/docs/developer/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/docs/</guid><description>
+&lt;p>Ironically, the documentation side of the project has slightly higher environment requirements than the project itself! We're using the Hugo static site generator with the Docsy template, so you will need to have a recent version of Hugo Extended installed, as well as &lt;code>npm&lt;/code> to restore the required tools.&lt;/p>
+&lt;p>Actual docs content is all stored in the &lt;code>content/&lt;/code> directory, organised under language. At this time only English (&lt;code>en&lt;/code>) is included, although translations are more than welcome!&lt;/p></description></item></channel></rss>

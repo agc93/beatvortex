@@ -1,0 +1,15 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Introduction</title><link>/docs/introduction/</link><description>Recent content in Introduction on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/introduction/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Frequently Asked Questions</title><link>/docs/introduction/faq/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/introduction/faq/</guid><description>
+&lt;p>Below is a collection of frequent questions and the best answers I can give.&lt;/p>
+&lt;h4 id="why-do-i-need-vortex-for-this">Why do I need Vortex for this?&lt;/h4>
+&lt;p>You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, including dependency resolution.&lt;/p>
+&lt;p>BeatVortex is just an alternate method of installing mods for those who are more familiar with Vortex already.&lt;/p>
+&lt;h4 id="why-not-just-use-mod-assistant">Why not just use Mod Assistant?&lt;/h4>
+&lt;p>See above ⬆. Use what you prefer! Prefer the familiarity of Vortex? Use BeatVortex. Prefer the extra features of Mod Assistant? Use that. Got your own set of tools? Use those.&lt;/p>
+&lt;p>In fact, generally speaking, you should be able to use BeatVortex alongside those other tools without any major problems.&lt;/p>
+&lt;h4 id="im-a-modpack-author-how-do-i-make-mods-compatible-with-vortex">I’m a mod/pack author, how do I make mods compatible with Vortex?&lt;/h4>
+&lt;p>They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory, and that’s basically it.&lt;/p>
+&lt;blockquote>
+&lt;p>A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those mod lists neat. The directory in the install folder will have a terrible name, though.&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="why-cant-i-download-mods-from-the-nexus">Why can’t I download mods from the Nexus?&lt;/h4>
+&lt;p>Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.&lt;/p></description></item></channel></rss>
