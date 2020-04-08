@@ -12,3 +12,18 @@ export async function getMapName(modName: any, targetName: string) {
         });
     return targetName;
 }
+
+export const tools = [
+    {
+        id: 'ma',
+        name: 'Mod Assistant',
+        shortName: 'Mod Assistant',
+        executable: () => 'ModAssistant.exe',
+        requiredFiles: [
+            'ModAssistant.exe'
+        ],
+        relative: true,
+        shell: false,
+        exclusive: true
+    }
+]

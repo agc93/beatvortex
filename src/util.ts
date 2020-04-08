@@ -1,19 +1,50 @@
 import path = require("path");
 import { remote } from "electron";
-import { util as vtx, selectors } from "vortex-api";
-import { IExtensionContext, NotificationDismiss, IState, IInstruction } from "vortex-api/lib/types/api";
-import { GAME_ID } from ".";
+import { util as vtx, selectors, fs, log, util } from "vortex-api";
+import { IExtensionContext, NotificationDismiss, IState, IInstruction, IExtensionApi, IExtension, IGame, ThunkStore, IExtensionState } from "vortex-api/lib/types/api";
+import { GAME_ID, STEAMAPP_ID } from ".";
+import { ISteamEntry } from "vortex-api/lib/util/api";
 
-export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ]
+export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
 
-export function isSongHash(str: string) {
-    let re = /[0-9a-f]{40}/;
+export function isSongHash(str: string, allowKey: boolean = false) {
+    // let re = /^(?=[A-Fa-f0-9]*$)(?:.{4}|.{40})$/;
+    let re = allowKey ? /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}/ : /[0-9a-fA-F]{40}/;
     return re.test(str);
 }
 
+export function findGame() {
+    return util.steam.findByAppId(STEAMAPP_ID.toString())
+        .then((game : ISteamEntry) => game.gamePath);
+}
+
+export function getGamePath(api: IExtensionApi, useSongPath: boolean): string;
+export function getGamePath(api: IExtensionApi, game: IGame, useSongPath: boolean): string;
+export function getGamePath(api: IExtensionApi, gameOrPath: IGame | boolean, useSongPath?: boolean) {
+    const state: IState = api.store.getState();
+    if (gameOrPath as IGame) {
+        var game = gameOrPath as IGame;
+        const discovery = state.settings.gameMode.discovered[game.id];
+        return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
+    } else {
+        useSongPath = gameOrPath as boolean;
+        const discovery = state.settings.gameMode.discovered[GAME_ID];
+        return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
+    }
+}
+
+
+export function isSongMod(archivePath: string): boolean;
 export function isSongMod(instructions: IInstruction[]) : boolean;
 export function isSongMod(files: string[]) : boolean;
-export function isSongMod(files: string[]|IInstruction[]) {
+export function isSongMod(files: string[]|IInstruction[]|string) {
+    if (typeof files === 'string') {
+        var filePath = files as string;
+        var modName = path.basename(filePath, path.extname(filePath));
+        let re = /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}/;
+        return re.test(modName);
+        // return modName.length == 4 || modName.length == 40;
+    }
     if (typeof files[0] === 'string') {
         return files.some((f: any) => path.extname(f).toLowerCase() == ".dat" || path.extname(f).toLowerCase() == ".egg")
     }
@@ -21,12 +52,20 @@ export function isSongMod(files: string[]|IInstruction[]) {
     return instructions.some(i => path.extname(i.source).toLowerCase() == '.dat' || path.extname(i.source).toLowerCase() == '.egg');
 }
 
-export function isGameMod(files: any[]) {
+export function isGameMod(files: string[]) {
     return files.some((f: any) => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
 }
 
-export function isActiveGame(context : IExtensionContext) : boolean {
-    return selectors.activeGameId(context.api.store.getState()) === GAME_ID;
+export function isActiveGame(api: IExtensionApi): boolean;
+export function isActiveGame(context: IExtensionContext): boolean;
+export function isActiveGame(store: ThunkStore<any>): boolean;
+export function isActiveGame(context : IExtensionContext | IExtensionApi | ThunkStore<any>) : boolean {
+    return selectors.activeGameId(
+        (context as IExtensionContext) 
+            ? (context as IExtensionContext).api.store.getState()
+            : (context as IExtensionApi)
+                ? (context as IExtensionApi).store.getState()
+                : (context as ThunkStore<any>)) === GAME_ID;
 }
 
 export function showTermsDialog(context?: IExtensionContext, callback?: ()=> void) {
@@ -40,9 +79,10 @@ export function showTermsDialog(context?: IExtensionContext, callback?: ()=> voi
         defaultId: 0
     }, callback ? callback : (resp: number, checked: boolean) => { });
 }
-export function showTermsNotification(context: IExtensionContext, autoDismiss: boolean);
-export function showTermsNotification(context: IExtensionContext, callback?: (dismiss: NotificationDismiss)=> void);
-export function showTermsNotification(context: IExtensionContext, dismissCallback : ((dismiss: NotificationDismiss)=> void) | boolean) {
+
+export function showTermsNotification(context: IExtensionContext, autoDismiss: boolean) : void;
+export function showTermsNotification(context: IExtensionContext, callback?: (dismiss: NotificationDismiss)=> void) : void;
+export function showTermsNotification(context: IExtensionContext, dismissCallback : ((dismiss: NotificationDismiss)=> void) | boolean) : void {
     context.api.sendNotification({
         type: 'info',
         message: 'By using BeatVortex, you are accepting some basic terms',
@@ -61,7 +101,19 @@ export function showTermsNotification(context: IExtensionContext, dismissCallbac
 }
 
 export function getProfileSetting(state: IState, key: string): any {
-    var profileId = selectors.activeProfile(state).id
-    const skipTerms = state.persistent.profiles[profileId]?.features[key];
-    return skipTerms;
+    var profileId = selectors.activeProfile(state)?.id
+    if (profileId !== undefined) {
+        var features = state.persistent.profiles[profileId]?.features;
+        const skipTerms = features ? features[key] : undefined;
+        return skipTerms;
+    }
+    return undefined;
+}
+
+export function getGameVersion(api: IExtensionApi) : string {
+    var gamePath = getGamePath(api, false);
+    var filePath = path.join(gamePath, "BeatSaberVersion.txt");
+    var version = fs.readFileSync(filePath);
+    log('debug', 'beatvortex: detected game version from BeatSaberVersion.txt', version);
+    return version;
 }

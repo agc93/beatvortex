@@ -1,0 +1,37 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Docs CI Build
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "docs/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true  # Fetch Hugo themes
+        fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: '0.62.2'
+        extended: true
+    - run: npm install
+      working-directory: './docs'
+    - name: Build Docs
+      run: hugo --minify
+    - uses: actions/upload-artifact@v1
+      with:
+        name: beatvortex-docs
+        path: docs/public/
