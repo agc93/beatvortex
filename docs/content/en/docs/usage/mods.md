@@ -18,13 +18,17 @@ There's three main ways to install mods:
 
 ## OneClick Installation<sup>*preview*</sup>
 
-One-click installation of custom songs from BeastSaber or BeatSaver requires first enabling it in your Vortex profile settings.
+One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber requires first enabling it in your Vortex profile settings.
 
 > Enabling one-click installs in Vortex will most likely prevent Mod Assistant from handling one-click installs!
 
 From the Profiles menu on the left, click the *Edit* button on your current profile (generally called **Beat Saber - Default**), and check the box to "Enable Vortex to handle Mod Assistant One-Click links".
 
-You then need to restart Vortex (sorry!) and you're good to go. Open up BeatSaver or BeastSaber and click any of the OneClick install links: Vortex should pick up the link in the background, fetch the song details and download the map directly into your mod list. Install and Enable as per usual to deploy the map into your game.
+You then need to restart Vortex (sorry!) and you're good to go. Open up BeatSaver/BeastSaber/ModelSaber and click any of the OneClick install links: Vortex should pick up the link in the background, fetch the song details and download the map (or mod) directly into your mod list. Install and Enable as per usual to deploy into your game.
+
+#### A note on ModelSaber installs
+
+Since ModelSaber models are not distributed as archives but just raw files, Vortex will warn you and will create a mod archive with just that one file. All of Vortex's install and deployments logic really works best with archives.
 
 ## Download in Vortex
 

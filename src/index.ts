@@ -4,11 +4,12 @@ import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDownload } from 'vortex-api/lib/types/api';
 import { InstructionType, IInstruction } from 'vortex-api/lib/extensions/mod_management/types/IInstallResult';
 
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame } from './util';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame, models, toTitleCase, isModelMod, isModelModInstructions } from './util';
 import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
 import { BeatSaverClient, IMapDetails } from './beatSaverClient';
 import { tools } from './meta';
 import { BeatModsClient } from './beatModsClient';
+import { ModelSaberClient, getCustomFolder, ModelType } from './modelSaberClient';
 
 export const GAME_ID = 'beatsaber'
 export const STEAMAPP_ID = 620980;
@@ -28,7 +29,8 @@ function main(context : IExtensionContext) {
         var enableLinks = new ProfileClient(context).getProfileSetting(PROFILE_SETTINGS.EnableOneClick, false);
         log('debug', 'beatvortex: initialising oneclick', { enable: enableLinks});
         if (enableLinks) {
-            context.api.registerProtocol('beatsaver', true, (url: string, install:boolean) => handleLinkLaunch(context.api, url, install));
+            context.api.registerProtocol('beatsaver', true, (url: string, install:boolean) => handleMapLinkLaunch(context.api, url, install));
+            context.api.registerProtocol('modelsaber', true, (url: string, install: boolean) => handleModelLinkLaunch(context.api, url, install));
         }
         context.api.events.on('profile-did-change', (profileId: string) => {
             var newProfile: IProfile = util.getSafe(context.api.store.getState(), ['persistent', 'profiles', profileId], undefined);
@@ -66,6 +68,7 @@ function main(context : IExtensionContext) {
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false });
     context.registerModType('bs-mod', 90, gameId => gameId === GAME_ID, getModPath, () => Promise.resolve(true), { mergeMods: true});
+    context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true});
     context.registerGame({
         id: GAME_ID,
         name: 'Beat Saber',
@@ -93,6 +96,7 @@ function main(context : IExtensionContext) {
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods'});
     addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs'});
     addModSource(context, { id: 'beatsaver', name: 'BeatSaver', 'url': 'https://beatsaver.com/browse/hot'});
+    addModSource(context, { id: 'modelsaber', name: 'ModelSaber', 'url': 'https://modelsaber.com/?pc'});
     
     context.registerInstaller(
         'bs-content', 
@@ -159,7 +163,8 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
     let supported = (gameId === GAME_ID) &&
         (
             isGameMod(files) || // game mod
-            isSongMod(files) //song
+            isSongMod(files) || //song
+            isModelMod(files)
         );
     return Promise.resolve({
         supported,
@@ -227,6 +232,25 @@ async function installContent(api: IExtensionApi, files: string[], destinationPa
         });
         return Promise.resolve({ instructions : instructions });
     }
+    if (isModelMod(files)) {
+        log('info', 'installing mod as custom model', {file: files[0]});
+        //model saber "mod"
+        var file = files[0]
+        var modelClient = new ModelSaberClient();
+        var modelDetails = await modelClient.getModelByFileName(file);
+        if (modelDetails != null) {
+            log('debug', 'Got details on model from ModelSaber!', modelDetails);
+        }
+        log('info', "beatvortex doesn't currently include metadata for manually installed models!");
+        var instructions: IInstruction[] = [
+            {
+                type: 'copy',
+                source: file,
+                destination: `${getCustomFolder(path.extname(file).replace('.', '') as ModelType)}/${file}`
+            }
+        ];
+        return Promise.resolve({instructions});
+    } 
     var firstPrim = files.find(f => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
     if (firstPrim !== undefined) {
         let firstType = path.dirname(firstPrim);
@@ -270,11 +294,7 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
     };
 }
 
-
-
-
-// we should only set the bare minimum here, since the installer will set the full mod attributes anyway.
-function setMapModInfo(store: ThunkStore<any>, id: string, details: IMapDetails) {
+function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: string, source: string}) {
     // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
     // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
@@ -282,12 +302,12 @@ function setMapModInfo(store: ThunkStore<any>, id: string, details: IMapDetails)
     store.dispatch(actions.setDownloadModInfo(id, 'game', GAME_ID));
     // store.dispatch(actions.setDownloadModInfo(id, 'author', details.metadata.levelAuthorName))
     store.dispatch(actions.setDownloadModInfo(id, 'logicalFileName', details.name));
-    store.dispatch(actions.setDownloadModInfo(id, 'source', 'beatsaver'));
+    store.dispatch(actions.setDownloadModInfo(id, 'source', details.source));
 }
 
 //#region one-click install
 
-async function handleLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
+async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
     log('info', `handling link launch from ${url} (install: ${install})`);
     var client = new BeatSaverClient();
     var re = /\w+:\/\/([a-f0-9]{4}).*/;
@@ -312,7 +332,7 @@ async function handleLinkLaunch(api: IExtensionApi, url: string, install: boolea
                 name: details.name
             }, 
             details.name, 
-            (err: Error, id?: string) => handleDownloadInstall(api, details, err, id), 
+            (err: Error, id?: string) => handleDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber'})), 
             true);
     } else {
         var allowUnknown = getProfileSetting(api.store.getState(), PROFILE_SETTINGS.AllowUnknown);
@@ -328,10 +348,49 @@ async function handleLinkLaunch(api: IExtensionApi, url: string, install: boolea
     }
 }
 
-function handleDownloadInstall(api: IExtensionApi, details: IMapDetails, err: Error, id?: string) {
+async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
+    log('info', `handling link launch from ${url} (install: ${install})`);
+    var client = new ModelSaberClient();
+    if (!client.isModelSaberLink(url)) {
+        log('error', 'could not parse URL', url);
+        return null;
+    }
+    log('debug', `fetching details for link`);
+    var modelDetails = await client.getModelDetails(url);
+    if (modelDetails != null) {
+        log('debug', `got details from modelsaber API`, modelDetails);
+        log('info', `downloading ${modelDetails.name}`);
+        var modelLink = client.buildDownloadLink(modelDetails);
+        // log('debug', `attempting proxy: ${map}`);
+        api.events.emit('start-download', 
+            [modelLink], 
+            {
+                game: 'beatsaber',
+                name: modelDetails.name
+            }, 
+            modelDetails.name, 
+            (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, {...modelDetails, source: 'modelsaber'})), 
+            true);
+    } else {
+        var allowUnknown = getProfileSetting(api.store.getState(), PROFILE_SETTINGS.AllowUnknown);
+        if (allowUnknown) {
+            api.sendNotification({
+                message: `Installing unknown model ${modelDetails.name}. No metadata will be available!`,
+                type: 'warning',
+            })
+            //TODO: handle this
+        } else {
+            api.showErrorNotification(`Could not fetch details for ${modelDetails.name}!`, `We couldn't get details from ModelSaber for that link. It may have been removed or currently unavailable.`, {allowReport: false});
+        }
+    }
+}
+
+// contrary to earlier behaviour: this is agnostic to the mod type being installed.
+// anything specific to the mod type (metadata etc) should be handled in the callback now.
+function handleDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
     log('debug', `downloaded ${id} (or was it ${err})`);
     if (!err) {
-        setMapModInfo(api.store, id, details);
+        callback(api);
         api.sendNotification({
             id: `ready-to-install-${id}`,
             type: 'success',
@@ -417,6 +476,18 @@ async function handleInstallStart(api: IExtensionApi, archivePath: string) {
     } else {
         log('debug', 'beatvortex: skipping non-Beat Saber install event', { archivePath });
     }
+}
+
+// we should only set the bare minimum here, since the installer will set the full mod attributes anyway.
+function setMapModInfo(store: ThunkStore<any>, id: string, details: IMapDetails) {
+    // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
+    // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
+    store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
+    // store.dispatch(actions.setDownloadModInfo(id, 'downloadGame', GAME_ID));
+    store.dispatch(actions.setDownloadModInfo(id, 'game', GAME_ID));
+    // store.dispatch(actions.setDownloadModInfo(id, 'author', details.metadata.levelAuthorName))
+    store.dispatch(actions.setDownloadModInfo(id, 'logicalFileName', details.name));
+    store.dispatch(actions.setDownloadModInfo(id, 'source', 'beatsaver'));
 }
 
 //#endregion

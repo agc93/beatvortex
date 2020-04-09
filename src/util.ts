@@ -6,11 +6,21 @@ import { GAME_ID, STEAMAPP_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
+export const models = ['avatar', 'platform', 'saber']
 
 export function isSongHash(str: string, allowKey: boolean = false) {
     // let re = /^(?=[A-Fa-f0-9]*$)(?:.{4}|.{40})$/;
     let re = allowKey ? /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}/ : /[0-9a-fA-F]{40}/;
     return re.test(str);
+}
+
+export function toTitleCase(str) {
+    return str.replace(
+        /\w\S*/g,
+        function(txt: string) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+    );
 }
 
 export function findGame() {
@@ -54,6 +64,17 @@ export function isSongMod(files: string[]|IInstruction[]|string) {
 
 export function isGameMod(files: string[]) {
     return files.some((f: any) => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
+}
+
+export function isModelMod(files: string[]) : boolean {
+    log('debug', `testing for model mod: ${files}`, files);
+    return files.length == 1 && models.some(m => files[0].toLowerCase().endsWith(m));
+        // && models.some(m => path.extname(path.basename(files[0])).toLowerCase() == m);
+}
+
+export function isModelModInstructions(instructions: IInstruction[]) : boolean {
+    var files = instructions.map(i => i.source);
+    return isModelMod(files);
 }
 
 export function isActiveGame(api: IExtensionApi): boolean;
