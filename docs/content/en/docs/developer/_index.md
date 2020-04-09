@@ -16,6 +16,8 @@ BeatVortex is made available under an [MIT License](https://opensource.org/licen
 
 To work with the BeatVortex code, you'll only need Node.js (including a recent version of `npm`) and TypeScript installed. Development so far has been done in Visual Studio Code, but any IDE that supports TypeScript should work just fine.
 
+> Since version 0.1.1, the code base is almost completely documented with tsdoc annotations!
+
 ### Getting set up
 
 Whether you are developing on the same machine that Beat Saber and Vortex are installed on or not, the easiest way I have found to work with this has been to [install BeatVortex manually](/docs/usage/installation/#manual-installation), then whenever I make a change simply drop my rebuilt `index.js` into the `game-beatsaber` folder and restart Vortex.

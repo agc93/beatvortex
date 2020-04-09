@@ -7,12 +7,11 @@ import { InstructionType, IInstruction } from 'vortex-api/lib/extensions/mod_man
 import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame, models, toTitleCase, isModelMod, isModelModInstructions } from './util';
 import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
 import { BeatSaverClient, IMapDetails } from './beatSaverClient';
-import { tools } from './meta';
+import { tools, gameMetadata, STEAMAPP_ID } from './meta';
 import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient, getCustomFolder, ModelType } from './modelSaberClient';
 
 export const GAME_ID = 'beatsaber'
-export const STEAMAPP_ID = 620980;
 let GAME_PATH = '';
 
 //This is the main function Vortex will run when detecting the game extension. 
@@ -52,35 +51,13 @@ function main(context : IExtensionContext) {
             },
             "terms of use notification");
         });
-        /* context.api.events.on('did-import-downloads', (downloads: string[]) => {
-            log('debug', 'beatvortex: invoking did-import-downloads handler');
-            handleImportDownloads(context.api, downloads);
-        });
-        context.api.events.on('start-install', (archivePath: string, callback?: (err, id: string) => void) => {
-            handleInstallStart(context.api, archivePath);
-            // callback()
-        });
-        context.api.events.on('start-install-download', (dlId: string) => {
-            handleDownloadInstall
-        })
-        // browser download event ⬇
-        context.api.events.on('start-download-url', (dlUrl: string, fileName: string) => handleUrlDownload(context.api, dlUrl, fileName)); */
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false });
     context.registerModType('bs-mod', 90, gameId => gameId === GAME_ID, getModPath, () => Promise.resolve(true), { mergeMods: true});
     context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true});
     context.registerGame({
-        id: GAME_ID,
-        name: 'Beat Saber',
-        mergeMods: false,
+        ...gameMetadata,
         queryPath: findGame,
-        supportedTools: tools,
-        queryModPath: () => '.',
-        logo: 'gameart.png',
-        executable: () => 'Beat Saber.exe',
-        requiredFiles: [
-            'Beat Saber.exe'
-        ],
         setup: (discovery: IDiscoveryResult) => {
             log('debug', 'running beatvortex setup')
             prepareForModding(discovery);
@@ -88,9 +65,6 @@ function main(context : IExtensionContext) {
         environment: {
             SteamAPPId: STEAMAPP_ID.toString(),
             gamepath: GAME_PATH
-        },
-        details: {
-            steamAppId: STEAMAPP_ID
         },
     });
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods'});
@@ -115,6 +89,16 @@ function main(context : IExtensionContext) {
     return true
 }
 
+/**
+ * Adds a new mod source to Vortex.
+ *
+ * @remarks
+ * This method is a wrapper around the dispatch+action used to register a mod source specific to this game.
+ *
+ * @param context - The extension context.
+ * @param details - The details of the mod source to add to Vortex.
+ *
+ */
 function addModSource(context: IExtensionContext, details: {id: string, name: string, url: string}) {
     context.registerModSource(details.id, details.name, () => {
         context.api.store.dispatch(actions.showURL(details.url));
@@ -126,6 +110,19 @@ function addModSource(context: IExtensionContext, details: {id: string, name: st
       );
 }
 
+/**
+ * Registers the default profile features for BeatVortex.
+ *
+ * @remarks
+ * For reasons entirely unclear to me, this works correctly, adding the features at startup. 
+ * Moving this logic into another module (i.e. switching to the static `ProfileClient` call) will fail to add features. 
+ * I have no idea why.
+ *
+ * @param context - The extension context.
+ *
+ * @beta
+ * 
+ */
 function addProfileFeatures(context: IExtensionContext) {
     context.registerProfileFeature(
         PROFILE_SETTINGS.SkipTerms, 
@@ -150,6 +147,13 @@ function addProfileFeatures(context: IExtensionContext) {
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
 }
 
+/**
+ * Preps the Beat Saber installation for mod deployment.
+ * @remarks
+ * Other than crating the Plugins folder (not strictly necessary), this is a basic sanity check only.
+ *
+ * @param discovery - The details for the discovered game.
+ */
 function prepareForModding(discovery : IDiscoveryResult) {
     // showTermsDialog();
     GAME_PATH = discovery.path;
@@ -157,7 +161,14 @@ function prepareForModding(discovery : IDiscoveryResult) {
     return fs.ensureDirWritableAsync(pluginPath, () => Promise.resolve());
 }
 
-
+/**
+ * Checks if the given mod files can be installed with this extension.
+ * @remarks
+ * This will currently only accept maps, model mods and mods with a known primitive directory.
+ *
+ * @param files - The list of mod files to test against
+ * @param gameId - The current game ID to test against. Short-circuits if not beatsaber.
+ */
 function testSupportedContent(files: string[], gameId: string): Promise<ISupportedResult> {
     log('debug', `files: ${files.length} [${files[0]}]`);
     let supported = (gameId === GAME_ID) &&
@@ -172,6 +183,19 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
     });
 }
 
+/**
+ * The main extension installer implementation.
+ * @remarks
+ * As well as basic installation logic, this method also handles metadata enrichment for known mod sources.
+ * Path handling for maps is in the mod type, but is here for models due to performance concerns. This will likely be refactored in future.
+ *
+ * @param api - The extension API.
+ * @param files - The list of mod files for installation
+ * @param gameId - The game ID for installation (should only every be GAME_ID)
+ * @param progressDelegate - Delegate for reporting progress (not currently used)
+ *
+ * @returns Install instructions for mapping mod files to output location.
+ */
 async function installContent(api: IExtensionApi, files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate): Promise<IInstallResult> {
     log('debug', `running beatvortex installer. [${gameId}]`, {files, destinationPath});
     var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
@@ -285,7 +309,18 @@ async function installContent(api: IExtensionApi, files: string[], destinationPa
 }
 
 
-
+/**
+ * Wrapper method to run a callback on profile change.
+ *
+ * @remarks
+ * This method is just a wrapper to ensure that a) Beat Saber is the current game and b) the profile is available for the callback.
+ *
+ * @param api - The extension API.
+ * @param profileId - The *ID* of the newly activated profile
+ * @param callback - The callback to invoke on profile change. The newly activated profile is provided to this callback.
+ * @param message - An optional message to be put in the debug logs to describe the action being invoked.
+ *
+ */
 function handleProfileChange(api: IExtensionApi, profileId: string, callback: (profile: IProfile) => void, message?: string) {
     var newProfile: IProfile = util.getSafe(api.store.getState(), ['persistent', 'profiles', profileId], undefined);
     if ((newProfile !== undefined) && newProfile.gameId === GAME_ID) {
@@ -294,7 +329,18 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
     };
 }
 
-function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: string, source: string}) {
+/**
+ * Enriches a mod download with basic metadata
+ *
+ * @remarks
+ * - This method only adds *basic* metadata to tide over until installation
+ * - Unlike the old setMapModInfo, this should be agnostic to any mod type currently in use.
+ *
+ * @param store - The application state store.
+ * @param id - ID of the *download* being enriched. Not the modId!
+ * @param details - The basic metadata to add to the download.
+ */
+function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: string, source: string, id?: string}) {
     // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
     // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
@@ -303,10 +349,23 @@ function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: 
     // store.dispatch(actions.setDownloadModInfo(id, 'author', details.metadata.levelAuthorName))
     store.dispatch(actions.setDownloadModInfo(id, 'logicalFileName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'source', details.source));
+    if (details.id) {
+        store.dispatch(actions.setDownloadModInfo(id, 'externalId', details.id));
+    }
 }
 
 //#region one-click install
 
+/**
+ * Handles One-Click install links for maps (i.e. the beatsaver protocol). Adds metadata and triggers the download.
+ *
+ * @remarks
+ * This method, on successful completion, will trigger the 'start-download' event to actually perform the download.
+ *
+ * @param api - The extension API.
+ * @param url - The One-Click (beatsaver) URI to install.
+ * @param install - currently unused, should always be true
+ */
 async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
     log('info', `handling link launch from ${url} (install: ${install})`);
     var client = new BeatSaverClient();
@@ -332,7 +391,7 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
                 name: details.name
             }, 
             details.name, 
-            (err: Error, id?: string) => handleDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber'})), 
+            (err: Error, id?: string) => handleDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber', id: details.key})), 
             true);
     } else {
         var allowUnknown = getProfileSetting(api.store.getState(), PROFILE_SETTINGS.AllowUnknown);
@@ -348,6 +407,15 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
     }
 }
 
+/**
+ * Handles One-Click install links for models (i.e. the modelsaber protocol). Adds metadata and triggers the download.
+ * @remarks
+ * This method, on successful completion, will trigger the 'start-download' event to actually perform the download.
+ *
+ * @param api - The extension API.
+ * @param url - The One-Click (modelsaber) URI to install.
+ * @param install - currently unused, should always be true
+ */
 async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
     log('info', `handling link launch from ${url} (install: ${install})`);
     var client = new ModelSaberClient();
@@ -369,7 +437,7 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
                 name: modelDetails.name
             }, 
             modelDetails.name, 
-            (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, {...modelDetails, source: 'modelsaber'})), 
+            (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, {...modelDetails, source: 'modelsaber', id: modelDetails.id.toString()})), 
             true);
     } else {
         var allowUnknown = getProfileSetting(api.store.getState(), PROFILE_SETTINGS.AllowUnknown);
@@ -385,8 +453,18 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
     }
 }
 
-// contrary to earlier behaviour: this is agnostic to the mod type being installed.
-// anything specific to the mod type (metadata etc) should be handled in the callback now.
+/**
+ * Handler for performing actions *after* the download has been completed.
+ * @remarks
+ * - contrary to earlier behaviour: this is agnostic to the mod type being installed.
+ * - anything specific to the mod type (metadata etc) should be handled in the callback now.
+ * 
+ * @param api - The extension API.
+ * @param details - Basic details for the download (only used for logging).
+ * @param err - The error (if any) from the failed download
+ * @param id - The ID of the completed download
+ * @param callback - A callback to be executed after the download has been completed before the user is notified.
+ */
 function handleDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
     log('debug', `downloaded ${id} (or was it ${err})`);
     if (!err) {

@@ -2,19 +2,29 @@ import path = require("path");
 import { remote } from "electron";
 import { util as vtx, selectors, fs, log, util } from "vortex-api";
 import { IExtensionContext, NotificationDismiss, IState, IInstruction, IExtensionApi, IExtension, IGame, ThunkStore, IExtensionState } from "vortex-api/lib/types/api";
-import { GAME_ID, STEAMAPP_ID } from ".";
+import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
+import { STEAMAPP_ID } from "./meta";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
 export const models = ['avatar', 'platform', 'saber']
 
+/**
+ * Determines if the given string is a BeatSaver song hash, or optionally a key.
+ *
+ * @remarks
+ * - This is just checking format, and doesn't guarantee the map exists etc
+ *
+ * @param str - The string to validate.
+ * @param allowKey - Optionally whether a song key (e.g. 92fe) is also acceptable.
+ */
 export function isSongHash(str: string, allowKey: boolean = false) {
     // let re = /^(?=[A-Fa-f0-9]*$)(?:.{4}|.{40})$/;
     let re = allowKey ? /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}/ : /[0-9a-fA-F]{40}/;
     return re.test(str);
 }
 
-export function toTitleCase(str) {
+export function toTitleCase(str: string) {
     return str.replace(
         /\w\S*/g,
         function(txt: string) {
@@ -23,6 +33,10 @@ export function toTitleCase(str) {
     );
 }
 
+/**
+ * Locates the installed game.
+ * @returns The root installation path of the Beat Saber install.
+ */
 export function findGame() {
     return util.steam.findByAppId(STEAMAPP_ID.toString())
         .then((game : ISteamEntry) => game.gamePath);
@@ -67,7 +81,6 @@ export function isGameMod(files: string[]) {
 }
 
 export function isModelMod(files: string[]) : boolean {
-    log('debug', `testing for model mod: ${files}`, files);
     return files.length == 1 && models.some(m => files[0].toLowerCase().endsWith(m));
         // && models.some(m => path.extname(path.basename(files[0])).toLowerCase() == m);
 }
@@ -89,6 +102,15 @@ export function isActiveGame(context : IExtensionContext | IExtensionApi | Thunk
                 : (context as ThunkStore<any>)) === GAME_ID;
 }
 
+/**
+ * Shows a modal dialog confirming a user's consent to the terms of use.
+ *
+ * @remarks
+ * - These terms of use are reproduced from the BSMG Wiki under CC BY-NC-SA.
+ *
+ * @param context - The extension context. Only required for translation of dialog text.
+ * @param callback - A callback to execute when the dialog is dismissed.
+ */
 export function showTermsDialog(context?: IExtensionContext, callback?: ()=> void) {
     var msg = 'By proceeding you are agreeing to the following terms:';
     var detail = "You may experience problems that don't exist in the vanilla game. 99.9% of bugs, crashes, and lag are due to mods. \nMods are subject to being broken by updates and that's normal - be patient and respectful when this happens, as modders are volunteers with real lives. \nBeat Games aren't purposefully trying to break mods. They wish to work on the codebase and sometimes this breaks mods, but they are not out to kill mods. \nDo not attack the devs for issues related to mods, and vice versa - modders and devs are two separate groups.";
@@ -121,6 +143,17 @@ export function showTermsNotification(context: IExtensionContext, dismissCallbac
     });
 }
 
+/**
+ * [Obsolete] Retrieves the specified feature key's value from the current profile settings.
+ *
+ * @remarks
+ * - Use the instance method of a ProfileClient instead of this!
+ *
+ * @param state - The API state object.
+ * @param key - The feature key to retrieve the value of.
+ * @returns The value of the given key or undefined.
+ * @obsolete
+ */
 export function getProfileSetting(state: IState, key: string): any {
     var profileId = selectors.activeProfile(state)?.id
     if (profileId !== undefined) {
@@ -131,6 +164,16 @@ export function getProfileSetting(state: IState, key: string): any {
     return undefined;
 }
 
+/**
+ * Retrieves the currently installed version of Beat Saber.
+ *
+ * @remarks
+ * - This will only work if the current version has been *run* at least once.
+ * - Reads directly from BeatSaberVersion.txt in the installation directory.
+ *
+ * @param api - The extension API.
+ * @returns The exact version string for the currently installed Beat Saber version.
+ */
 export function getGameVersion(api: IExtensionApi) : string {
     var gamePath = getGamePath(api, false);
     var filePath = path.join(gamePath, "BeatSaberVersion.txt");

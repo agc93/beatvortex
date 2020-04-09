@@ -1,17 +1,6 @@
-import axios from 'axios';
-import { log } from 'vortex-api';
+import { GAME_ID } from '.';
 
-export async function getMapName(modName: any, targetName: string) {
-    await axios.get(`https://beatsaver.com/api/maps/by-hash/${modName}`)
-        .then((resp) => {
-            log('debug', resp.data);
-            targetName = `${resp.data.name} [${resp.data.key}]`;
-        })
-        .catch((err) => {
-            log('warn', err);
-        });
-    return targetName;
-}
+export const STEAMAPP_ID = 620980;
 
 export const tools = [
     {
@@ -27,3 +16,20 @@ export const tools = [
         exclusive: true
     }
 ]
+
+export const gameMetadata = {
+    id: GAME_ID,
+    name: 'Beat Saber',
+    mergeMods: false,
+    supportedTools: tools,
+    queryModPath: () => '.',
+    logo: 'gameart.png',
+    executable: () => 'Beat Saber.exe',
+    requiredFiles: [
+        'Beat Saber.exe'
+    ],
+    details: {
+        steamAppId: STEAMAPP_ID
+    }
+}
+

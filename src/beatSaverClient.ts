@@ -1,7 +1,21 @@
 import axios, { AxiosResponse } from 'axios';
 import { log } from 'vortex-api';
 
+/**
+ * A simple client class to encapsulate the majority of beatsaver.com-specific logic, including metadata retrieval.
+ *
+ * @remarks
+ * This client uses *only* unauthenticated endpoints, no auth has been implemented.
+ */
 export class BeatSaverClient {
+
+    /**
+     * Retrieves the friendly name of a map, given its ID
+     * @remarks
+     * This method actually performs a full API call, but only returns the name. Use wisely.
+     *
+     * @param modName: The BeatSaver key or hash of the mod to retrieve.
+     */
     async getMapName(modName: any) : Promise<string> {
         var details = await this.getMapDetails(modName);
         return details?.name 
@@ -9,6 +23,15 @@ export class BeatSaverClient {
             : modName;
     }
 
+    /**
+     * Retrieves the given map's metadata from the BeatSaver API
+     *
+     * @remarks
+     * - This method uses only the BeatMods ID, not the hash!
+     *
+     * @param modId - The BeatSaver key or hash for the map.
+     * @returns A subset of the available metadata from BeatSaver. Returns null on error/not found
+     */
     async getMapDetails(mapKey: string): Promise<IMapDetails> | null {
         var url = mapKey.length === 4 ? `https://beatsaver.com/api/maps/detail/${mapKey}` : `https://beatsaver.com/api/maps/by-hash/${mapKey}`;
         var resp = await axios.request<IMapDetails>({
@@ -26,22 +49,37 @@ export class BeatSaverClient {
         return resp;
     }
 
-    buildDownloadLink(details: IMapDetails, useDirect?: boolean) {
+    /**
+     * Returns a downloadable link for the given map, optionally using direct download links.
+     *
+     * @param details - The map to build a download link for.
+     * @param useDirect - Optionally skip the API, and get a direct download link from the CDN.
+     * @returns An absolute URL to download the given map.
+     */
+    buildDownloadLink(details: IMapDetails, useDirect?: boolean): string {
         if (useDirect) {
             return `https://beatsaver.com${details.directDownload}`
         }
         return `https://beatsaver.com${details.downloadURL}`
     }
 
-    buildProxyLink(details: IMapDetails, server: string) {
-        return `${server.trimRight()}map/${details.key}/${details.name}`
-    }
-
+    /**
+     * Returns a direct link to the cover image for a given map.
+     *
+     * @param details - The map to build a cover link for.
+     * @returns An absolute URL to the cover art.
+     */
     buildCoverLink(details: IMapDetails) {
         return `https://beatsaver.com${details.coverURL}`;
     }
 }
 
+/**
+ * A subset of the available mod metadata from beatsaver.com's API.
+ *
+ * @remarks
+ * - These keys are left as-is to match the API response and save needing manual property mapping.
+ */
 export interface IMapDetails {
     metadata : {
         levelAuthorName: string,
