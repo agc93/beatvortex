@@ -6,7 +6,8 @@
   "scripts": {
     "webpack": "node ./node_modules/webpack/bin/webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "bundle7z": "7z a -t7z game-beatsaber.7z .\\dist\\index.js .\\dist\\info.json .\\gameart.png",
-    "build": "npm run webpack && extractInfo"
+    "build": "npm run webpack && extractInfo",
+    "tsdoc": "typedoc"
   },
   "config": {
     "game": "Beat Saber"
@@ -36,6 +37,7 @@
     "react": "^16.8.6",
     "react-bootstrap": "^0.32.4",
     "ts-loader": "^6.0.4",
+    "typedoc": "^0.17.4",
     "typescript": "^3.5.2",
     "vortex-api": "github:Nexus-Mods/vortex-api",
     "webpack": "^4.35.0",

@@ -1,0 +1,14 @@
+{
+    "inputFiles": ["./src"],
+    "exclude": ["node_modules"],
+    "mode": "modules",
+    "out": "apidoc/",
+    "theme": "default",
+    "ignoreCompilerErrors": "true",
+    "experimentalDecorators": "true",
+    "emitDecoratorMetadata": "true",
+    "target": "ES6",
+    "moduleResolution": "node",
+    "stripInternal": "true",
+    "module": "commonjs"
+}

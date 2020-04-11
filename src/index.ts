@@ -499,73 +499,7 @@ module.exports = {
 
 //#region Deprecated
 
-//obsoleteable ideally
-function handleImportDownloads(api: IExtensionApi, downloadIds: string[]) {
-    log('debug', 'beatvortex: handling download import event!');
-    var state: IState = api.store.getState();
-    var downloads = state.persistent.downloads.files;
-    downloadIds.forEach(async dl => {
-        var archiveDownload = downloads[dl] as IDownload;
-        if (!archiveDownload.game.some(g => g === GAME_ID)) {
-            log('debug', "beatvortex can't handle this download")
-            return null;
-        }
-        var client = new BeatModsClient();
-        var details = await client.getModByFileName(path.basename(archiveDownload.localPath));
-        // setGameModInfo(api.store, dl, details);
-    });
-}
-
-async function handleUrlDownload(api: IExtensionApi, dlUrl: string, fileName: string) {
-    var state: IState = api.store.getState();
-    if (selectors.activeGameId(state) === GAME_ID) {
-        log('debug', 'beatvortex: handling url download event');
-        if (dlUrl.indexOf('beatmods') !== -1) {
-            log('info', 'beatvortex found beatmods link in download event', {dlUrl, fileName});
-            var downloads = state.persistent.downloads.files;
-            downloads
-        }
-    }
-}
-
-async function handleInstallStart(api: IExtensionApi, archivePath: string) {
-    var state: IState = api.store.getState();
-    var downloads = state.persistent.downloads.files;
-    if (selectors.activeGameId(state) === GAME_ID) {
-        log('debug', 'beatvortex: manually looking up mod meta');
-        api.lookupModMeta({gameId: GAME_ID, filePath: archivePath});
-        log('info', 'beatvortex: handling install start event', { archivePath });
-        if (!isSongMod(archivePath)) {
-            var client = new BeatModsClient();
-            if (client.isBeatModsArchive(archivePath)) {
-                var details = await client.getModByFileName(path.basename(archivePath));
-                log('debug', 'beatvortex pulled details for mod', {details});
-                api.store.dispatch(actions.setModAttribute(
-                    GAME_ID,
-                    path.basename(archivePath, path.extname(archivePath)),
-                    {
-                        name: details.name,
-                        game: GAME_ID,
-                        source: 'beatmods'
-                    }
-                ));
-            }
-        }
-    } else {
-        log('debug', 'beatvortex: skipping non-Beat Saber install event', { archivePath });
-    }
-}
-
-// we should only set the bare minimum here, since the installer will set the full mod attributes anyway.
-function setMapModInfo(store: ThunkStore<any>, id: string, details: IMapDetails) {
-    // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
-    // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
-    store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
-    // store.dispatch(actions.setDownloadModInfo(id, 'downloadGame', GAME_ID));
-    store.dispatch(actions.setDownloadModInfo(id, 'game', GAME_ID));
-    // store.dispatch(actions.setDownloadModInfo(id, 'author', details.metadata.levelAuthorName))
-    store.dispatch(actions.setDownloadModInfo(id, 'logicalFileName', details.name));
-    store.dispatch(actions.setDownloadModInfo(id, 'source', 'beatsaver'));
-}
+// previous revisions (see Git history) included quiet a few extra methods that have been essentially superseded by new code.
+// in particular, client classes and more generic revisions (i.e. setDownloadModInfo) have replaced quite a bit of old logic.
 
 //#endregion

@@ -117,4 +117,4 @@ dist
 *.7z
 src/*.js
 
-proxy/**
+apidoc/**
