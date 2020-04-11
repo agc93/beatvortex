@@ -19,29 +19,13 @@ First and foremost, this isn't a replacement for any of the other amazing moddin
 
 ## How to use it?
 
-### Installation
-
-First, download the extension from [GitHub](https://github.com/agc93/beatvortex/actions) or [Nexus Mods](https://www.nexusmods.com/site/mods/96/) and save the archive.
-
-You will need to have Advanced mode enabled in Vortex to install extensions.
-
-> Advanced mode can be enabled in the Settings window, under Interface > Advanced > Enable Advanced Mode
-
-Select Extensions from the sidebar, then drag and drop the archive file into the drop zone at the bottom to install. Click Enable on the extension, then restart Vortex to enable the extension properly.
-
-### Adding Beat Saber
-
-Once the extension is installed, Vortex should automatically discover Beat Saber in the "Discovered" tab of the Games screen. Click Manage to perform initial setup and add Beat Saber to your games list.
-
-### Installing Mods
-
-Just like any other Vortex game, installing mods from archives is pretty simple: download the zip file, drag-and-drop into Vortex, then Install and Enable the mod.
+There's a heap of documentation, including detailed guides on getting started with BeatVortex, in our [online docs](https://beatvortex.dev/docs/). Essentially, you'll just need to install an extension for Vortex, then you're ready to start installing and managing your mods.
 
 ## FAQ
 
 #### Why do I need Vortex for this?
 
-You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides quite a few features that Vortex (or Nexus Mods) simply doesn't support, including one-click installs and dependency resolution.
+You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, including dependency resolution.
 
 BeatVortex is just an alternate method of installing mods for those who are more familiar with Vortex already.
 
@@ -55,11 +39,11 @@ In fact, generally speaking, you should be able to use BeatVortex alongside thos
 
 They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory, and that’s basically it.
 
-> A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those installation directories neat.
+> A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those mod lists neat.
 
 #### Why can’t I download mods from the Nexus?
 
-Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website.
+Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.
 
 ---
 
