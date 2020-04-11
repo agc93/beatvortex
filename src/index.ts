@@ -57,6 +57,7 @@ function main(context : IExtensionContext) {
     context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true});
     context.registerGame({
         ...gameMetadata,
+        id: GAME_ID,
         queryPath: findGame,
         setup: (discovery: IDiscoveryResult) => {
             log('debug', 'running beatvortex setup')

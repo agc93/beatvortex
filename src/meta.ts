@@ -18,7 +18,6 @@ export const tools = [
 ]
 
 export const gameMetadata = {
-    id: GAME_ID,
     name: 'Beat Saber',
     mergeMods: false,
     supportedTools: tools,
