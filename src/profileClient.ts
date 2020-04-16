@@ -1,5 +1,5 @@
 import { IExtensionContext, IProfile, ThunkStore, IState } from "vortex-api/lib/types/api";
-import { selectors, log } from "vortex-api";
+import { selectors, log, actions } from "vortex-api";
 import { GAME_ID } from ".";
 
 export const PROFILE_SETTINGS = {
@@ -11,21 +11,24 @@ export const PROFILE_SETTINGS = {
 export class ProfileClient {
     private context: IExtensionContext;
     state: IState;
+    store: ThunkStore<any>;
     /**
      *
      */
     constructor(store: ThunkStore<any>);
     constructor(context: IExtensionContext);
     constructor(ctx: IExtensionContext | ThunkStore<any>) {
-        this.state = (ctx as IExtensionContext) 
-            ? (ctx as IExtensionContext).api.store.getState()
-            : (ctx as ThunkStore<any>).getState();
+        this.store = (ctx as IExtensionContext) 
+            ? (ctx as IExtensionContext).api.store
+            : ctx as ThunkStore<any>;
+        this.state = this.store.getState();
     }
 
     setProfileSetting<TSetting>(profile: IProfile, key: string, value: TSetting) {
         var profileId = selectors.activeProfile(this.state)?.id
-        if (profileId !== undefined) {
-            this.state.persistent.profiles[profileId].features[key] = value;
+        if (profileId !== undefined && this.state.persistent.profiles[profileId].features !== undefined) {
+            this.store.dispatch(actions.setFeature(profileId, key, value));
+            // this.state.persistent.profiles[profileId].features[key] = value;
             var features = this.state.persistent.profiles[profileId]?.features;
             log('debug', `attempting to set ${key}/${value} in ${profile.name}`, features);
         }

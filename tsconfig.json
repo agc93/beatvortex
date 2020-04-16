@@ -9,13 +9,15 @@
         "rootDir": "src",
         "outDir": "./out",
         "jsx": "react",
-        "sourceMap": false
+        "sourceMap": false,
+        "esModuleInterop": true
     },
     "exclude": [
         "node_modules"
     ],
     "include": [
         // "src/index.ts",
-        "src/*.ts"
+        "src/index.ts",
+        // "src/*.tsx"
     ]
 }
