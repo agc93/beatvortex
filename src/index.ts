@@ -68,7 +68,7 @@ function main(context : IExtensionContext) {
         environment: {
             SteamAPPId: STEAMAPP_ID.toString(),
             gamepath: GAME_PATH
-        },
+        }
     });
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods'});
     addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs'});
@@ -82,11 +82,12 @@ function main(context : IExtensionContext) {
         (files, destinationPath, gameId, progress) => installContent(context.api, files, destinationPath, gameId, progress)
     );
 
-    /* context.registerMainPage('search', 'Browse', BeatModsList, {
+    context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
+    context.registerMainPage('search', 'BeatMods', BeatModsList, {
         group: 'per-game',
-        // visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
-        props: () => ({ api: context.api }),
-      }); */
+        visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
+        props: () => ({ api: context.api, mods: [], installed: (context.api.store.getState() as IState).persistent.mods[GAME_ID]}),
+      });
 
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module
@@ -349,7 +350,7 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
  * @param id - ID of the *download* being enriched. Not the modId!
  * @param details - The basic metadata to add to the download.
  */
-function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: string, source: string, id?: string}) {
+export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: string, source: string, id?: string}) {
     // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
     // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
@@ -474,7 +475,7 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
  * @param id - The ID of the completed download
  * @param callback - A callback to be executed after the download has been completed before the user is notified.
  */
-function handleDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
+export function handleDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
     log('debug', `downloaded ${id} (or was it ${err})`);
     if (!err) {
         callback(api);

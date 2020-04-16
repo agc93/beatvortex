@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { log } from 'vortex-api';
 import path = require('path');
+import { getGameVersion } from './util';
 
 /**
  * A simple client class to encapsulate the majority of beatmods.com-specific logic, including metadata retrieval.
@@ -130,6 +131,106 @@ export class BeatModsClient {
         });
         return resp;
     }
+
+    /**
+     * Retrieves all available mods from the BeatMods API.
+     *
+     * @remarks
+     * - This can be a slow request to return!
+     *
+     * @param gameVersion - Strongly recommended! Without this filter, the response will be *megabytes* of data!
+     * @returns A subset of the available metadata from BeatMods. Returns null on error/not found.
+     */
+    async getAllMods(gameVersion?: string) : Promise<IModDetails[]> {
+        log('debug', 'beatvortex: retrieving all available mods from BeatMods');
+        var url = gameVersion
+            ? `https://beatmods.com/api/v1/mod?status=approved&gameVersion=${gameVersion}`
+            : `https://beatmods.com/api/v1/mod?status=approved`;
+        var allMods = await this.getApiResponse<IModDetails[]>(url, (data) => data)
+        log('debug', `retrieved ${allMods?.length} mods from BeatMods`);
+        return allMods;
+    }
+
+    /**
+     * Helper method for retrieving data from the ModelSaber API.
+     *
+     * @remarks
+     * - This method is just the common logic and needs a callback to declare what to return from the output.
+     *
+     * @param url - The endpoint URL for the request.
+     * @param returnHandler - A callback to take the API response and return specific data.
+     * @returns A subset of the available metadata from ModelSaber. Returns null on error/not found
+     */
+    private async getApiResponse<T>(url: string, returnHandler: (data: any) => T) : Promise<T> | null {
+        var resp = await axios.request({
+            url: url,
+            headers: {'User-Agent': 'BeatVortex/0.1.0' }
+        }).then((resp: AxiosResponse) => {
+            const { data } = resp;
+            return returnHandler(data);
+            // return data[0] as IModelDetails; //we just have to assume first here since we don't know what the ID is anymore.
+        }).catch(err => {
+            log('error', err);
+            return null;
+        });
+        return resp;
+    }
+
+    static getDownloads(mod: IModDetails) : string[] {
+        return mod.downloads.map(m => `https://beatmods.com${m.url}`);
+    }
+
+    static getDependencies(mods: IModDetails[], mod: IModDetails): {_id: string, name: string}[][] {
+        // var mod = mods.find(m => m._id == modId);
+        function flatDeep(arr, d = 1): any[] {
+            return d > 0 ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
+                         : arr.slice();
+         };
+        const resolveDeps = (modId: string): string[] => {
+            var mod = mods.find(m => m._id == modId);
+            if (!mod) {
+                // mod = mod.dependencies.find()
+            }
+            if (mod) {
+                if (mod.dependencies && mod.dependencies.length > 0) {
+                    return flatDeep(mod.dependencies.map(md => md.dependencies.map(md => resolveDeps(md))), 1);
+                } else {
+                    return []
+                }
+            } else {
+                log('debug', "couldn't match mod", {mod: modId});
+            }
+        }
+        /* var depMods = mods.filter(m => {
+            return mod.dependencies.some(d => d._id == m._id) */
+        /* var depMods = mod.dependencies.map(d => {
+            var match = mods.find(fd => d._id == fd._id);
+            log ('debug', 'found dep in mod list', { dep: match?.name, target: d?.name});
+            return match; */
+        var depModIds = flatDeep(mod.dependencies.map(dm => {
+            log('debug', 'walking dependency tree', { mod: dm.name, count: dm.dependencies.length});
+            // var ddm = flatDeep(dm.dependencies.map(dmi => dmi.dependencies), Infinity)
+            return [dm._id, ...dm.dependencies]
+        }), Infinity);
+        log('debug', 'flattened dep tree', {ids: depModIds});
+        var recursed = flatDeep(depModIds.map(di => resolveDeps(di)), Infinity);
+        log('debug', 'walked dep tree', {depth: recursed.length, keys: recursed});
+        var uniques = [...new Set<string>(depModIds)];
+        var mods = uniques.map(u => mods.find(m => m._id == u));
+        log('debug', 'matched dependency list', {count: uniques?.length, matched: mods?.length});
+        return []
+        /* return mod.dependencies.map(td => {
+            // var currentDeps = [];
+            var currentDepsTree = [...td.dependencies];
+            log('debug', 'compiled top tree deps', {deps: currentDepsTree, mods: mods.length});
+            var dependents = td.dependencies.map(cdt => {
+                var cdtMod = mods.find(cd => cd._id == cdt);
+                log('debug', 'found mod dependency', {id: cdtMod._id});
+                return cdtMod;
+            });
+            return [...dependents, td];
+        }) */
+    }
 }
 
 /**
@@ -152,7 +253,8 @@ export interface IModDetails {
     category: string;
     required: boolean;
     downloads: IModDownload[],
-    _id: string
+    _id: string,
+    dependencies: {_id: string, name: string, dependencies: string[]}[]
 }
 
 /**

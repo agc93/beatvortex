@@ -1,6 +1,7 @@
 import path = require("path");
 import { remote } from "electron";
 import { util as vtx, selectors, fs, log, util } from "vortex-api";
+import nfs = require('fs');
 import { IExtensionContext, NotificationDismiss, IState, IInstruction, IExtensionApi, IExtension, IGame, ThunkStore, IExtensionState } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
@@ -177,7 +178,12 @@ export function getProfileSetting(state: IState, key: string): any {
 export function getGameVersion(api: IExtensionApi) : string {
     var gamePath = getGamePath(api, false);
     var filePath = path.join(gamePath, "BeatSaberVersion.txt");
-    var version = fs.readFileSync(filePath);
-    log('debug', 'beatvortex: detected game version from BeatSaberVersion.txt', version);
-    return version;
+    if (nfs.existsSync(filePath)) {
+        var version = fs.readFileSync(filePath, "utf8");
+        log('debug', 'beatvortex: detected game version from BeatSaberVersion.txt', version);
+        return version;
+    } else {
+        log('warn', 'could not detect game version!');
+        return null;
+    }    
 }

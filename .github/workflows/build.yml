@@ -29,7 +29,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
-    - run: cp ./gameart.png ./dist/
+    - run: cp ./gameart.png ./dist/ && cp ./src/beatModsList.scss ./dist/
 #    - run: npm run-script bundle7z
     - uses: actions/upload-artifact@v1
       with:
