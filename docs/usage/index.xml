@@ -44,6 +44,10 @@
 C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game-beatsaber\index.js
 C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game-beatsaber\gameart.png
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>With those files in place, you're clear to start Vortex and you should see the Beat Saber icon in the Games screen light up.&lt;/p></description></item><item><title>Docs: Installing Mods</title><link>/docs/usage/mods/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/mods/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>At this time, using BeatVortex means you'll need to manually run &lt;code>./IPA.exe -n&lt;/code> from your install directory to enable BSIPA after installing it.&lt;/p>
+&lt;p>This should be fixed in an upcoming version, once some Vortex quirks have been nailed down. If you've installed BSIPA with Mod Assistant, this is not needed.&lt;/p>
+&lt;/div>
 &lt;p>At it's core, installing mods is roughly the same as any Vortex-enabled game, just without the convenience of installing from Nexus Mods. Make sure you've added Beat Saber as a managed game in Vortex.&lt;/p>
 &lt;blockquote>
 &lt;p>If you haven't already, open the Games screen and click the &lt;strong>Manage&lt;/strong> button on the Beat Saber icon under &lt;em>Unmanaged&lt;/em>&lt;/p>
