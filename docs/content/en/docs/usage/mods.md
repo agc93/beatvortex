@@ -6,6 +6,12 @@ description: >
   How to install, view and manage your mods in Vortex.
 ---
 
+{{% pageinfo %}}
+At this time, using BeatVortex means you'll need to manually run `./IPA.exe -n` from your install directory to enable BSIPA after installing it.
+
+This should be fixed in an upcoming version, once some Vortex quirks have been nailed down. If you've installed BSIPA with Mod Assistant, this is not needed.
+{{% /pageinfo %}}
+
 At it's core, installing mods is roughly the same as any Vortex-enabled game, just without the convenience of installing from Nexus Mods. Make sure you've added Beat Saber as a managed game in Vortex.
 
 > If you haven't already, open the Games screen and click the **Manage** button on the Beat Saber icon under *Unmanaged*
