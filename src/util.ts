@@ -6,6 +6,7 @@ import { IExtensionContext, NotificationDismiss, IState, IInstruction, IExtensio
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
+import { tryRunPatch } from "./ipa";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
 export const models = ['avatar', 'platform', 'saber']
@@ -188,8 +189,29 @@ export function getGameVersion(api: IExtensionApi) : string {
     }    
 }
 
-export function isIPAReady(api: IExtensionApi): boolean {
-    var gamePath = getGamePath(api, false);
-    var dllPath = path.join(gamePath, "IPA", "winhttp.dll");
-    return nfs.existsSync(dllPath);
+
+
+/**
+ * Shows a modal dialog explaining the IPA auto-patching process.
+ *
+ * @param api - The extension context. Only required for translation of dialog text.
+ * @param callback - A callback to execute when the dialog is dismissed.
+ */
+export function showPatchDialog(api: IExtensionApi, callback?: ()=> void) {
+    var msg = 'BeatVortex can attempt to auto-patch your Beat Saber install';
+    var detail = "It looks like you've deployed BSIPA, but it hasn't been run for this install.\n\nBeatVortex can attempt to automatically run IPA's first-time setup and patch your installation for you, but this isn't guaranteed to work. You should only need to do this once!";
+    remote.dialog.showMessageBox(vtx.getVisibleWindow(), {
+        type: 'info',
+        message: api ? api.translate(msg) : msg,
+        detail: api ? api.translate(detail) : detail,
+        buttons: ["Run Patch"],
+        defaultId: 0
+    }, (resp: number, checked: boolean) => {
+        //run patch here
+        tryRunPatch(api);
+        if (callback) {
+            callback();
+        }
+     });
 }
+

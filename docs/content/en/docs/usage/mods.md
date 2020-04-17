@@ -7,9 +7,9 @@ description: >
 ---
 
 {{% pageinfo %}}
-At this time, using BeatVortex means you'll need to manually run `./IPA.exe -n` from your install directory to enable BSIPA after installing it.
+BeatVortex 0.2.1 (and later) includes beta support for prompting when an IPA patch is needed and automatically running it.
 
-This should be fixed in an upcoming version, once some Vortex quirks have been nailed down. If you've installed BSIPA with Mod Assistant, this is not needed.
+If you haven't already run IPA for your current install, you should be prompted to run it after your first deploy.
 {{% /pageinfo %}}
 
 At it's core, installing mods is roughly the same as any Vortex-enabled game, just without the convenience of installing from Nexus Mods. Make sure you've added Beat Saber as a managed game in Vortex.

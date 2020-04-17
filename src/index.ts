@@ -1,10 +1,11 @@
 import path = require('path');
 
 import { fs, log, util, selectors, actions, MainPage } from "vortex-api";
-import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDownload } from 'vortex-api/lib/types/api';
+import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile } from 'vortex-api/lib/types/api';
 import { InstructionType, IInstruction } from 'vortex-api/lib/extensions/mod_management/types/IInstallResult';
 
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame, models, toTitleCase, isModelMod, isModelModInstructions } from './util';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame, isModelMod, isModelModInstructions, showPatchDialog } from './util';
+import { isIPAInstalled, isIPAReady, tryRunPatch } from "./ipa";
 import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
 import { BeatSaverClient, IMapDetails } from './beatSaverClient';
 import { gameMetadata, STEAMAPP_ID } from './meta';
@@ -39,6 +40,9 @@ function main(context : IExtensionContext) {
                 log('debug', 'beatvortex got the profile change event! checking profile.');
                 log('debug', `configured profile features: ${JSON.stringify(newProfile.features)}`);
             };
+        });
+        context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
+            handleDeploymentEvent(context.api, profileId, deployment, setTitle);
         });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
@@ -498,6 +502,38 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
         //TODO: need to actually handle this, obviously
         api.showErrorNotification(`Failed to download ${details.name}!`, `Error encountered during download and install: ${err.name}\n${err.message}`, {allowReport: false});
     }
+}
+
+function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) {
+    log('debug', 'deployment event caught!', {profileId})
+    var profile = selectors.profileById(api.store.getState(), profileId) as IProfile;
+    if (profile.gameId == GAME_ID) {
+        var didIncludeBSIPA = deployment['bs-mod'].some(f => f.source.toLowerCase().indexOf("bsipa") !== -1);
+        var alreadyPatched = isIPAReady(api);
+        log('debug', 'BSIPA check completed', {didIncludeBSIPA, alreadyPatched});
+        if (didIncludeBSIPA && !alreadyPatched) {
+            api.sendNotification({
+                type: 'warning',
+                message: 'BSIPA has been deployed, but not necessarily enabled. Run Patch to attempt auto-patching.',
+                title: 'BSIPA Deployed',
+                actions: [
+                    {
+                        title: 'More info',
+                        action: dismiss => {
+                            showPatchDialog(api, dismiss);
+                        }
+                    },
+                    {
+                        title: 'Patch',
+                        action: dismiss => {
+                            tryRunPatch(api, dismiss)
+                        }
+                    }
+                ]
+            });
+        }
+    }
+
 }
 
 //#endregion

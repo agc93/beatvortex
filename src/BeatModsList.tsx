@@ -1,5 +1,5 @@
 import { MainPage, log, FlexLayout, Icon, actions, Spinner } from 'vortex-api';
-const { ListGroup, ListGroupItem, Panel, Button, Table, Breadcrumb, ButtonGroup } = require('react-bootstrap');
+const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonGroup, FormControl } = require('react-bootstrap');
 import React, { Component } from 'react';
 import Async, { useAsync } from "react-async";
 import { IExtensionApi, IModTable, IMod } from 'vortex-api/lib/types/api';
@@ -23,9 +23,16 @@ interface IBeatModsListState {
     gameVersion: string;
     availableVersions: string[];
     isLoading: boolean;
+    searchFilter: string;
 }
 
 export class BeatModsList extends React.Component {
+
+    // there is a pretty brutal bug in the BeatMods API that's led to some very convoluted logic in this component.
+    // Essentially, BeatMods reports completely different values for `gameVersion` based on the query.
+    // If you *don't* specify a game version in the query, it reports a much older value.
+    // so as it stands, we do an extra round trip to get all the available versions, then we can use the more specific query to get compatible mods
+
     header: React.Component<{}, any, any> = null;
     mainPage: React.Component<{}, any, any> = null;
 
@@ -35,7 +42,8 @@ export class BeatModsList extends React.Component {
         selected: '',
         gameVersion: '',
         availableVersions: [],
-        isLoading: true
+        isLoading: true,
+        searchFilter: ''
     };
 
     getGame() {
@@ -46,21 +54,29 @@ export class BeatModsList extends React.Component {
         return gameId;
     }
 
-    async refreshMods() {
+    async getVersions() {
+        var version = getGameVersion((this.props as Props).api)
         var client = new BeatModsClient();
-        var version = getGameVersion((this.props as Props).api);
-        var availableVersions = [version];
+        var allMods = await client.getAllMods();
+        var availableVersions = [...new Set(allMods.map(m => m.gameVersion))];
+        this.setState({availableVersions, gameVersion: version});
+    }
+
+    async refreshMods(version?: string) {
+        var client = new BeatModsClient();
+        version = version ?? this.state.gameVersion;
+        // var availableVersions = [version];
         var mods = await client.getAllMods(version);
-        if (!mods || mods.length == 0) {
+        /* if (!mods || mods.length == 0) {
             var mods = await client.getAllMods();
-            var availableVersions = rsort([...new Set(mods.map(m => m.gameVersion))], {loose: true});
             version = null;
-        }
-        this.setState({ mods: mods, selected: '', gameVersion: version, availableVersions });
+        } */
+        this.setState({ mods: mods, selected: '', gameVersion: version});
         return mods;
     }
 
     forceGameVersion = (version: string) => {
+        this.refreshMods(version);
         this.setState({gameVersion: version});
     }
 
@@ -93,7 +109,7 @@ export class BeatModsList extends React.Component {
 
     public render() {
         log('debug', 'rendering mod list');
-        const { selected, mods, gameVersion, availableVersions, isLoading } = this.state;
+        const { selected, mods, gameVersion, availableVersions, isLoading, searchFilter } = this.state;
         const mod: IModDetails = (selected == undefined || !selected || mods.length == 0)
             ? null
             : mods.find(iter => iter._id == selected);
@@ -105,7 +121,10 @@ export class BeatModsList extends React.Component {
                 <MainPage.Header ref={(header) => { this.header = header; }}>
                     <FlexLayout type="column">
                         <>Vortex doesn't install dependencies automatically! If a mod has dependencies, make sure you install them.</>
+                        <FlexLayout type="row">
                         {this.renderVersionSwitcher(gameVersion, availableVersions)}
+                        {/* {this.renderSearchBox()} */}
+                        </FlexLayout>
                     </FlexLayout>
                     {/* <Button onClick={(event: React.MouseEvent<HTMLElement>) => {
                         return true;
@@ -131,11 +150,11 @@ export class BeatModsList extends React.Component {
                                             {this.state.mods.length > 0
                                                 ? <ListGroup>
                                                     {this.state.mods
-                                                        // .sort(this.beatModsSort)
-                                                        .filter(m => gameVersion ? m.gameVersion == gameVersion : true)
+                                                        // .filter(m => gameVersion ? gameVersion == "*" ? true : m.gameVersion == gameVersion : true)
+                                                        .filter(s => searchFilter ? s.name.indexOf(searchFilter) !== -1 : true)
                                                         .map(this.renderListEntry)} {/* only returns ListGroupEntry */}
                                                 </ListGroup>
-                                                : "If you don't see any mods, "
+                                                : "If you don't see any mods, you may need to choose a different version above."
                                             }
                                         {/* </div> */}
                                         <div className='beatmods-list-status'>
@@ -205,6 +224,26 @@ export class BeatModsList extends React.Component {
         // opn(link);
     }
 
+    private handleSearchFilter = (evt: React.ChangeEvent<any>) => {
+        this.setState({searchFilter: evt.target.value});
+    }
+
+    private renderSearchBox = () => {
+        return (
+            <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                    <InputGroup.Text><Icon name="search" /></InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                placeholder="Search"
+                aria-label="Username"
+                onChange={e => this.handleSearchFilter(e)}
+                />
+            </InputGroup>
+        )
+
+    }
+
     private renderLoadingSpinner = () => {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -222,7 +261,7 @@ export class BeatModsList extends React.Component {
         return (<FlexLayout type="row">
             <span style={{fontWeight: 'bold', margin: '0.25em'}}>Beat Saber Version: </span>
             <ButtonGroup aria-label="Game Version" className="version-switcher">
-                {availableVersions.map(av => {
+                {rsort(availableVersions, { loose: true}).map(av => {
                     return <Button variant={gameVersion == av ? "" : "secondary"} onClick={() => this.forceGameVersion(av)}>{av}</Button>
                 })}
             </ButtonGroup>
@@ -358,6 +397,7 @@ export class BeatModsList extends React.Component {
 
     async componentDidMount() {
         log('debug', 'mod list component mounted');
+        await this.getVersions();
         var response = await this.refreshMods();
         log('debug', `setting state with ${response?.length} mods`, { currentCount: this.state.mods?.length ?? '0' });
         // (this.props as Props).mods = new BeatModsClient()
