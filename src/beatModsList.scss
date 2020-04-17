@@ -60,6 +60,8 @@
       .beatmods-required {
           @extend .beatmods-name;
           text-align: right;
+          float: right;
+          margin-left: 1.5em;
       }
     
       .extension-stats {
@@ -151,4 +153,10 @@
 
   .description-footer-deps {
       padding: 1.5em;
+  }
+
+  .description-version-warning {
+      float: right;
+      margin: 1em;
+      max-width: 20%;
   }

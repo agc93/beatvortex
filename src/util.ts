@@ -187,3 +187,9 @@ export function getGameVersion(api: IExtensionApi) : string {
         return null;
     }    
 }
+
+export function isIPAReady(api: IExtensionApi): boolean {
+    var gamePath = getGamePath(api, false);
+    var dllPath = path.join(gamePath, "IPA", "winhttp.dll");
+    return nfs.existsSync(dllPath);
+}

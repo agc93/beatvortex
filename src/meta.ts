@@ -1,8 +1,9 @@
 import { GAME_ID } from '.';
+import { ITool } from 'vortex-api/lib/types/ITool';
 
 export const STEAMAPP_ID = 620980;
 
-export const tools = [
+export const tools : ITool[] = [
     {
         id: 'ma',
         name: 'Mod Assistant',
@@ -14,6 +15,17 @@ export const tools = [
         relative: true,
         shell: false,
         exclusive: true
+    },
+    {
+        id: 'ipa-install',
+        name: 'Run IPA Installer',
+        shortName: 'IPA Install',
+        'executable': () => 'IPA.exe',
+        requiredFiles: ['IPA.exe'],
+        relative: true,
+        shell: true,
+        exclusive: true,
+        parameters: ['-n']
     }
 ]
 
