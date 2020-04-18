@@ -92,7 +92,9 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;blockquote>
 &lt;p>Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.&lt;/p>
 &lt;/blockquote>
-&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by TrickSaber) will not work properly. Only archives are supported at this time.&lt;/p></description></item><item><title>Docs: Configuration</title><link>/docs/usage/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/configuration/</guid><description>
+&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by TrickSaber) will not work properly. Only archives are supported at this time.&lt;/p>
+&lt;h2 id="updating-mods">Updating Mods&lt;/h2>
+&lt;p>At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA &lt;em>should&lt;/em> automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.&lt;/p></description></item><item><title>Docs: Configuration</title><link>/docs/usage/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/configuration/</guid><description>
 &lt;h3 id="customising-metadata">Customising metadata&lt;/h3>
 &lt;p>You can customise the basic metadata of any of your mods (name, author, notes etc) using Vortex's built-in sidebar. Just double-click on the name of any mod in your mod list and you'll get a small dialog where you can change the name and author, or add some notes for yourself. It's not recommended to change the source or mod type as these control how mods are handled internally.&lt;/p>
 &lt;h3 id="profiles">Profiles&lt;/h3>
