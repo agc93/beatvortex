@@ -28,6 +28,7 @@ function main(context : IExtensionContext) {
     context.once(() => {
         if (isActiveGame(context)) {
         }
+        context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
         var enableLinks = new ProfileClient(context).getProfileSetting(PROFILE_SETTINGS.EnableOneClick, false);
         log('debug', 'beatvortex: initialising oneclick', { enable: enableLinks});
         if (enableLinks) {
@@ -85,8 +86,6 @@ function main(context : IExtensionContext) {
         testSupportedContent, 
         (files, destinationPath, gameId, progress) => installContent(context.api, files, destinationPath, gameId, progress)
     );
-
-    context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
     context.registerMainPage('search', 'BeatMods', BeatModsList, {
         group: 'per-game',
         visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,

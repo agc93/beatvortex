@@ -51,3 +51,7 @@ You can also download mod/map archives directly from BeastSaber, BeatSaver, Beat
 > Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.
 
 Please note that "raw" mods that aren't packaged in an archive (for example, the dll files provided by TrickSaber) will not work properly. Only archives are supported at this time.
+
+## Updating Mods
+
+At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA *should* automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.
