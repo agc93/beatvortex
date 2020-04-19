@@ -14,11 +14,14 @@ If you haven't already run IPA for your current install, you should be prompted 
 
 At it's core, installing mods is roughly the same as any Vortex-enabled game, just without the convenience of installing from Nexus Mods. Make sure you've added Beat Saber as a managed game in Vortex.
 
-> If you haven't already, open the Games screen and click the **Manage** button on the Beat Saber icon under *Unmanaged*
+If you haven't already, open the Games screen and click the **Manage** button on the Beat Saber icon under *Unmanaged*
 
-There's three main ways to install mods:
+---
+
+There's a few main ways to install mods:
 
 - OneClick installs<sup>*preview*</sup> 
+- BeatMods Browser
 - Download in Vortex
 - Install from archives
 
@@ -36,13 +39,22 @@ You then need to restart Vortex (sorry!) and you're good to go. Open up BeatSave
 
 Since ModelSaber models are not distributed as archives but just raw files, Vortex will warn you and will create a mod archive with just that one file. All of Vortex's install and deployments logic really works best with archives.
 
+## BeatMods Browser
+
+If you're looking to install any of the mods listed on BeatMods, you can easily do so from the BeatMods page in the sidebar (available from v0.2.0 onwards). This will list all approved mods for your current game version and you can quickly install them using the *Ready to Install* button on the right.
+
+Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.
+
+> BeatVortex doesn't install dependencies for mods as Vortex doesn't natively support this and dependency resolution for BeatMods is...complicated.
+> You will need to manually install any dependencies, which are listed at the bottom of the mod description.
+
 ## Download in Vortex
 
-Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You won't have any mods here, but if you click on the *But don't worry, I know a place...* dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.
+Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You might not have any mods here, but if you click on the *But don't worry, I know a place...* dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.
 
 > This option will move to the *Get more mods* drop-down after you have installed your first mod.
 
-You can browse mods using the built-in browser that appears and if you download the ZIP archive of any song (from BeastSaber) or mod (from BeatMods), Vortex will attempt to install it in the background for you. Close the browser to go back to your mod list then Install and Enable your mods as usual to use them in-game.
+You can browse mods using the built-in browser that appears and if you download the ZIP archive of any song (from BeatSaver/BeastSaber), mod (from BeatMods), or model (from ModelSaber), Vortex will attempt to install it in the background for you. Close the browser to go back to your mod list then Install and Enable your mods as usual to use them in-game.
 
 ## Install from archives
 
@@ -50,7 +62,7 @@ You can also download mod/map archives directly from BeastSaber, BeatSaver, Beat
 
 > Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.
 
-Please note that "raw" mods that aren't packaged in an archive (for example, the dll files provided by TrickSaber) will not work properly. Only archives are supported at this time.
+Please note that "raw" mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will not work properly. Only archives are supported at this time.
 
 ## Updating Mods
 
