@@ -49,12 +49,12 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>If you haven't already run IPA for your current install, you should be prompted to run it after your first deploy.&lt;/p>
 &lt;/div>
 &lt;p>At it's core, installing mods is roughly the same as any Vortex-enabled game, just without the convenience of installing from Nexus Mods. Make sure you've added Beat Saber as a managed game in Vortex.&lt;/p>
-&lt;blockquote>
 &lt;p>If you haven't already, open the Games screen and click the &lt;strong>Manage&lt;/strong> button on the Beat Saber icon under &lt;em>Unmanaged&lt;/em>&lt;/p>
-&lt;/blockquote>
-&lt;p>There's three main ways to install mods:&lt;/p>
+&lt;hr>
+&lt;p>There's a few main ways to install mods:&lt;/p>
 &lt;ul>
 &lt;li>OneClick installs&lt;sup>&lt;em>preview&lt;/em>&lt;/sup>&lt;/li>
+&lt;li>BeatMods Browser&lt;/li>
 &lt;li>Download in Vortex&lt;/li>
 &lt;li>Install from archives&lt;/li>
 &lt;/ul>
@@ -67,18 +67,25 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>You then need to restart Vortex (sorry!) and you're good to go. Open up BeatSaver/BeastSaber/ModelSaber and click any of the OneClick install links: Vortex should pick up the link in the background, fetch the song details and download the map (or mod) directly into your mod list. Install and Enable as per usual to deploy into your game.&lt;/p>
 &lt;h4 id="a-note-on-modelsaber-installs">A note on ModelSaber installs&lt;/h4>
 &lt;p>Since ModelSaber models are not distributed as archives but just raw files, Vortex will warn you and will create a mod archive with just that one file. All of Vortex's install and deployments logic really works best with archives.&lt;/p>
+&lt;h2 id="beatmods-browser">BeatMods Browser&lt;/h2>
+&lt;p>If you're looking to install any of the mods listed on BeatMods, you can easily do so from the BeatMods page in the sidebar (available from v0.2.0 onwards). This will list all approved mods for your current game version and you can quickly install them using the &lt;em>Ready to Install&lt;/em> button on the right.&lt;/p>
+&lt;p>Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.&lt;/p>
+&lt;blockquote>
+&lt;p>BeatVortex doesn't install dependencies for mods as Vortex doesn't natively support this and dependency resolution for BeatMods is&amp;hellip;complicated.
+You will need to manually install any dependencies, which are listed at the bottom of the mod description.&lt;/p>
+&lt;/blockquote>
 &lt;h2 id="download-in-vortex">Download in Vortex&lt;/h2>
-&lt;p>Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You won't have any mods here, but if you click on the &lt;em>But don't worry, I know a place&amp;hellip;&lt;/em> dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.&lt;/p>
+&lt;p>Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You might not have any mods here, but if you click on the &lt;em>But don't worry, I know a place&amp;hellip;&lt;/em> dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.&lt;/p>
 &lt;blockquote>
 &lt;p>This option will move to the &lt;em>Get more mods&lt;/em> drop-down after you have installed your first mod.&lt;/p>
 &lt;/blockquote>
-&lt;p>You can browse mods using the built-in browser that appears and if you download the ZIP archive of any song (from BeastSaber) or mod (from BeatMods), Vortex will attempt to install it in the background for you. Close the browser to go back to your mod list then Install and Enable your mods as usual to use them in-game.&lt;/p>
+&lt;p>You can browse mods using the built-in browser that appears and if you download the ZIP archive of any song (from BeatSaver/BeastSaber), mod (from BeatMods), or model (from ModelSaber), Vortex will attempt to install it in the background for you. Close the browser to go back to your mod list then Install and Enable your mods as usual to use them in-game.&lt;/p>
 &lt;h2 id="install-from-archives">Install from archives&lt;/h2>
 &lt;p>You can also download mod/map archives directly from BeastSaber, BeatSaver, BeatMods or anywhere else you like and install them with Vortex. Simply use the &lt;em>Install From File&lt;/em> button in the toolbar or drop them onto the drop zone at the bottom of the Vortex window.&lt;/p>
 &lt;blockquote>
 &lt;p>Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.&lt;/p>
 &lt;/blockquote>
-&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by TrickSaber) will not work properly. Only archives are supported at this time.&lt;/p>
+&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will not work properly. Only archives are supported at this time.&lt;/p>
 &lt;h2 id="updating-mods">Updating Mods&lt;/h2>
 &lt;p>At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA &lt;em>should&lt;/em> automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.&lt;/p></description></item><item><title>Docs: Configuration</title><link>/docs/usage/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/configuration/</guid><description>
 &lt;h3 id="customising-metadata">Customising metadata&lt;/h3>
