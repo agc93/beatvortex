@@ -143,7 +143,7 @@ export class BeatModsList extends React.Component {
                                                 ? <ListGroup>
                                                     {this.state.mods
                                                         // .filter(m => gameVersion ? gameVersion == "*" ? true : m.gameVersion == gameVersion : true)
-                                                        .filter(s => searchFilter ? s.name.indexOf(searchFilter) !== -1 : true)
+                                                        .filter(s => searchFilter ? s.name.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 : true)
                                                         .map(this.renderListEntry)} {/* only returns ListGroupEntry */}
                                                 </ListGroup>
                                                 : "If you don't see any mods, you may need to choose a different version above."
