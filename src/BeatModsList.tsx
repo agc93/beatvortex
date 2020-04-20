@@ -1,11 +1,9 @@
 import { MainPage, log, FlexLayout, Icon, actions, Spinner } from 'vortex-api';
-const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonGroup, FormControl } = require('react-bootstrap');
+const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonGroup, FormControl, FormGroup, ControlLabel } = require('react-bootstrap');
 import React, { Component } from 'react';
-import Async, { useAsync } from "react-async";
 import { IExtensionApi, IModTable, IMod } from 'vortex-api/lib/types/api';
 import { IModDetails, BeatModsClient } from './beatModsClient';
 import { getGameVersion } from './util';
-import { IconButton } from 'vortex-api/lib/controls/TooltipControls';
 import { util } from "vortex-api";
 import { handleDownloadInstall, setDownloadModInfo } from '.';
 import { rsort } from "semver";
@@ -108,8 +106,8 @@ export class BeatModsList extends React.Component {
     }
 
     public render() {
-        log('debug', 'rendering mod list');
         const { selected, mods, gameVersion, availableVersions, isLoading, searchFilter } = this.state;
+        log('debug', 'rendering mod list', {searchFilter: searchFilter ?? 'none'});
         const mod: IModDetails = (selected == undefined || !selected || mods.length == 0)
             ? null
             : mods.find(iter => iter._id == selected);
@@ -123,15 +121,9 @@ export class BeatModsList extends React.Component {
                         <>Vortex doesn't install dependencies automatically! If a mod has dependencies, make sure you install them.</>
                         <FlexLayout type="row">
                         {this.renderVersionSwitcher(gameVersion, availableVersions)}
-                        {/* {this.renderSearchBox()} */}
+                        {this.renderSearchBox()}
                         </FlexLayout>
                     </FlexLayout>
-                    {/* <Button onClick={(event: React.MouseEvent<HTMLElement>) => {
-                        return true;
-                    }}>Back</Button>
-                    <Button onClick={(event: React.MouseEvent<HTMLElement>) => {
-                        return true;
-                    }}>Forward</Button> */}
                 </MainPage.Header>
                 <MainPage.Body>
                     {isLoading
@@ -164,7 +156,6 @@ export class BeatModsList extends React.Component {
                                     </FlexLayout>
                                 </FlexLayout.Fixed>
                                 <FlexLayout.Flex fill={true}>
-                                    {/* THIS SHOULD BE CONDITIONAL ON `current`, NOT `mod` YOU ASSHAT*/}
                                     {/* <div> */}
                                         {((selected == undefined || !selected) || (mod == undefined || !mod)) ? null : this.renderDescription(mod)}
                                     {/* </div> */}
@@ -225,23 +216,24 @@ export class BeatModsList extends React.Component {
     }
 
     private handleSearchFilter = (evt: React.ChangeEvent<any>) => {
+        log('debug', 'setting mod list filter', {searchFilter: evt.target.value});
         this.setState({searchFilter: evt.target.value});
     }
 
     private renderSearchBox = () => {
+        const { searchFilter } = this.state;
         return (
-            <InputGroup className="mb-3">
-                <InputGroup.Prepend>
-                    <InputGroup.Text><Icon name="search" /></InputGroup.Text>
-                </InputGroup.Prepend>
+            <div style={{ display: 'inline-block', position: 'relative', height: 30 }}>
                 <FormControl
-                placeholder="Search"
-                aria-label="Username"
-                onChange={e => this.handleSearchFilter(e)}
+                    className='search-box-input'
+                    type='text'
+                    placeholder='Search'
+                    value={searchFilter || ''}
+                    onChange={(e) => this.handleSearchFilter(e)}
                 />
-            </InputGroup>
+                <Icon className='search-icon' name='search' />
+            </div>
         )
-
     }
 
     private renderLoadingSpinner = () => {
@@ -374,7 +366,7 @@ export class BeatModsList extends React.Component {
                         <FlexLayout.Fixed className="description-version-warning">
                             {installedVersion == mod.gameVersion
                                 ? <></>
-                                : <>This mod is built for Beat Saber {mod.gameVersion}! Make sure it is compatible with {installedVersion} before installing!</>}
+                                : <>This mod is built for Beat Saber {mod.gameVersion}! Make sure it is compatible with {installedVersion ?? 'your version'} before installing!</>}
                         </FlexLayout.Fixed>
                         <FlexLayout.Fixed>
                             {ready && <Button 

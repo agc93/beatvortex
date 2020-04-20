@@ -60,22 +60,24 @@ export function getGamePath(api: IExtensionApi, gameOrPath: IGame | boolean, use
 }
 
 
-export function isSongMod(archivePath: string): boolean;
-export function isSongMod(instructions: IInstruction[]) : boolean;
-export function isSongMod(files: string[]) : boolean;
-export function isSongMod(files: string[]|IInstruction[]|string) {
-    if (typeof files === 'string') {
+// export function isSongMod(archivePath: string): boolean;
+export function isSongMod(instructions: IInstruction[], allowNested?: boolean) : boolean;
+export function isSongMod(files: string[], allowNested?: boolean) : boolean;
+export function isSongMod(files: string[]|IInstruction[]|string, allowNested: boolean) {
+    /* if (typeof files === 'string') {
         var filePath = files as string;
         var modName = path.basename(filePath, path.extname(filePath));
         let re = /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}/;
         return re.test(modName);
         // return modName.length == 4 || modName.length == 40;
-    }
+    } */
     if (typeof files[0] === 'string') {
-        return files.some((f: any) => path.extname(f).toLowerCase() == ".dat" || path.extname(f).toLowerCase() == ".egg")
+        return (files as string[]).some((f: any) => path.extname(f).toLowerCase() == ".dat" || path.extname(f).toLowerCase() == ".egg") &&
+            !(files as string[]).filter((f: any) => path.extname(f).toLowerCase() == ".dat").some((f: string) => f.indexOf('Beat Saber_Data') !== -1)
     }
     var instructions = files as IInstruction[];
-    return instructions.some(i => path.extname(i.source).toLowerCase() == '.dat' || path.extname(i.source).toLowerCase() == '.egg');
+    return instructions.some(i => path.extname(i.source).toLowerCase() == '.dat' || path.extname(i.source).toLowerCase() == '.egg') && 
+        !instructions.filter((f) => path.extname(f.source).toLowerCase() == ".dat").some(f => f.source.indexOf('Beat Saber_Data') !== -1)
 }
 
 export function isGameMod(files: string[]) {
