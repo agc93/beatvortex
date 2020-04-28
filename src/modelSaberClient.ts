@@ -61,7 +61,9 @@ export class ModelSaberClient {
     }
 
     private parseUrl(installLink: string) : {type: string, id: number, name: string} {
-        var re = /modelsaber:\/\/(\w+)\/(\d+)\/([\w\s\.%]+?)\.(avatar|saber|platform|bloq)/;
+        // var re = /modelsaber:\/\/(\w+)\/(\d+)\/([\w\s\.%]+?)\.(avatar|saber|platform|bloq)/;
+        var re = /modelsaber:\/\/(\w+)\/(\d+)\/(.+?)\.(avatar|saber|platform|bloq)/; 
+        // ⬆ this is a simplified version that accepts special characters. we may need to change back if it gets too aggressive.
         if (!re.test(installLink)) return null;
         var md = re.exec(installLink);
         return {
@@ -82,7 +84,7 @@ export class ModelSaberClient {
      * @beta
      */
     buildDownloadLink(details: IModelDetails) {
-        return details.download;
+        return encodeURI(details.download.toString());
     }
 
     /**

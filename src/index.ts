@@ -45,6 +45,15 @@ function main(context : IExtensionContext) {
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
             handleDeploymentEvent(context.api, profileId, deployment, setTitle);
         });
+        context.api.onAsync('will-purge', (profileId: string, deployment: {[modType: string]: IDeployedFile[]}) => {
+            log('debug', 'beatvortex got will-purge', { profileId, deploying: Object.keys(deployment)});
+            return Promise.resolve();
+          });
+        context.api.onAsync('did-purge', (profileId: string) => {
+            handleAsyncEvent(context.api, {profileId}, (ev) => Promise.resolve())
+            log('debug', 'beatvortex got did-purge', { profileId });
+            return Promise.resolve();
+        });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
                 var profileClient = new ProfileClient(context);
@@ -342,6 +351,14 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
     };
 }
 
+function handleAsyncEvent<T extends {profileId: string}>(api: IExtensionApi, profileEvent: T, callback: (eventArgs: T) => Promise<T>|Promise<void>, message?: string) {
+    var newProfile: IProfile = util.getSafe(api.store.getState(), ['persistent', 'profiles', profileEvent.profileId], undefined);
+    if ((newProfile !== undefined) && newProfile.gameId === GAME_ID) {
+        log('debug', `beatvortex: activating profile change. Invoking ${message ?? 'callback(s)'}`);
+        callback(profileEvent);
+    };
+}
+
 /**
  * Enriches a mod download with basic metadata
  *
@@ -504,7 +521,7 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
 }
 
 function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) {
-    log('debug', 'deployment event caught!', {profileId})
+    log('debug', 'deployment event caught!', {profileId, mods: deployment['bs-mod']?.length ?? '?', songs: deployment['bs-map']?.length ?? '?'});
     var profile = selectors.profileById(api.store.getState(), profileId) as IProfile;
     if (profile.gameId == GAME_ID) {
         var didIncludeBSIPA = deployment['bs-mod'].some(f => f.source.toLowerCase().indexOf("bsipa") !== -1);

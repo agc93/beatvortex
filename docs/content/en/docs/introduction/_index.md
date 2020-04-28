@@ -22,7 +22,7 @@ There's a few things that anyone used to other tools might miss though, as we ha
 
 - **Dependencies**: Vortex's support for dependencies is....sketchy. BeatVortex doesn't support dependencies right now so make sure you install any dependencies.
 - **Previews/metadata**: Vortex regards songs as just another type of mod, so you won't expect the level of details, stats or previews that something like BeatDrop gives you.
-- **Error Handling**: BeatVortex's error handling is pretty...barebones. You might see more errors and odd behaviours during installs.
+- **Error Handling**: BeatVortex's error handling is pretty barebones. You might see more errors and odd behaviours during installs.
 
 > If you're really missing specific features you can open an issue and we can discuss the viability, or find me on the BSMG Discord.
 

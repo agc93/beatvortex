@@ -30,7 +30,7 @@ export const tools : ITool[] = [
 
 export const gameMetadata = {
     name: 'Beat Saber',
-    mergeMods: false,
+    mergeMods: true,
     supportedTools: tools,
     queryModPath: () => '.',
     logo: 'gameart.png',

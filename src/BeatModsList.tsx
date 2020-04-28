@@ -44,13 +44,26 @@ export class BeatModsList extends React.Component {
         searchFilter: ''
     };
 
-    getGame() {
+    private highlightMod = (modId: string) => {
+        // const modId = evt.currentTarget.getAttribute('data-modid');
+        const api = (this.props as Props).api;
+        api.events.emit('show-main-page', 'Mods');
+        // give it time to transition to the mods page but also this is a workaround
+        // for the fact that the mods page might not be mounted yet
+        setTimeout(() => {
+          api.events.emit('mods-scroll-to', modId);
+          api.highlightControl(
+            `#${util.sanitizeCSSId(modId)} > .cell-name`, 4000);
+        }, 200);
+      }
+
+    /* getGame() {
         const api = (this.props as Props).api;
         const state = api.store.getState();
         const gameId = state.persistent.profiles[state.settings.profiles.activeProfileId].gameId;
         console.log(gameId);
         return gameId;
-    }
+    } */
 
     async getVersions() {
         var version = getGameVersion((this.props as Props).api)
@@ -88,7 +101,7 @@ export class BeatModsList extends React.Component {
     startInstall = (mod: IModDetails) => {
         var { api } = this.props as Props;
         var downloadLinks = BeatModsClient.getDownloads(mod);
-        log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});
+        log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});        
         api.events.emit('start-download', 
             downloadLinks, 
             {
@@ -169,13 +182,6 @@ export class BeatModsList extends React.Component {
                 </MainPage.Body>
             </MainPage>
         );
-    }
-
-    private beatModsSort = (lhs: IModDetails, rhs: IModDetails): number => {
-        if (lhs.required && !rhs.required) {
-            return 1;
-        }
-        return lhs.name.localeCompare(rhs.name);
     }
 
     private isInstalled = (mod: IModDetails): boolean => {
