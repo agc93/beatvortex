@@ -1,15 +1,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Introduction</title><link>/docs/introduction/</link><description>Recent content in Introduction on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/introduction/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Frequently Asked Questions</title><link>/docs/introduction/faq/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/introduction/faq/</guid><description>
 &lt;p>Below is a collection of frequent questions and the best answers I can give.&lt;/p>
-&lt;h4 id="why-do-i-need-vortex-for-this">Why do I need Vortex for this?&lt;/h4>
+&lt;h3 id="why-do-i-need-vortex-for-this">Why do I need Vortex for this?&lt;/h3>
 &lt;p>You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, including dependency resolution.&lt;/p>
 &lt;p>BeatVortex is just an alternate method of installing mods for those who are more familiar with Vortex already.&lt;/p>
-&lt;h4 id="why-not-just-use-mod-assistant">Why not just use Mod Assistant?&lt;/h4>
+&lt;h3 id="why-not-just-use-mod-assistant">Why not just use Mod Assistant?&lt;/h3>
 &lt;p>See above ⬆. Use what you prefer! Prefer the familiarity of Vortex? Use BeatVortex. Prefer the extra features of Mod Assistant? Use that. Got your own set of tools? Use those.&lt;/p>
 &lt;p>In fact, generally speaking, you should be able to use BeatVortex alongside those other tools without any major problems.&lt;/p>
-&lt;h4 id="im-a-modpack-author-how-do-i-make-mods-compatible-with-vortex">I’m a mod/pack author, how do I make mods compatible with Vortex?&lt;/h4>
-&lt;p>They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory, and that’s basically it.&lt;/p>
+&lt;h3 id="im-a-modpack-author-how-do-i-make-mods-compatible-with-vortex">I’m a mod/pack author, how do I make mods compatible with Vortex?&lt;/h3>
+&lt;p>They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory (for mods, not maps), and that’s basically it.&lt;/p>
 &lt;blockquote>
 &lt;p>A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those mod lists neat. The directory in the install folder will have a terrible name, though.&lt;/p>
 &lt;/blockquote>
-&lt;h4 id="why-cant-i-download-mods-from-the-nexus">Why can’t I download mods from the Nexus?&lt;/h4>
-&lt;p>Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.&lt;/p></description></item></channel></rss>
+&lt;h3 id="why-cant-i-download-mods-from-the-nexus">Why can’t I download mods from the Nexus?&lt;/h3>
+&lt;p>Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.&lt;/p>
+&lt;h3 id="why-arent-dependencies-supported">Why aren't dependencies supported?&lt;/h3>
+&lt;p>This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.&lt;/p>
+&lt;p>In short, Vortex doesn't really &lt;em>natively&lt;/em> support dependency resolution for mods. Vortex's dependency management pretty much &lt;strong>only&lt;/strong> works with Nexus Mods, meaning BeatVortex would have to do a &lt;em>lot&lt;/em> of dependency logic during install, which leads to the other problem.&lt;/p>
+&lt;p>The BeatMods API, for reasons likely lost to time, returns dependencies from the API in a super-weird way: top-level dependencies are fine, but &lt;em>their&lt;/em> dependencies are only returned as document IDs, meaning we can't easily go from a single API call to a full dependency tree.&lt;/p>
+&lt;h3 id="why-arent-updates-supported">Why aren't updates supported?&lt;/h3>
+&lt;p>This has the same two problems as dependencies: Vortex and BeatMods&lt;/p>
+&lt;p>Vortex does natively support updates, but at current the only update implementation available (that I know of) is using Nexus Mods, which we obviously don't have. That means having to reverse engineer how Nexus handles triggering mod updates which is a) an absolute shitton of work and b) difficult with BeatMods.&lt;/p>
+&lt;blockquote>
+&lt;p>The Nexus integration for Vortex is over 4000 lines of code. If anyone wants to volunteer to work out how the fuck that works, I'd be happy to accept PRs!&lt;/p>
+&lt;/blockquote></description></item></channel></rss>
