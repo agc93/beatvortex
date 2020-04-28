@@ -36,6 +36,8 @@ In short, Vortex doesn't really *natively* support dependency resolution for mod
 
 The BeatMods API, for reasons likely lost to time, returns dependencies from the API in a super-weird way: top-level dependencies are fine, but *their* dependencies are only returned as document IDs, meaning we can't easily go from a single API call to a full dependency tree.
 
+> Dependencies are *shown* in the BeatMods browser, but we don't automatically install them.
+
 ### Why aren't updates supported?
 
 This has the same two problems as dependencies: Vortex and BeatMods
