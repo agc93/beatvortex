@@ -33,6 +33,8 @@ jobs:
     - name: Build docs
       run: hugo --minify
       working-directory: './docs'
+      env:
+        HUGO_ENV: production
     - name: Upload docs packages
       uses: actions/upload-artifact@v1
       with:
