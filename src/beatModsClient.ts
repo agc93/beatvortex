@@ -254,7 +254,7 @@ export interface IModDetails {
     required: boolean;
     downloads: IModDownload[],
     _id: string,
-    dependencies: {_id: string, name: string, dependencies: string[]}[]
+    dependencies: {_id: string, name: string, version: string, dependencies: string[]}[]
 }
 
 /**

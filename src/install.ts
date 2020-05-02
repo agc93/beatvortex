@@ -81,6 +81,20 @@ export async function installBeatModsArchive(api: IExtensionApi, files: string[]
         };
     var instructions = installer(files, archiveRoot);
     instructions.push(...toInstructions(modAtrributes));
+    var depInstructions : IInstruction[] = details.dependencies.map(d => {
+        return {
+            type: 'rule',
+            rule: {
+                type: 'requires',
+                reference: {
+                    logicalFileName: d.name,
+                    version: d.version
+                }
+            }
+        }
+    });
+    log('debug', 'building dependency instructions', depInstructions);
+    instructions.push(...depInstructions);
     return {instructions};
     // api.store.dispatch(actions.setModAttributes(GAME_ID, modName, modAtrributes));
 }
@@ -99,10 +113,11 @@ export async function installBeatSaverArchive(api: IExtensionApi, files: string[
                 allowRating: false,
                 downloadGame: GAME_ID,
                 modId: mapDetails.key,
-                modName: mapName,
+                modName: mapDetails.name,
                 description: mapDetails.description,
                 author: mapDetails.metadata.levelAuthorName,
-                logicalFileName: mapName,
+                customFileName: mapName,
+                logicalFileName: mapDetails.key,
                 // source: "beatsaver",
                 uploadedTimestamp: mapDetails.uploaded,
                 pictureUrl: `https://beatsaver.com${mapDetails.coverURL}`,
@@ -132,7 +147,8 @@ export async function installModelFile(api: IExtensionApi, files: string[], arch
             modId: modelDetails.id,
             modNam: modelDetails.name,
             author: modelDetails.author,
-            logicalFileName: modelDetails.name,
+            customFileName: modelDetails.name,
+            logicalFileName: `model:${modelDetails.id}`,
             uploadedTimestamp: modelDetails.date,
             pictureUrl: modelDetails.thumbnail,
             source: 'modelsaber'
