@@ -1,4 +1,5 @@
 import { ITool } from 'vortex-api/lib/types/ITool';
+import { IInstruction } from 'vortex-api/lib/types/api';
 
 export const STEAMAPP_ID = 620980;
 
@@ -43,3 +44,12 @@ export const gameMetadata = {
     }
 }
 
+export function toInstructions(attributes: { [key: string]: any }) : IInstruction[] {
+    return Object.keys(attributes).map((key: string) => {
+        return {
+            type: "attribute",
+            key: key,
+            value: attributes[key]
+        } as IInstruction
+    });
+}

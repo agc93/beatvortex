@@ -1,7 +1,7 @@
 ---
 title: "Developer Guide"
 linkTitle: "Development"
-weight: 99
+weight: 90
 description: >
   An introduction to BeatVortex's design and how to contribute.
 ---

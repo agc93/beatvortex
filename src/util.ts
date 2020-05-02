@@ -75,7 +75,7 @@ export function isSongMod(files: string[]|IInstruction[]|string, allowNested: bo
         return (files as string[]).some((f: any) => path.extname(f).toLowerCase() == ".dat" || path.extname(f).toLowerCase() == ".egg") &&
             !(files as string[]).filter((f: any) => path.extname(f).toLowerCase() == ".dat").some((f: string) => f.indexOf('Beat Saber_Data') !== -1)
     }
-    var instructions = files as IInstruction[];
+    var instructions = (files as IInstruction[]).filter(f => f.type && f.type == 'copy');
     return instructions.some(i => path.extname(i.source).toLowerCase() == '.dat' || path.extname(i.source).toLowerCase() == '.egg') && 
         !instructions.filter((f) => path.extname(f.source).toLowerCase() == ".dat").some(f => f.source.indexOf('Beat Saber_Data') !== -1)
 }

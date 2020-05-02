@@ -7,10 +7,11 @@ import { InstructionType, IInstruction } from 'vortex-api/lib/extensions/mod_man
 import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame, isModelMod, isModelModInstructions, showPatchDialog } from './util';
 import { isIPAInstalled, isIPAReady, tryRunPatch } from "./ipa";
 import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
-import { BeatSaverClient, IMapDetails } from './beatSaverClient';
+import { BeatSaverClient } from './beatSaverClient';
 import { gameMetadata, STEAMAPP_ID } from './meta';
 import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient, getCustomFolder, ModelType } from './modelSaberClient';
+import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelFile } from "./install";
 
 import BeatModsList from "./BeatModsList";
 
@@ -172,7 +173,7 @@ function addProfileFeatures(context: IExtensionContext) {
 /**
  * Preps the Beat Saber installation for mod deployment.
  * @remarks
- * Other than crating the Plugins folder (not strictly necessary), this is a basic sanity check only.
+ * Other than creating the Plugins folder (not strictly necessary), this is a basic sanity check only.
  *
  * @param discovery - The details for the discovered game.
  */
@@ -212,124 +213,50 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
  * Path handling for maps is in the mod type, but is here for models due to performance concerns. This will likely be refactored in future.
  *
  * @param api - The extension API.
- * @param files - The list of mod files for installation
- * @param gameId - The game ID for installation (should only every be GAME_ID)
- * @param progressDelegate - Delegate for reporting progress (not currently used)
+ * @param files - The list of mod files for installation.
+ * @param destinationPath - The installation target path.
+ * @param gameId - The game ID for installation (should only every be GAME_ID).
+ * @param progressDelegate - Delegate for reporting progress (not currently used).
  *
  * @returns Install instructions for mapping mod files to output location.
  */
 async function installContent(api: IExtensionApi, files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate): Promise<IInstallResult> {
     log('debug', `running beatvortex installer. [${gameId}]`, {files, destinationPath});
     var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
-    if (BeatModsClient.isBeatModsArchive(destinationPath)) {
+    var firstPrim = files.find(f => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
+    var isValid = firstPrim !== undefined
+    if (isValid && BeatModsClient.isBeatModsArchive(destinationPath)) {
         log('info', `${modName} detected as BeatMods archive!`);
-        var client = new BeatModsClient();
-        var details = await client.getModByFileName(modName);
-        var modAtrributes = {
-            allowRating: false,
-            downloadGame: gameId,
-            fileId: details._id,
-            modId: details.name,
-            modName: details.name,
-            description: details.description,
-            author: details.author.username,
-            logicalFileName: details.name,
-            source: "beatmods",
-            version: details.version
-          };
-        api.store.dispatch(actions.setModAttributes(gameId, modName, modAtrributes));
+        var bmInstructions = await installBeatModsArchive(api, files, firstPrim, modName, archiveInstaller);
+        return Promise.resolve(bmInstructions);
     }
     if (isSongMod(files)) {
         log('info', `installing ${modName} as custom song level`);
         //install song
-        if (isSongHash(modName, true)) { //beatsaver.com zip download
-            log('debug', 'attempting to get map name from beatsaver.com');
-            try {
-                var mapDetails = await new BeatSaverClient().getMapDetails(modName);
-                var mapName = mapDetails?.name 
-                    ? `${mapDetails.name} [${mapDetails.key}]`
-                    : modName;
-                log('debug', `fetched map ${modName} as ${mapName}`);
-                var mapAtrributes = {
-                    allowRating: false,
-                    downloadGame: gameId,
-                    modId: mapDetails.key,
-                    modName: mapName,
-                    description: mapDetails.description,
-                    author: mapDetails.metadata.levelAuthorName,
-                    logicalFileName: mapName,
-                    // source: "beatsaver",
-                    uploadedTimestamp: mapDetails.uploaded,
-                    pictureUrl: `https://beatsaver.com${mapDetails.coverURL}`
-                  };
-                api.store.dispatch(actions.setModAttributes(gameId, modName, mapAtrributes));
-            } catch (error) {
-                // ignored
-            }
+        let bsInstructions : IInstallResult;
+        if (isSongHash(modName, true)) {
+            bsInstructions = await installBeatSaverArchive(api, files, firstPrim, modName, basicInstaller);
+        } else {
+            bsInstructions = {instructions: basicInstaller(files, firstPrim)};
         }
-        const instructions = files.map((file: any) => {
-            return { 
-                type: 'copy' as InstructionType,
-                source: file,
-                // destination: `Beat Saber_Data/CustomLevels/${targetName}/${file}` // this should be handled by the modtype now.
-                // destination: `${targetName}/${file}` // this is unnecessary with the new modInfo stuff.
-                destination: file
-            };
-        });
-        return Promise.resolve({ instructions : instructions });
+        return Promise.resolve(bsInstructions);
     }
     if (isModelMod(files)) {
         log('info', 'installing mod as custom model', {file: files[0]});
         //model saber "mod"
-        var file = files[0]
-        var modelClient = new ModelSaberClient();
-        var modelDetails = await modelClient.getModelByFileName(file);
-        if (modelDetails != null) {
-            log('debug', 'Got details on model from ModelSaber!', modelDetails);
-        }
-        log('info', "beatvortex doesn't currently include metadata for manually installed models!");
-        var instructions: IInstruction[] = [
-            {
-                type: 'copy',
-                source: file,
-                destination: `${getCustomFolder(path.extname(file).replace('.', '') as ModelType)}/${file}`
-            }
-        ];
-        return Promise.resolve({instructions});
+        var msInstructions = await installModelFile(api, files, firstPrim, modName, modelInstaller);
+        return Promise.resolve(msInstructions);
     } 
-    var firstPrim = files.find(f => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
     if (firstPrim !== undefined) {
-        let firstType = path.dirname(firstPrim);
-        let root = path.dirname(firstType);
-        log('info', `found good archive root at ${root}`);
-        //firstType is the first primitive we found (i.e. Plugins or whatever)
-        //root is that directory's parent, which might include more than one primitive
-        const filtered = files.filter(file => (((root == "." ? true : (file.indexOf(root) !== -1)) && (!file.endsWith(path.sep)))));
-        log('debug', 'filtered non-rooted files', { root: root, candidates: filtered });
-        const instructions = filtered.map(file => {
-            // log('debug', 'mapping file to instruction', { file: file, root: root });
-            const destination = file.substr(firstType.indexOf(path.basename(firstType)));
-            return {
-                type: 'copy' as InstructionType,
-                source: file,
-                // I don't think ⬇ conditional is needed, but frankly it works now and I'm afraid to touch it.
-                destination: `${root == "." ? file : destination}`
-            }
-        });
-        return Promise.resolve({ instructions });
+        //how did we end up here?!
+        log('warn', 'installing unrecognised mod with valid archive root', {root: firstPrim, mod: modName});
+        var archiveInstructions = archiveInstaller(files, firstPrim);
+        return Promise.resolve({instructions: archiveInstructions});
     } else {
         log('warn', "Couldn't find primitive root in file list. Falling back to basic installation!");
-        var instructions = files.map((file: string): IInstruction => {
-            return {
-                type: 'copy',
-                source: file,
-                destination: file,
-            };
-        })
-        return Promise.resolve({instructions});
+        return Promise.resolve({instructions: basicInstaller(files, modName)});
     }
 }
-
 
 /**
  * Wrapper method to run a callback on profile change.
@@ -351,6 +278,18 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
     };
 }
 
+/**
+ * Wrapper method to run a callback on a generic event (i.e. using `onAsync`).
+ *
+ * @remarks
+ * This method is just a wrapper to ensure that a) Beat Saber is the current game and b) the profile is available for the callback.
+ *
+ * @param api - The extension API.
+ * @param profileEvent - The event you're handling. Must have a `profileId` property.
+ * @param callback - The callback to invoke on profile change. The original event type is provided to this callback.
+ * @param message - An optional message to be put in the debug logs to describe the action being invoked.
+ *
+ */
 function handleAsyncEvent<T extends {profileId: string}>(api: IExtensionApi, profileEvent: T, callback: (eventArgs: T) => Promise<T>|Promise<void>, message?: string) {
     var newProfile: IProfile = util.getSafe(api.store.getState(), ['persistent', 'profiles', profileEvent.profileId], undefined);
     if ((newProfile !== undefined) && newProfile.gameId === GAME_ID) {
