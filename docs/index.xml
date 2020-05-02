@@ -127,6 +127,21 @@ You will need to manually install any dependencies, which are listed at the bott
 &lt;p>To remove BeatVortex entirely, you should uninstall and remove all your installed mods from the Mods list first. After deploying, you can then remove the Default profile (see above), and finally uninstall the extension itself by clicking over to the Extensions screen. BeatVortex will appear near the end of the list as &amp;ldquo;&lt;strong>Game: Beat Saber&lt;/strong>&amp;quot;. Click Remove to uninstall BeatVortex.&lt;/p>
 &lt;blockquote>
 &lt;p>Note that Beat Saber will still show up in your Games list since Vortex can redownload the extension from Nexus Mods.&lt;/p>
-&lt;/blockquote></description></item><item><title>Docs: Docs Contributions</title><link>/docs/developer/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/docs/</guid><description>
+&lt;/blockquote></description></item><item><title>Docs: Installer Logic</title><link>/docs/developer/installers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/installers/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>The information below &lt;strong>only&lt;/strong> applies to BeatVortex versions from 0.3 onwards. Installation logic was completely rebuilt in 0.3.0.&lt;/p>
+&lt;/div>
+&lt;p>BeatVortex's installation logic is &lt;em>slightly&lt;/em> over-engineered in order to meet a few design goals:&lt;/p>
+&lt;ol>
+&lt;li>Handle different mod types invisibly&lt;/li>
+&lt;li>Abstract away the actual download source of a mod&lt;/li>
+&lt;li>Handle both installation and metadata in a Vortex-friendly way.&lt;/li>
+&lt;/ol>
+&lt;h3 id="background">Background&lt;/h3>
+&lt;p>As it stands, BeatVortex only registers a single installer (&lt;code>bs-content&lt;/code>) to Vortex and handles all the rest of the installation logic inside that one installer. That means this installer handles all the available mod types: BeatMods-style plugin mods, song maps (from BeatSaver or not), models (from ModelSaber or not) and a generic fallback for anything else.&lt;/p>
+&lt;p>One of the biggest conceptual changes is differentiating the mod type and the mod source. The mod type will control how BeatVortex creates install instructions, and varies for plugins, maps, models or generic files. The mod source will control how BeatVortex provides metadata about the mod and varies for the supported sources: BeatMods, BeatSaver/BeastSaber, and ModelSaber.&lt;/p>
+&lt;p>The &lt;code>FileInstaller&lt;/code> interface is used by an installer implementation for a mod &lt;em>type&lt;/em> and controls how install instructions are created from a given file list. The &lt;code>ModInstaller&lt;/code> interface is a higher-level wrapper over the &lt;code>FileInstaller&lt;/code> that can be used for a mod &lt;em>source&lt;/em> to encapsulate both the expected file format (from a &lt;code>FileInstaller&lt;/code>) and handle any install-time metadata, by returning &lt;code>attribute&lt;/code> instructions with the install instructions.&lt;/p>
+&lt;h3 id="future-refactoring">Future Refactoring&lt;/h3>
+&lt;p>This new system will probably be refactored again in a future release. As it stands, BeatVortex is doing a lot of installation logic that Vortex could really be doing. Future releases will likely replace the existing &lt;code>ModInstaller&lt;/code>/&lt;code>FileInstaller&lt;/code> layer with a combination of new Vortex-registered installers and improved metadata handling. Raise a GitHub issue before doing any drastic work around mod installation.&lt;/p></description></item><item><title>Docs: Docs Contributions</title><link>/docs/developer/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/docs/</guid><description>
 &lt;p>Ironically, the documentation side of the project has slightly higher environment requirements than the project itself! We're using the Hugo static site generator with the Docsy template, so you will need to have a recent version of Hugo Extended installed, as well as &lt;code>npm&lt;/code> to restore the required tools.&lt;/p>
 &lt;p>Actual docs content is all stored in the &lt;code>content/&lt;/code> directory, organised under language. At this time only English (&lt;code>en&lt;/code>) is included, although translations are more than welcome!&lt;/p></description></item></channel></rss>
