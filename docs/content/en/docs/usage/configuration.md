@@ -23,3 +23,9 @@ If you want to completely reset BeatVortex so that you can start over from scrat
 To remove BeatVortex entirely, you should uninstall and remove all your installed mods from the Mods list first. After deploying, you can then remove the Default profile (see above), and finally uninstall the extension itself by clicking over to the Extensions screen. BeatVortex will appear near the end of the list as "**Game: Beat Saber**". Click Remove to uninstall BeatVortex.
 
 > Note that Beat Saber will still show up in your Games list since Vortex can redownload the extension from Nexus Mods.
+
+### Purging to default
+
+If you want to take your game back to a default, unmodded state, you can use Vortex's *Purge* feature. Click the Purge Mods button from the Mods list and Vortex will undeploy all your enabled mods, leaving your game directory essentially unmodded.
+
+> At the time of writing, purging mods **does not** undo BSIPA patching. Use the Tool from the Dashboard to unregister BSIPA.

@@ -88,7 +88,7 @@ export async function installBeatModsArchive(api: IExtensionApi, files: string[]
                 type: 'requires',
                 reference: {
                     logicalFileName: d.name,
-                    version: d.version
+                    versionMatch: `^${d.version}`
                 }
             }
         }

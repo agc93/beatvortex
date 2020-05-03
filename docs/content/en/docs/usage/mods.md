@@ -46,7 +46,7 @@ If you're looking to install any of the mods listed on BeatMods, you can easily 
 Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.
 
 > BeatVortex doesn't install dependencies for mods as Vortex doesn't natively support this and dependency resolution for BeatMods is...complicated.
-> You will need to manually install any dependencies, which are listed at the bottom of the mod description.
+> You will need to install any dependencies, which are listed at the bottom of the mod description, and in the Mods list.
 
 ## Download in Vortex
 

@@ -20,7 +20,7 @@ BeatVortex is still beta-quality software! While I can test locally, I won't be 
 
 There's a few things that anyone used to other tools might miss though, as we haven't implemented them yet:
 
-- **Dependencies**: Vortex's support for dependencies is....sketchy. BeatVortex doesn't support dependencies right now so make sure you install any dependencies.
+- **Dependencies**: Vortex's support for dependencies is....sketchy. BeatVortex will warn you about missing dependencies, but can't automatically install them for you (yet).
 - **Previews/metadata**: Vortex regards songs as just another type of mod, so you won't expect the level of details, stats or previews that something like BeatDrop gives you.
 - **Error Handling**: BeatVortex's error handling is pretty barebones. You might see more errors and odd behaviours during installs.
 
