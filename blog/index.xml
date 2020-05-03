@@ -1,4 +1,57 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha Release</title><link>/blog/2020/04/08/alpha-release/</link><pubDate>Wed, 08 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/08/alpha-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 2.3 Release</title><link>/blog/2020/04/20/alpha-2.3-release/</link><pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/20/alpha-2.3-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release adds some new features and fixes to the previous alpha release including:&lt;/p>
+&lt;ul>
+&lt;li>Fixes bug when installing &amp;ldquo;combined&amp;rdquo; mods (see below)&lt;/li>
+&lt;li>Adds search filtering to the BeatMods browser.&lt;/li>
+&lt;/ul>
+&lt;h3 id="combined-mods">&amp;ldquo;Combined&amp;rdquo; mods&lt;/h3>
+&lt;p>There was a bug in versions prior to 0.2.2 that would cause some mods (SongCore, for example) to fail during installation. For those interested, this bug was caused by BeatVortex detecting the song files included in a mod and assuming that the archive was a map to be deployed to &lt;code>CustomLevels&lt;/code>. This meant that any mod that included &lt;em>both&lt;/em> plugin files and map files would fail since the installer would try and deploy them to the wrong location.&lt;/p>
+&lt;p>Mods that contain map files packaged for the installation root (i.e. &lt;code>Beat Saber_Data/CustomLevels/&lt;/code>) will now be picked up as mods, rather than song maps, and be deployed correctly. Make sure you don't change the mod type for these mods as this will almost certainly break deployment.&lt;/p>
+&lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2.2 Release</title><link>/blog/2020/04/19/alpha-2.2-release/</link><pubDate>Sun, 19 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/19/alpha-2.2-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release is a bugfix and feature release hotfix for the &lt;a href="../blog/2020/04/17/alpha-2.1-release/">previous alpha release&lt;/a>&lt;/p>
+&lt;p>This hotfix corrects the following bugs:&lt;/p>
+&lt;ul>
+&lt;li>The extension would attempt to register assets before loading had finished
+&lt;ul>
+&lt;li>This &lt;em>should&lt;/em> silently fail in Vortex 1.1.x, but 1.2 will throw an error.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>Huge thanks to @Pickysaurus for spotting and reporting this bug!&lt;/p></description></item><item><title>Blog: Alpha 2.1 Release</title><link>/blog/2020/04/17/alpha-2.1-release/</link><pubDate>Fri, 17 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/17/alpha-2.1-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release adds some new features and fixes to the previous alpha release including:&lt;/p>
+&lt;ul>
+&lt;li>Automatic BSIPA patching: Vortex will now prompt you to run BSIPA when first deploying mods.&lt;/li>
+&lt;li>Improves stability and view layout for the BeatMods browser page&lt;/li>
+&lt;li>Adds compatibility filtering to the BeatMods browser for different Beat Saber versions&lt;/li>
+&lt;/ul>
+&lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2 Release</title><link>/blog/2020/04/16/alpha-2-release/</link><pubDate>Thu, 16 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/16/alpha-2-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release marks the next full alpha of the BeatVortex extension. If you can install and test this extension, all feedback (on Nexus Mods or GitHub) is very appreciated!&lt;/p>
+&lt;p>This release adds some big new features and fixes to the previous alpha release including:&lt;/p>
+&lt;ul>
+&lt;li>New BeatMods browser. Open the BeatMods page in the sidebar to quickly browse and install the available mods from BeatMods.&lt;/li>
+&lt;li>Improved profile settings and configuration to reduce duplicate notifications and errors.&lt;/li>
+&lt;li>Significantly better handling of mod metadata&lt;/li>
+&lt;li>Adds more support for ModelSaber mods (some caveats apply, check the docs)&lt;/li>
+&lt;/ul>
+&lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha Release</title><link>/blog/2020/04/08/alpha-release/</link><pubDate>Wed, 08 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/08/alpha-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>

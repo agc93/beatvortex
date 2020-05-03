@@ -72,7 +72,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.&lt;/p>
 &lt;blockquote>
 &lt;p>BeatVortex doesn't install dependencies for mods as Vortex doesn't natively support this and dependency resolution for BeatMods is&amp;hellip;complicated.
-You will need to manually install any dependencies, which are listed at the bottom of the mod description.&lt;/p>
+You will need to install any dependencies, which are listed at the bottom of the mod description, and in the Mods list.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="download-in-vortex">Download in Vortex&lt;/h2>
 &lt;p>Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You might not have any mods here, but if you click on the &lt;em>But don't worry, I know a place&amp;hellip;&lt;/em> dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.&lt;/p>
@@ -100,4 +100,9 @@ You will need to manually install any dependencies, which are listed at the bott
 &lt;p>To remove BeatVortex entirely, you should uninstall and remove all your installed mods from the Mods list first. After deploying, you can then remove the Default profile (see above), and finally uninstall the extension itself by clicking over to the Extensions screen. BeatVortex will appear near the end of the list as &amp;ldquo;&lt;strong>Game: Beat Saber&lt;/strong>&amp;quot;. Click Remove to uninstall BeatVortex.&lt;/p>
 &lt;blockquote>
 &lt;p>Note that Beat Saber will still show up in your Games list since Vortex can redownload the extension from Nexus Mods.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="purging-to-default">Purging to default&lt;/h3>
+&lt;p>If you want to take your game back to a default, unmodded state, you can use Vortex's &lt;em>Purge&lt;/em> feature. Click the Purge Mods button from the Mods list and Vortex will undeploy all your enabled mods, leaving your game directory essentially unmodded.&lt;/p>
+&lt;blockquote>
+&lt;p>At the time of writing, purging mods &lt;strong>does not&lt;/strong> undo BSIPA patching. Use the Tool from the Dashboard to unregister BSIPA.&lt;/p>
 &lt;/blockquote></description></item></channel></rss>

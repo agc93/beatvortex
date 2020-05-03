@@ -15,10 +15,9 @@
 &lt;p>Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.&lt;/p>
 &lt;h3 id="why-arent-dependencies-supported">Why aren't dependencies supported?&lt;/h3>
 &lt;p>This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.&lt;/p>
-&lt;p>In short, Vortex doesn't really &lt;em>natively&lt;/em> support dependency resolution for mods. Vortex's dependency management pretty much &lt;strong>only&lt;/strong> works with Nexus Mods, meaning BeatVortex would have to do a &lt;em>lot&lt;/em> of dependency logic during install, which leads to the other problem.&lt;/p>
-&lt;p>The BeatMods API, for reasons likely lost to time, returns dependencies from the API in a super-weird way: top-level dependencies are fine, but &lt;em>their&lt;/em> dependencies are only returned as document IDs, meaning we can't easily go from a single API call to a full dependency tree.&lt;/p>
+&lt;p>If you want the full technical breakdown, check out the full &lt;a href="../../docs/developer/dependencies/">developer docs on dependencies&lt;/a>.&lt;/p>
 &lt;blockquote>
-&lt;p>Dependencies are &lt;em>shown&lt;/em> in the BeatMods browser, but we don't automatically install them.&lt;/p>
+&lt;p>Dependencies are &lt;em>shown&lt;/em> in the Mods list and BeatMods browser, but we don't automatically install them.&lt;/p>
 &lt;/blockquote>
 &lt;h3 id="why-arent-updates-supported">Why aren't updates supported?&lt;/h3>
 &lt;p>This has the same two problems as dependencies: Vortex and BeatMods&lt;/p>
