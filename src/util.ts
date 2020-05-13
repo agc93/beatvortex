@@ -1,15 +1,15 @@
 import path = require("path");
-import { remote } from "electron";
-import { util as vtx, selectors, fs, log, util } from "vortex-api";
+import { util as vtx, selectors, fs, log, util, actions } from "vortex-api";
 import nfs = require('fs');
-import { IExtensionContext, NotificationDismiss, IState, IInstruction, IExtensionApi, IExtension, IGame, ThunkStore, IExtensionState } from "vortex-api/lib/types/api";
+import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
-import { tryRunPatch } from "./ipa";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
 export const models = ['avatar', 'platform', 'saber']
+
+export var useTrace: boolean = false;
 
 /**
  * Determines if the given string is a BeatSaver song hash, or optionally a key.
@@ -106,46 +106,6 @@ export function isActiveGame(context : IExtensionContext | IExtensionApi | Thunk
                 : (context as ThunkStore<any>)) === GAME_ID;
 }
 
-/**
- * Shows a modal dialog confirming a user's consent to the terms of use.
- *
- * @remarks
- * - These terms of use are reproduced from the BSMG Wiki under CC BY-NC-SA.
- *
- * @param context - The extension context. Only required for translation of dialog text.
- * @param callback - A callback to execute when the dialog is dismissed.
- */
-export function showTermsDialog(context?: IExtensionContext, callback?: ()=> void) {
-    var msg = 'By proceeding you are agreeing to the following terms:';
-    var detail = "You may experience problems that don't exist in the vanilla game. 99.9% of bugs, crashes, and lag are due to mods. \nMods are subject to being broken by updates and that's normal - be patient and respectful when this happens, as modders are volunteers with real lives. \nBeat Games aren't purposefully trying to break mods. They wish to work on the codebase and sometimes this breaks mods, but they are not out to kill mods. \nDo not attack the devs for issues related to mods, and vice versa - modders and devs are two separate groups.";
-    remote.dialog.showMessageBox(vtx.getVisibleWindow(), {
-        type: 'info',
-        message: context ? context.api.translate(msg) : msg,
-        detail: context ? context.api.translate(detail) : detail,
-        buttons: ["I accept"],
-        defaultId: 0
-    }, callback ? callback : (resp: number, checked: boolean) => { });
-}
-
-export function showTermsNotification(context: IExtensionContext, autoDismiss: boolean) : void;
-export function showTermsNotification(context: IExtensionContext, callback?: (dismiss: NotificationDismiss)=> void) : void;
-export function showTermsNotification(context: IExtensionContext, dismissCallback : ((dismiss: NotificationDismiss)=> void) | boolean) : void {
-    context.api.sendNotification({
-        type: 'info',
-        message: 'By using BeatVortex, you are accepting some basic terms',
-        title: 'Terms of Use',
-        actions: [
-            {
-                title: 'See More',
-                action: (dismiss: NotificationDismiss) => {
-                    showTermsDialog(context, typeof dismissCallback === 'boolean' 
-                        ? (dismissCallback ? () => dismiss() : null) 
-                        : dismissCallback ? () => {dismissCallback(dismiss)} : null)
-                }
-            }
-        ]
-    });
-}
 
 /**
  * [Obsolete] Retrieves the specified feature key's value from the current profile settings.
@@ -191,29 +151,22 @@ export function getGameVersion(api: IExtensionApi) : string {
     }    
 }
 
-
-
-/**
- * Shows a modal dialog explaining the IPA auto-patching process.
- *
- * @param api - The extension context. Only required for translation of dialog text.
- * @param callback - A callback to execute when the dialog is dismissed.
- */
-export function showPatchDialog(api: IExtensionApi, callback?: ()=> void) {
-    var msg = 'BeatVortex can attempt to auto-patch your Beat Saber install';
-    var detail = "It looks like you've deployed BSIPA, but it hasn't been run for this install.\n\nBeatVortex can attempt to automatically run IPA's first-time setup and patch your installation for you, but this isn't guaranteed to work. You should only need to do this once!";
-    remote.dialog.showMessageBox(vtx.getVisibleWindow(), {
-        type: 'info',
-        message: api ? api.translate(msg) : msg,
-        detail: api ? api.translate(detail) : detail,
-        buttons: ["Run Patch"],
-        defaultId: 0
-    }, (resp: number, checked: boolean) => {
-        //run patch here
-        tryRunPatch(api);
-        if (callback) {
-            callback();
-        }
-     });
+export function getProfile(api: IExtensionApi, profileId: string) : {isBeatSaber: boolean, profile: IProfile} {
+    var newProfile: IProfile = util.getSafe(api.store.getState(), ['persistent', 'profiles', profileId], undefined);
+    return {
+        profile: newProfile,
+        isBeatSaber: ((newProfile !== undefined) && newProfile.gameId === GAME_ID)
+    };
 }
 
+export function traceLog(message: string, metadata?: object) : void {
+    if (useTrace) {
+        log('debug', message, metadata);
+    }
+}
+
+export function enableTrace() {
+    if (nfs.existsSync('/BeatVortexDebug.txt')) {
+        useTrace = true;
+    }
+}

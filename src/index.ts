@@ -1,22 +1,27 @@
 import path = require('path');
 
-import { fs, log, util, selectors, actions, MainPage } from "vortex-api";
+import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile } from 'vortex-api/lib/types/api';
-import { InstructionType, IInstruction } from 'vortex-api/lib/extensions/mod_management/types/IInstallResult';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getProfileSetting, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog } from './util';
 
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, showTermsNotification, getProfileSetting, getGamePath, findGame, isModelMod, isModelModInstructions, showPatchDialog } from './util';
-import { isIPAInstalled, isIPAReady, tryRunPatch } from "./ipa";
+import { showPatchDialog, showTermsNotification } from "./notify";
+import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
+import { gameMetadata, STEAMAPP_ID } from './meta';
+import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelFile } from "./install";
+
 import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
 import { BeatSaverClient } from './beatSaverClient';
-import { gameMetadata, STEAMAPP_ID } from './meta';
 import { BeatModsClient } from './beatModsClient';
-import { ModelSaberClient, getCustomFolder, ModelType } from './modelSaberClient';
-import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelFile } from "./install";
+import { ModelSaberClient } from './modelSaberClient';
 
 import BeatModsList from "./BeatModsList";
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
+
+export interface DeploymentEventHandler {
+    (api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }) : Promise<void>|Promise<boolean>;
+}
 
 //This is the main function Vortex will run when detecting the game extension. 
 function main(context : IExtensionContext) {
@@ -27,6 +32,7 @@ function main(context : IExtensionContext) {
         return getGamePath(context.api, game, false);
     };
     context.once(() => {
+        enableTrace();
         if (isActiveGame(context)) {
         }
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
@@ -37,21 +43,21 @@ function main(context : IExtensionContext) {
             context.api.registerProtocol('modelsaber', true, (url: string, install: boolean) => handleModelLinkLaunch(context.api, url, install));
         }
         context.api.events.on('profile-did-change', (profileId: string) => {
-            var newProfile: IProfile = util.getSafe(context.api.store.getState(), ['persistent', 'profiles', profileId], undefined);
-            if ((newProfile !== undefined) && newProfile.gameId === GAME_ID) {
+            handleProfileChange(context.api, profileId, (profile) => {
                 log('debug', 'beatvortex got the profile change event! checking profile.');
-                log('debug', `configured profile features: ${JSON.stringify(newProfile.features)}`);
-            };
+                traceLog(`configured profile features: ${JSON.stringify(profile.features)}`);
+            });
         });
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
-            handleDeploymentEvent(context.api, profileId, deployment, setTitle);
+            handleDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
+            // runDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
         });
-        context.api.onAsync('will-purge', (profileId: string, deployment: {[modType: string]: IDeployedFile[]}) => {
-            log('debug', 'beatvortex got will-purge', { profileId, deploying: Object.keys(deployment)});
-            return Promise.resolve();
+        context.api.onAsync('will-purge', async (profileId: string, deployment: {[modType: string]: IDeployedFile[]}) => {
+            traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment)});
+            await handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAPurge)
+            Promise.resolve();
           });
         context.api.onAsync('did-purge', (profileId: string) => {
-            handleAsyncEvent(context.api, {profileId}, (ev) => Promise.resolve())
             log('debug', 'beatvortex got did-purge', { profileId });
             return Promise.resolve();
         });
@@ -105,7 +111,6 @@ function main(context : IExtensionContext) {
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module
         Switching to the static `ProfileClient` version will fail to add features. I have no idea why.
-
     */
     addProfileFeatures(context);
 
@@ -278,24 +283,12 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
     };
 }
 
-/**
- * Wrapper method to run a callback on a generic event (i.e. using `onAsync`).
- *
- * @remarks
- * This method is just a wrapper to ensure that a) Beat Saber is the current game and b) the profile is available for the callback.
- *
- * @param api - The extension API.
- * @param profileEvent - The event you're handling. Must have a `profileId` property.
- * @param callback - The callback to invoke on profile change. The original event type is provided to this callback.
- * @param message - An optional message to be put in the debug logs to describe the action being invoked.
- *
- */
-function handleAsyncEvent<T extends {profileId: string}>(api: IExtensionApi, profileEvent: T, callback: (eventArgs: T) => Promise<T>|Promise<void>, message?: string) {
-    var newProfile: IProfile = util.getSafe(api.store.getState(), ['persistent', 'profiles', profileEvent.profileId], undefined);
-    if ((newProfile !== undefined) && newProfile.gameId === GAME_ID) {
-        log('debug', `beatvortex: activating profile change. Invoking ${message ?? 'callback(s)'}`);
-        callback(profileEvent);
-    };
+async function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, handler: DeploymentEventHandler) : Promise<void> {
+    log('debug', 'deployment event caught!', {profileId, mods: deployment['bs-mod']?.length ?? '?', songs: deployment['bs-map']?.length ?? '?'});
+    var ev = getProfile(api, profileId);
+    if (ev.isBeatSaber) {
+        await handler(api, ev.profile, deployment);
+    }
 }
 
 /**
@@ -459,36 +452,63 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
     }
 }
 
-function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) {
-    log('debug', 'deployment event caught!', {profileId, mods: deployment['bs-mod']?.length ?? '?', songs: deployment['bs-map']?.length ?? '?'});
-    var profile = selectors.profileById(api.store.getState(), profileId) as IProfile;
-    if (profile.gameId == GAME_ID) {
-        var didIncludeBSIPA = deployment['bs-mod'].some(f => f.source.toLowerCase().indexOf("bsipa") !== -1);
-        var alreadyPatched = isIPAReady(api);
-        log('debug', 'BSIPA check completed', {didIncludeBSIPA, alreadyPatched});
-        if (didIncludeBSIPA && !alreadyPatched) {
-            api.sendNotification({
+//#endregion
+
+//#region Event Handlers
+
+export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }) : Promise<void> {
+    var didIncludeBSIPA = deployment['bs-mod'].some(f => f.source.toLowerCase().indexOf("bsipa") !== -1);
+    var alreadyPatched = isIPAReady(api);
+    log('debug', 'BSIPA check completed', {didIncludeBSIPA, alreadyPatched});
+    if (didIncludeBSIPA && !alreadyPatched) {
+        api.sendNotification({
+            type: 'warning',
+            message: 'BSIPA has been deployed, but not necessarily enabled. Run Patch to attempt auto-patching.',
+            title: 'BSIPA Deployed',
+            actions: [
+                {
+                    title: 'More info',
+                    action: dismiss => {
+                        showPatchDialog(api, true, tryRunPatch, dismiss);
+                    }
+                },
+                {
+                    title: 'Patch',
+                    action: dismiss => {
+                        tryRunPatch(api, dismiss)
+                    }
+                }
+            ]
+        });
+    }
+}
+
+export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile) : Promise<boolean> {
+    var alreadyPatched = isIPAReady(api);
+        log('debug', 'BSIPA purge check completed', {alreadyPatched});
+        if (alreadyPatched) {
+            var result = await showPatchDialog(api, false, tryUndoPatch);
+            return result;
+            /* api.sendNotification({
                 type: 'warning',
-                message: 'BSIPA has been deployed, but not necessarily enabled. Run Patch to attempt auto-patching.',
-                title: 'BSIPA Deployed',
+                message: 'Before purging, we can attempt to revert BSIPA patching.',
+                title: 'Purging BSIPA',
                 actions: [
                     {
                         title: 'More info',
                         action: dismiss => {
-                            showPatchDialog(api, dismiss);
+                            showPatchDialog(api, false, tryUndoPatch, dismiss);
                         }
                     },
                     {
                         title: 'Patch',
                         action: dismiss => {
-                            tryRunPatch(api, dismiss)
+                            tryUndoPatch(api, dismiss)
                         }
                     }
                 ]
-            });
+            }); */
         }
-    }
-
 }
 
 //#endregion

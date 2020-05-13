@@ -58,9 +58,9 @@ export class BeatSaverClient {
      */
     buildDownloadLink(details: IMapDetails, useDirect?: boolean): string {
         if (useDirect) {
-            return `https://beatsaver.com${details.directDownload}`
+            return `https://beatsaver.com${details.directDownload}`;
         }
-        return `https://beatsaver.com${details.downloadURL}`
+        return `https://beatsaver.com${details.downloadURL}`;
     }
 
     /**
