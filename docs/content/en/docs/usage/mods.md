@@ -31,7 +31,7 @@ One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber 
 
 > Enabling one-click installs in Vortex will most likely prevent Mod Assistant from handling one-click installs!
 
-From the Profiles menu on the left, click the *Edit* button on your current profile (generally called **Beat Saber - Default**), and check the box to "Enable Vortex to handle Mod Assistant One-Click links".
+From the Profiles menu on the left, click the *Edit* button on your current profile (generally called **Beat Saber - Default**), and check the box to "Enable Vortex to handle Mod Assistant One-Click links". If you don't have a Profiles menu, enable Profile Management from the settings screen under "Interface".
 
 You then need to restart Vortex (sorry!) and you're good to go. Open up BeatSaver/BeastSaber/ModelSaber and click any of the OneClick install links: Vortex should pick up the link in the background, fetch the song details and download the map (or mod) directly into your mod list. Install and Enable as per usual to deploy into your game.
 
@@ -67,3 +67,5 @@ Please note that "raw" mods that aren't packaged in an archive (for example, the
 ## Updating Mods
 
 At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA *should* automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.
+
+> If BSIPA installs an update for a mod, the version you see in-game and the version you see in Vortex might not be the same anymore. Reinstall the updated mod from Vortex if you want the numbers to match.

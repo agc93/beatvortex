@@ -239,7 +239,7 @@ async function installContent(api: IExtensionApi, files: string[], destinationPa
         log('info', `installing ${modName} as custom song level`);
         //install song
         let bsInstructions : IInstallResult;
-        if (isSongHash(modName, true)) {
+        if (BeatSaverClient.isArchiveName(modName)) {
             bsInstructions = await installBeatSaverArchive(api, files, firstPrim, modName, basicInstaller);
         } else {
             bsInstructions = {instructions: basicInstaller(files, firstPrim)};
@@ -252,7 +252,7 @@ async function installContent(api: IExtensionApi, files: string[], destinationPa
         var msInstructions = await installModelFile(api, files, firstPrim, modName, modelInstaller);
         return Promise.resolve(msInstructions);
     } 
-    if (firstPrim !== undefined) {
+    if (isValid) {
         //how did we end up here?!
         log('warn', 'installing unrecognised mod with valid archive root', {root: firstPrim, mod: modName});
         var archiveInstructions = archiveInstaller(files, firstPrim);

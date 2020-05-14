@@ -26,6 +26,6 @@ To remove BeatVortex entirely, you should uninstall and remove all your installe
 
 ### Purging to default
 
-If you want to take your game back to a default, unmodded state, you can use Vortex's *Purge* feature. Click the Purge Mods button from the Mods list and Vortex will undeploy all your enabled mods, leaving your game directory essentially unmodded.
+If you want to take your game back to a default, unmodded state, you can use Vortex's *Purge* feature. Click the Purge Mods button from the Mods list and Vortex will undeploy all your enabled mods, leaving your game directory essentially unmodded. 
 
-> At the time of writing, purging mods **does not** undo BSIPA patching. Use the Tool from the Dashboard to unregister BSIPA.
+> You should be prompted to revert BSIPA patching when you purge, and prompted to rerun patching when you next deploy mods.

@@ -1,7 +1,7 @@
 ---
 title: "Installer Logic"
 linkTitle: "Installers"
-weight: 91
+weight: 95
 description: >
   A deep dive into how BeatVortex handles the actual mod installation.
 ---

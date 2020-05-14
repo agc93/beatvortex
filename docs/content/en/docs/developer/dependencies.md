@@ -1,7 +1,7 @@
 ---
 title: "Dependency Management"
 linkTitle: "Dependencies"
-weight: 92
+weight: 96
 description: >
   A deep dive into how BeatVortex handles mod dependencies.
 ---

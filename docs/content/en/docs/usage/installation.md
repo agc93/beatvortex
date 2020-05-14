@@ -50,20 +50,22 @@ If you don’t want to enable Advanced Mode for Vortex or want to install the ex
 
 First, download the archive from [Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files) or [GitHub](https://https://github.com/agc93/beatvortex/actions).
 
-Next, unpack the archive to somewhere convenient. You should have a directory named `game-beatsaber` with three files inside:
+Next, unpack the archive to somewhere convenient. You should have a directory named `game-beatsaber` with four files inside:
 
 - info.json
 - index.js
 - gameart.png
+- beatModsList.scss
 
 Now, copy the whole directory to your Vortex folder. You can easily open your Vortex folder by opening a new File Explorer window and entering the following in to the location bar: `%APPDATA%/Vortex` and then opening the `plugins` directory (create it if it doesn’t exist).
 
-Once you’re done, you should have three files at the following locations:
+Once you’re done, you should have four files at the following locations:
 
 ```text
 C:\Users\<your-user-name-here>\AppData\Roaming\Vortex\plugins\game-beatsaber\info.json
 C:\Users\<your-user-name-here>\AppData\Roaming\Vortex\plugins\game-beatsaber\index.js
 C:\Users\<your-user-name-here>\AppData\Roaming\Vortex\plugins\game-beatsaber\gameart.png
+C:\Users\<your-user-name-here>\AppData\Roaming\Vortex\plugins\game-beatsaber\beatModsList.scss
 ```
 
 With those files in place, you're clear to start Vortex and you should see the Beat Saber icon in the Games screen light up.

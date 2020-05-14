@@ -7,7 +7,6 @@ import { getGameVersion } from './util';
 import { util } from "vortex-api";
 import { handleDownloadInstall, setDownloadModInfo } from '.';
 import { rsort } from "semver";
-// import { opn } from 'vortex-api/lib/util/api';
 
 class Props {
     api: IExtensionApi;
@@ -57,14 +56,6 @@ export class BeatModsList extends React.Component {
         }, 200);
       }
 
-    /* getGame() {
-        const api = (this.props as Props).api;
-        const state = api.store.getState();
-        const gameId = state.persistent.profiles[state.settings.profiles.activeProfileId].gameId;
-        console.log(gameId);
-        return gameId;
-    } */
-
     async getVersions() {
         var version = getGameVersion((this.props as Props).api)
         var client = new BeatModsClient();
@@ -78,10 +69,6 @@ export class BeatModsList extends React.Component {
         version = version ?? this.state.gameVersion;
         // var availableVersions = [version];
         var mods = await client.getAllMods(version);
-        /* if (!mods || mods.length == 0) {
-            var mods = await client.getAllMods();
-            version = null;
-        } */
         this.setState({ mods: mods, selected: '', gameVersion: version});
         return mods;
     }

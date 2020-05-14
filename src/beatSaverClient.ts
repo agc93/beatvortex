@@ -9,6 +9,11 @@ import { log } from 'vortex-api';
  */
 export class BeatSaverClient {
 
+    static isArchiveName(str: string, requireExtension?: boolean): boolean {
+        let re = /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}\s\(/;
+        return re.test(str) && requireExtension ? str.endsWith('.zip') : true;
+    }
+
     /**
      * Retrieves the friendly name of a map, given its ID
      * @remarks
@@ -27,7 +32,6 @@ export class BeatSaverClient {
      * Retrieves the given map's metadata from the BeatSaver API
      *
      * @remarks
-     * - This method uses only the BeatMods ID, not the hash!
      *
      * @param modId - The BeatSaver key or hash for the map.
      * @returns A subset of the available metadata from BeatSaver. Returns null on error/not found
