@@ -10,18 +10,6 @@ export interface PatchFunction {
     (api: IExtensionApi, callback: () => void) : void;
 }
 
-const ipaTool : IToolStored = {
-    id: 'ipa-install',
-    name: 'Run IPA Installer',
-    shortName: 'IPA Install',
-    executable: 'IPA.exe',
-    shell: true,
-    exclusive: true,
-    parameters: ['-n'],
-    logo: '',
-    environment: {}
-}
-
 function getIPAPath(api: IExtensionApi) {
     var gamePath = getGamePath(api, false);
     return path.join(gamePath, "IPA.exe");

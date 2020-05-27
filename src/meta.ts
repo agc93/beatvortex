@@ -26,6 +26,16 @@ export const tools : ITool[] = [
         shell: true,
         exclusive: true,
         parameters: ['-n']
+    },
+    {
+        id: 'syncsaber-service',
+        name: 'SyncSaber Service',
+        shortName: 'SyncSaber',
+        executable: () => 'SyncSaberConsole.exe',
+        requiredFiles: ['SyncSaberConsole.exe'],
+        relative: false,
+        shell: true,
+        exclusive: false
     }
 ]
 
@@ -42,14 +52,4 @@ export const gameMetadata = {
     details: {
         steamAppId: STEAMAPP_ID
     }
-}
-
-export function toInstructions(attributes: { [key: string]: any }) : IInstruction[] {
-    return Object.keys(attributes).map((key: string) => {
-        return {
-            type: "attribute",
-            key: key,
-            value: attributes[key]
-        } as IInstruction
-    });
 }

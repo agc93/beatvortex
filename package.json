@@ -45,6 +45,7 @@
     "typedoc": "^0.17.4",
     "typescript": "^3.5.2",
     "vortex-api": "github:Nexus-Mods/vortex-api",
+    "vortex-ext-common": "0.0.4",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4"
   }

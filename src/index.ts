@@ -1,13 +1,13 @@
 import path = require('path');
 
 import { fs, log, util, selectors, actions } from "vortex-api";
-import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile } from 'vortex-api/lib/types/api';
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getProfileSetting, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog } from './util';
+import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction } from 'vortex-api/lib/types/api';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName } from './util';
 
 import { showPatchDialog, showTermsNotification } from "./notify";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID } from './meta';
-import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelFile } from "./install";
+import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent } from "./install";
 
 import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
 import { BeatSaverClient } from './beatSaverClient';
@@ -75,9 +75,9 @@ function main(context : IExtensionContext) {
             "terms of use notification");
         });
     });
-    context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false });
-    context.registerModType('bs-mod', 90, gameId => gameId === GAME_ID, getModPath, () => Promise.resolve(true), { mergeMods: true});
-    context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true});
+    context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
+    context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });
+    context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true, name: 'Custom Model'});
     context.registerGame({
         ...gameMetadata,
         id: GAME_ID,
@@ -98,9 +98,21 @@ function main(context : IExtensionContext) {
     
     context.registerInstaller(
         'bs-content', 
-        25, 
-        testSupportedContent, 
+        90, 
+        testPluginContent, 
         (files, destinationPath, gameId, progress) => installContent(context.api, files, destinationPath, gameId, progress)
+    );
+    context.registerInstaller(
+        'bs-model',
+        50,
+        testModelContent,
+        installModelContent
+    );
+    context.registerInstaller(
+        'bs-map',
+        50,
+        testMapContent,
+        installMapContent
     );
     context.registerMainPage('search', 'BeatMods', BeatModsList, {
         group: 'per-game',
@@ -185,8 +197,8 @@ function addProfileFeatures(context: IExtensionContext) {
 function prepareForModding(discovery : IDiscoveryResult) {
     // showTermsDialog();
     GAME_PATH = discovery.path;
-    let pluginPath = path.join(discovery.path, 'Plugins')
-    return fs.ensureDirWritableAsync(pluginPath, () => Promise.resolve());
+    let mapsPath = path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels');
+    return fs.ensureDirWritableAsync(mapsPath, () => Promise.resolve());
 }
 
 /**
@@ -211,6 +223,23 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
     });
 }
 
+async function installMapContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate) : Promise<IInstallResult> {
+    var modName = getModName(destinationPath);
+    log('info', `installing ${modName} as custom song level`);
+    //install song
+    let instructions : IInstruction[];
+    instructions = await basicInstaller(files, null, modName, installBeatSaverArchive);
+    return Promise.resolve({instructions});
+}
+
+async function installModelContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate) : Promise<IInstallResult> {
+    var modName = getModName(destinationPath);
+    log('info', 'installing mod as custom model', {file: files[0], name: modName});
+    //model saber "mod"
+    var instructions = await modelInstaller(files, '.', modName, installModelSaberFile);
+    return Promise.resolve({instructions});
+}
+
 /**
  * The main extension installer implementation.
  * @remarks
@@ -227,39 +256,17 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
  */
 async function installContent(api: IExtensionApi, files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate): Promise<IInstallResult> {
     log('debug', `running beatvortex installer. [${gameId}]`, {files, destinationPath});
-    var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
+    var modName = getModName(destinationPath);
     var firstPrim = files.find(f => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
     var isValid = firstPrim !== undefined
-    if (isValid && BeatModsClient.isBeatModsArchive(destinationPath)) {
-        log('info', `${modName} detected as BeatMods archive!`);
-        var bmInstructions = await installBeatModsArchive(api, files, firstPrim, modName, archiveInstaller);
-        return Promise.resolve(bmInstructions);
-    }
-    if (isSongMod(files)) {
-        log('info', `installing ${modName} as custom song level`);
-        //install song
-        let bsInstructions : IInstallResult;
-        if (BeatSaverClient.isArchiveName(modName)) {
-            bsInstructions = await installBeatSaverArchive(api, files, firstPrim, modName, basicInstaller);
-        } else {
-            bsInstructions = {instructions: basicInstaller(files, firstPrim)};
-        }
-        return Promise.resolve(bsInstructions);
-    }
-    if (isModelMod(files)) {
-        log('info', 'installing mod as custom model', {file: files[0]});
-        //model saber "mod"
-        var msInstructions = await installModelFile(api, files, firstPrim, modName, modelInstaller);
-        return Promise.resolve(msInstructions);
-    } 
     if (isValid) {
-        //how did we end up here?!
-        log('warn', 'installing unrecognised mod with valid archive root', {root: firstPrim, mod: modName});
-        var archiveInstructions = archiveInstaller(files, firstPrim);
-        return Promise.resolve({instructions: archiveInstructions});
+        log('info', `${modName} detected as mod archive!`);
+        var bmInstructions = await archiveInstaller(files, firstPrim, modName, BeatModsClient.isBeatModsArchive(destinationPath) ? installBeatModsArchive : null);
+        // var bmInstructions = await installBeatModsArchive(api, files, firstPrim, modName, archiveInstaller);
+        return Promise.resolve({instructions: bmInstructions});
     } else {
         log('warn', "Couldn't find primitive root in file list. Falling back to basic installation!");
-        return Promise.resolve({instructions: basicInstaller(files, modName)});
+        return Promise.resolve({instructions: await basicInstaller(files, null, modName)});
     }
 }
 
@@ -356,7 +363,7 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
             (err: Error, id?: string) => handleDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber', id: details.key})), 
             true);
     } else {
-        var allowUnknown = getProfileSetting(api.store.getState(), PROFILE_SETTINGS.AllowUnknown);
+        var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
         if (allowUnknown) {
             api.sendNotification({
                 message: `Installing unknown map ${mapKey}. No metadata will be available!`,
@@ -402,7 +409,7 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
             (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, {...modelDetails, source: 'modelsaber', id: modelDetails.id.toString()})), 
             true);
     } else {
-        var allowUnknown = getProfileSetting(api.store.getState(), PROFILE_SETTINGS.AllowUnknown);
+        var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
         if (allowUnknown) {
             api.sendNotification({
                 message: `Installing unknown model ${modelDetails.name}. No metadata will be available!`,
@@ -489,25 +496,6 @@ export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile) : 
         if (alreadyPatched) {
             var result = await showPatchDialog(api, false, tryUndoPatch);
             return result;
-            /* api.sendNotification({
-                type: 'warning',
-                message: 'Before purging, we can attempt to revert BSIPA patching.',
-                title: 'Purging BSIPA',
-                actions: [
-                    {
-                        title: 'More info',
-                        action: dismiss => {
-                            showPatchDialog(api, false, tryUndoPatch, dismiss);
-                        }
-                    },
-                    {
-                        title: 'Patch',
-                        action: dismiss => {
-                            tryUndoPatch(api, dismiss)
-                        }
-                    }
-                ]
-            }); */
         }
 }
 

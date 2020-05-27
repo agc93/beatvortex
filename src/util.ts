@@ -11,6 +11,11 @@ export const models = ['avatar', 'platform', 'saber']
 
 export var useTrace: boolean = false;
 
+export function getModName(destinationPath: string) : string {
+    var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
+    return modName;
+}
+
 /**
  * Determines if the given string is a BeatSaver song hash, or optionally a key.
  *
@@ -80,11 +85,17 @@ export function isSongMod(files: string[]|IInstruction[]|string, allowNested: bo
         !instructions.filter((f) => path.extname(f.source).toLowerCase() == ".dat").some(f => f.source.indexOf('Beat Saber_Data') !== -1)
 }
 
-export function isGameMod(files: string[]) {
-    return files.some((f: any) => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
+export function isGameMod(files: string[]) : boolean
+export function isGameMod(instructions: IInstruction[]) : boolean
+export function isGameMod(filesOrInstructions: string[]|IInstruction[]) : boolean {
+    let files: string[] = (typeof filesOrInstructions[0] !== 'string')
+        ? (filesOrInstructions as IInstruction[]).map(i => i.source)
+        : filesOrInstructions as string[];
+    return files.some(f => path.extname(f) == '.dll' || types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
 }
 
 export function isModelMod(files: string[]) : boolean {
+
     return files.length == 1 && models.some(m => files[0].toLowerCase().endsWith(m));
         // && models.some(m => path.extname(path.basename(files[0])).toLowerCase() == m);
 }
@@ -104,28 +115,6 @@ export function isActiveGame(context : IExtensionContext | IExtensionApi | Thunk
             : (context as IExtensionApi)
                 ? (context as IExtensionApi).store.getState()
                 : (context as ThunkStore<any>)) === GAME_ID;
-}
-
-
-/**
- * [Obsolete] Retrieves the specified feature key's value from the current profile settings.
- *
- * @remarks
- * - Use the instance method of a ProfileClient instead of this!
- *
- * @param state - The API state object.
- * @param key - The feature key to retrieve the value of.
- * @returns The value of the given key or undefined.
- * @obsolete
- */
-export function getProfileSetting(state: IState, key: string): any {
-    var profileId = selectors.activeProfile(state)?.id
-    if (profileId !== undefined) {
-        var features = state.persistent.profiles[profileId]?.features;
-        const skipTerms = features ? features[key] : undefined;
-        return skipTerms;
-    }
-    return undefined;
 }
 
 /**
