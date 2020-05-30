@@ -8,9 +8,11 @@ description: >
 
 {{% pageinfo %}}
 The information below **only** applies to BeatVortex versions from 0.3 onwards. Installation logic was completely rebuilt in 0.3.0.
+
+Additionally, dependencies are an area of very active development and things are changing rapidly. Docs may be a little slow to update.
 {{% /pageinfo %}}
 
-Dependency management in Vortex is always a bit of a mess and it's especially so if you're *not* using Nexus Mods, which we are definitely not. As it stands, BeatVortex can notify you about missing dependencies but won't automatically install them.
+Dependency management in Vortex is always a bit of a mess and it's especially so if you're *not* using Nexus Mods, which we are definitely not. As it stands, BeatVortex can notify you about missing dependencies and will **attempt** to install them for you when you install a mod.
 
 > We're actively working with the Vortex team to understand how to better support non-Nexus dependencies.
 
@@ -22,11 +24,13 @@ The backing logic for Vortex's dependency management happens inside the `modmeta
 
 #### BeatMods does dependencies weird
 
-The BeatMods API, for reasons likely lost to time, returns dependencies from the API in a super-weird way: top-level dependencies are fine, but *their* dependencies are only returned as document IDs, meaning we can't easily go from a single API call to a full dependency tree.
+The BeatMods API, for reasons likely lost to time, returns dependencies from the API in a super-weird way: top-level dependencies are fine, but *their* dependencies are only returned as document IDs, meaning we can't easily go from a single API call to a full dependency tree. Thankfully, Vortex (mostly) has our back here, and can do basic-but-good-enough dependency resolution.
 
 #### Vortex doesn't fully implement `modmeta-db`
 
 The backing `modmeta-db` supports looking up mod files by a couple of different "keys": MD5 hash (see above), logical file name, and custom file expressions. At present, since Nexus uses MD5 hashes, Vortex pretty much only uses the MD5 hash for *installation*. That means we can (and do) specify dependency rules, but Vortex won't know where to *find* those dependencies.
+
+> This is currently changing! In cooperation with the Nexus team, newer releases of Vortex have added support for looking up mod info using logical file names.
 
 In future, we should be able to provide a working meta server that can tell Vortex where to find a particular logical file name/version combo (i.e. the correct file on BeatMods), but this doesn't seem to work exactly right at current.
 

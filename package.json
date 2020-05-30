@@ -40,6 +40,8 @@
     "react-async": "^10.0.1",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux-act": "^1.8.0",
     "semver": "^7.3.2",
     "ts-loader": "^6.0.4",
     "typedoc": "^0.17.4",

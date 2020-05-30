@@ -22,7 +22,7 @@ To work with the BeatVortex code, you'll only need Node.js (including a recent v
 
 Whether you are developing on the same machine that Beat Saber and Vortex are installed on or not, the easiest way I have found to work with this has been to [install BeatVortex manually](/docs/usage/installation/#manual-installation), then whenever I make a change simply drop my rebuilt `index.js` into the `game-beatsaber` folder and restart Vortex.
 
-You can find Diagnostics Logs in the overflow menu at the top right of the Vortex window.
+You can find Diagnostics Logs in the overflow menu at the top right of the Vortex window. There is also a Vortex extension that lets you open the DevTools window.
 
 ### Continuous Integration
 
@@ -39,3 +39,4 @@ For anyone who decides to wade into the BeatVortex code, there's a few things wo
 1. **I'm not a developer**: This is just something I'm doing in my spare time, so don't expect super-high-quality code. I'll happily take fixes, though!
 1. **Working with Vortex is weird**: There's quite a few quirks of the codebase that exist because of unfathomably mystifying behaviour in Vortex's extension API.
 1. **There are definitely missing edge cases**: This started out as a basic prototype, so error handling and edge cases are definitely not at the standard we'd like.
+1. **We can't change BeatMods**: More generally speaking, stuff like BeatMods, BeatSaver, BeastSaber and ModelSaber are important resources that we're just consuming. Also, yeah, BeatMods does weird shit.

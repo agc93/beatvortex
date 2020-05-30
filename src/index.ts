@@ -15,6 +15,7 @@ import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient } from './modelSaberClient';
 
 import BeatModsList from "./BeatModsList";
+import { OneClickSettings, settingsReducer } from "./settings";
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
@@ -41,6 +42,7 @@ function main(context : IExtensionContext) {
         if (enableLinks) {
             context.api.registerProtocol('beatsaver', true, (url: string, install:boolean) => handleMapLinkLaunch(context.api, url, install));
             context.api.registerProtocol('modelsaber', true, (url: string, install: boolean) => handleModelLinkLaunch(context.api, url, install));
+            // context.api.registerProtocol('bsplaylist', true, (url: string, install: boolean) => handlePlaylistLinkLaunch(context.api, url, install));
         }
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
@@ -120,6 +122,10 @@ function main(context : IExtensionContext) {
         props: () => ({ api: context.api, mods: [], installed: (context.api.store.getState() as IState).persistent.mods[GAME_ID]}),
       });
 
+      // ⬇ is only commented out because it doesn't work right now :(
+    //   context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
+      context.registerReducer(['settings', 'beatvortex'], settingsReducer);
+
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module
         Switching to the static `ProfileClient` version will fail to add features. I have no idea why.
@@ -184,6 +190,13 @@ function addProfileFeatures(context: IExtensionContext) {
         'settings',
         'Allow Unknown Maps',
         'Enables installing of maps without metadata',
+        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
+    context.registerProfileFeature(
+        PROFILE_SETTINGS.EnablePlaylists,
+        'boolean',
+        'settings',
+        'Enable Playlist Links',
+        'Enables Vortex to handle OneClick Playlist links',
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
 }
 
@@ -420,6 +433,10 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
             api.showErrorNotification(`Could not fetch details for ${modelDetails.name}!`, `We couldn't get details from ModelSaber for that link. It may have been removed or currently unavailable.`, {allowReport: false});
         }
     }
+}
+
+async function handlePlaylistLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
+    log('info', 'handling playlist oneclick install', {url, install});
 }
 
 /**

@@ -5,6 +5,7 @@ import { GAME_ID } from ".";
 export const PROFILE_SETTINGS = {
     SkipTerms: 'bs_skip_terms',
     EnableOneClick: 'bs_oneclick',
+    EnablePlaylists: 'bs_oci_playlist',
     AllowUnknown: 'bs_allow_unknown'
 };
 

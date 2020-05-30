@@ -10,12 +10,6 @@ description: >
 
 There's a couple of different ways to install BeatVortex! Unless you've got a pretty specific use case, you'll probably want one of the two automatic methods, but manual installation is available as well.
 
-{{% pageinfo %}}
-Most of the steps shown below will require Advanced Mode to be enabled in Vortex! 
-
-Enable it in the Settings window, under Interface > Advanced > Enable Advanced Mode.
-{{% /pageinfo %}}
-
 ### Automatic Installation
 
 > This is the easiest way to install!
@@ -35,7 +29,7 @@ Once Vortex has restarted, just click the Manage button on Beat Saber in your Ga
 
 If you can't install directly from the Extensions screen, you can instead install from the archive.
 
-1. Download the archive from [Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files) or [GitHub](https://https://github.com/agc93/beatvortex/actions)
+1. Download the archive from [Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files) or [GitHub](https://https://github.com/agc93/beatvortex/releases)
 1. Open the Extensions panel in Vortex
 1. Click on the *Drop File(s)* box in the corner and locate the archive you downloaded.
 1. Wait for the extension to install and **restart Vortex** when prompted.
@@ -46,7 +40,7 @@ Once Vortex has restarted, just click the Manage button on Beat Saber in your Ga
 
 > Only attempt this if you *absolutely* have to. It becomes much harder to debug and much harder to upgrade.
 
-If you don’t want to enable Advanced Mode for Vortex or want to install the extension yourself, you will have to install the extension files manually. Make sure you close Vortex before proceeding.
+If you want to install the extension yourself, you will have to install the actual extension files manually. Make sure you close Vortex before proceeding.
 
 First, download the archive from [Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files) or [GitHub](https://https://github.com/agc93/beatvortex/actions).
 
