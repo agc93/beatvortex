@@ -4,10 +4,10 @@ import { remote, dialog } from "electron";
 
 import { tryRunPatch, PatchFunction } from "./ipa";
 
-export function showTermsNotification(context: IExtensionContext, autoDismiss: boolean) : void;
-export function showTermsNotification(context: IExtensionContext, callback?: (dismiss: NotificationDismiss)=> void) : void;
-export function showTermsNotification(context: IExtensionContext, dismissCallback : ((dismiss: NotificationDismiss)=> void) | boolean) : void {
-    context.api.sendNotification({
+export function showTermsNotification(api: IExtensionApi, autoDismiss: boolean) : void;
+export function showTermsNotification(api: IExtensionApi, callback?: (dismiss: NotificationDismiss)=> void) : void;
+export function showTermsNotification(api: IExtensionApi, dismissCallback : ((dismiss: NotificationDismiss)=> void) | boolean) : void {
+    api.sendNotification({
         type: 'info',
         message: 'By using BeatVortex, you are accepting some basic terms',
         title: 'Terms of Use',
@@ -15,7 +15,7 @@ export function showTermsNotification(context: IExtensionContext, dismissCallbac
             {
                 title: 'See More',
                 action: (dismiss: NotificationDismiss) => {
-                    showNativeTermsDialog(context, typeof dismissCallback === 'boolean' 
+                    showTermsDialog(api, typeof dismissCallback === 'boolean' 
                         ? (dismissCallback ? () => dismiss() : null) 
                         : dismissCallback ? () => {dismissCallback(dismiss)} : null)
                 }

@@ -2,6 +2,7 @@
 title: "Installing Playlists"
 linkTitle: "Playlists"
 weight: 40
+draft: true
 description: >
   How to installand view map playlists in Vortex.
 ---

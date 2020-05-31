@@ -1,10 +1,9 @@
-import { IExtensionContext, IProfile, ThunkStore, IState } from "vortex-api/lib/types/api";
+import { IExtensionContext, IProfile, ThunkStore, IState, IExtensionApi } from "vortex-api/lib/types/api";
 import { selectors, log, actions } from "vortex-api";
 import { GAME_ID } from ".";
 
 export const PROFILE_SETTINGS = {
     SkipTerms: 'bs_skip_terms',
-    EnableOneClick: 'bs_oneclick',
     EnablePlaylists: 'bs_oci_playlist',
     AllowUnknown: 'bs_allow_unknown'
 };
@@ -17,10 +16,10 @@ export class ProfileClient {
      *
      */
     constructor(store: ThunkStore<any>);
-    constructor(context: IExtensionContext);
-    constructor(ctx: IExtensionContext | ThunkStore<any>) {
-        this.store = (ctx as IExtensionContext) 
-            ? (ctx as IExtensionContext).api.store
+    constructor(context: IExtensionApi);
+    constructor(ctx: IExtensionApi | ThunkStore<any>) {
+        this.store = (ctx as IExtensionApi) 
+            ? (ctx as IExtensionApi).store
             : ctx as ThunkStore<any>;
         this.state = this.store.getState();
     }
@@ -75,13 +74,6 @@ export function addProfileFeatures(context: IExtensionContext) {
         'savegame',
         'Skip Terms of Use',
         "Skips the notification regarding BeatVortex's terms of use",
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
-    context.registerProfileFeature(
-        PROFILE_SETTINGS.EnableOneClick,
-        'boolean',
-        'settings',
-        'Enable One-Click Handling',
-        'Enables Vortex to handle Mod Assistant One-Click links',
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
     context.registerProfileFeature(
         PROFILE_SETTINGS.AllowUnknown,

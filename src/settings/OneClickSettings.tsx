@@ -4,7 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Redux from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { Toggle, log, ComponentEx } from 'vortex-api';
+import { Toggle, log, ComponentEx, More } from 'vortex-api';
 import { ILinkHandling, registerOneClickInstall } from './actions';
 import { IState } from 'vortex-api/lib/types/api';
 const { HelpBlock, FormGroup, ControlLabel } = require('react-bootstrap');
@@ -42,22 +42,31 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
             <form>
                 <FormGroup>
                 <ControlLabel>Enable OneClick Installations</ControlLabel>
+                <HelpBlock>
+            {('These settings will register (or deregister) Vortex to handle'
+              + ' OneClick links on BeatSaver, BeastSaber and ModelSaber.\n'
+              + 'This will conflict with Mod Assistant if you also have it configured for OneClick. '
+              + 'Enable OneClick in whichever app you want to use, and disable it in any others.\n')}
+            </HelpBlock>
                 <Toggle
                     checked={enableMaps}
                     onToggle={this.toggleMaps}
-                >Enable OneClick links for maps</Toggle>
+                >
+                    Enable OneClick links for maps
+                    <More id='more-oci-maps' name='OneClick Installs'>
+                        {('Enabling this option will register Vortex to handle the \'beatsaver\' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n')}
+                    </More>
+                </Toggle>
                 <Toggle
                     checked={enableModels}
                     onToggle={this.toggleModels}
-                >Enable OneClick links for custom models</Toggle>
-                {/* <HelpBlock>
-            {('By default Vortex will only remove empty directories during deployment '
-              + 'if the game or related tools would otherwise not work correctly.\n'
-              + 'Usually empty directories cause no harm and cleaning them up takes '
-              + 'some extra time during deployment so '
-              + 'we advise you only enable this option if you\'re experience problems we didn\'t '
-              + 'anticipate. In that case please also inform us.')}
-          </HelpBlock> */}
+                >
+                    Enable OneClick links for custom models
+                    <More id='more-oci-models' name='OneClick Installs'>
+                        {('Enabling this option will register Vortex to handle the \'modelsaber\' URLs used by OneClick links on ModelSaber.\n'
+                          + 'This option includes custom notes, walls and avatars.')}
+                    </More>
+                </Toggle>
                 </FormGroup>
             </form>
         );
@@ -88,7 +97,7 @@ function mapStateToProps(state: IState): IConnectedProps {
     log('debug', 'mapping beatvortex dispatch to props', {ownProps});
     return {
         onSetOneClick: (enable: boolean, scheme: string) => {
-            /* return dispatch(
+            return dispatch(
                 registerOneClickInstall(
                     scheme == 'beatsaver' 
                         ? {enableMaps: enable} 
@@ -97,8 +106,8 @@ function mapStateToProps(state: IState): IConnectedProps {
                             : scheme == 'bsplaylist' 
                                 ? {enablePlaylists: enable} 
                                 : null)
-                )} */
-            dispatch(registerOneClickInstall({enableMaps: enable}));
+                )
+            // dispatch(registerOneClickInstall({enableMaps: enable}));
     }
   }
 }

@@ -1,7 +1,7 @@
 import path = require('path');
 
 import { fs, log, util, selectors, actions } from "vortex-api";
-import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction } from 'vortex-api/lib/types/api';
+import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink } from 'vortex-api/lib/types/api';
 import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName } from './util';
 
 import { showPatchDialog, showTermsNotification } from "./notify";
@@ -15,7 +15,7 @@ import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient } from './modelSaberClient';
 
 import BeatModsList from "./BeatModsList";
-import { OneClickSettings, settingsReducer } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling } from "./settings";
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
@@ -34,16 +34,16 @@ function main(context : IExtensionContext) {
     };
     context.once(() => {
         enableTrace();
-        if (isActiveGame(context)) {
-        }
+        if (isActiveGame(context)) {}
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
-        var enableLinks = new ProfileClient(context).getProfileSetting(PROFILE_SETTINGS.EnableOneClick, false);
-        log('debug', 'beatvortex: initialising oneclick', { enable: enableLinks});
-        if (enableLinks) {
-            context.api.registerProtocol('beatsaver', true, (url: string, install:boolean) => handleMapLinkLaunch(context.api, url, install));
-            context.api.registerProtocol('modelsaber', true, (url: string, install: boolean) => handleModelLinkLaunch(context.api, url, install));
-            // context.api.registerProtocol('bsplaylist', true, (url: string, install: boolean) => handlePlaylistLinkLaunch(context.api, url, install));
-        }
+        
+        var state = context.api.getState();
+        var enableLinks = util.getSafe(state, ['settings', 'beatvortex', 'enableOCI'], undefined) as ILinkHandling;
+        registerProtocols(context.api, enableLinks);
+        context.api.onStateChange(['settings', 'beatvortex', 'enableOCI'], (previous : ILinkHandling, current: ILinkHandling) => {
+            log('debug', 'got settings change', {current});
+            registerProtocols(context.api, current);
+        });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
                 log('debug', 'beatvortex got the profile change event! checking profile.');
@@ -65,10 +65,10 @@ function main(context : IExtensionContext) {
         });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
-                var profileClient = new ProfileClient(context);
+                var profileClient = new ProfileClient(context.api);
                 var skipTerms = profileClient.getProfileSetting(profile, PROFILE_SETTINGS.SkipTerms, false);
                 if (!skipTerms) {
-                    showTermsNotification(context, (dismiss) => {
+                    showTermsNotification(context.api, (dismiss) => {
                         profileClient.setProfileSetting(profile, PROFILE_SETTINGS.SkipTerms, true);
                         dismiss();
                     });
@@ -177,13 +177,13 @@ function addProfileFeatures(context: IExtensionContext) {
         'Skip Terms of Use', 
         "Skips the notification regarding BeatVortex's terms of use", 
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
-    context.registerProfileFeature(
+    /* context.registerProfileFeature(
         PROFILE_SETTINGS.EnableOneClick,
         'boolean',
         'settings',
         'Enable One-Click Handling',
         'Enables Vortex to handle Mod Assistant One-Click links',
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
+        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID); */
     context.registerProfileFeature(
         PROFILE_SETTINGS.AllowUnknown,
         'boolean',
@@ -191,13 +191,13 @@ function addProfileFeatures(context: IExtensionContext) {
         'Allow Unknown Maps',
         'Enables installing of maps without metadata',
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
-    context.registerProfileFeature(
+    /* context.registerProfileFeature(
         PROFILE_SETTINGS.EnablePlaylists,
         'boolean',
         'settings',
         'Enable Playlist Links',
         'Enables Vortex to handle OneClick Playlist links',
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
+        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID); */
 }
 
 /**
@@ -514,6 +514,24 @@ export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile) : 
             var result = await showPatchDialog(api, false, tryUndoPatch);
             return result;
         }
+}
+
+export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling) {
+    if (enableLinks != undefined) {
+        log('debug', 'beatvortex: initialising oneclick', { enableLinks });
+        if (enableLinks?.enableMaps) {
+            api.registerProtocol('beatsaver', true, (url: string, install:boolean) => handleMapLinkLaunch(api, url, install));
+        }
+        else if (enableLinks?.enableMaps === false) {
+            api.deregisterProtocol('beatsaver');
+        }
+        if (enableLinks?.enableModels) {
+            api.registerProtocol('modelsaber', true, (url: string, install: boolean) => handleModelLinkLaunch(api, url, install));
+        }
+        else if (enableLinks?.enableModels === false) {
+            api.deregisterProtocol('modelsaber');
+        }
+    }
 }
 
 //#endregion
