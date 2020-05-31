@@ -34,20 +34,20 @@ type IProps = IBaseProps & IConnectedProps & IActionProps;
     searchFilter: string;
 }
  */
-export class OneClickSettings extends ComponentEx<IProps, {}> {
+class OneClickSettings extends ComponentEx<IProps, {}> {
     public render() : JSX.Element {
         log('debug', 'rendering OneClick Settings');
-        const { enableMapLinks, enableModelLinks } = this.props as IProps;
+        const { enableMaps, enableModels } = (this.props as IProps).linkHandling;
         return (
             <form>
                 <FormGroup>
                 <ControlLabel>Enable OneClick Installations</ControlLabel>
                 <Toggle
-                    checked={enableMapLinks}
+                    checked={enableMaps}
                     onToggle={this.toggleMaps}
                 >Enable OneClick links for maps</Toggle>
                 <Toggle
-                    checked={enableModelLinks}
+                    checked={enableModels}
                     onToggle={this.toggleModels}
                 >Enable OneClick links for custom models</Toggle>
                 {/* <HelpBlock>
@@ -98,7 +98,7 @@ function mapStateToProps(state: IState): IConnectedProps {
                                 ? {enablePlaylists: enable} 
                                 : null)
                 )} */
-            dispatch(registerOneClickInstall({enableMaps: true}));
+            dispatch(registerOneClickInstall({enableMaps: enable}));
     }
   }
 }
