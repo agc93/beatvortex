@@ -123,7 +123,7 @@ function main(context : IExtensionContext) {
       });
 
       // ⬇ is only commented out because it doesn't work right now :(
-    //   context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
+      context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
       context.registerReducer(['settings', 'beatvortex'], settingsReducer);
 
     /*
