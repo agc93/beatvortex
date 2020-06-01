@@ -44,7 +44,7 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
                 <FormGroup>
                 <ControlLabel>{t('Enable OneClick Installations')}</ControlLabel>
                 <HelpBlock>
-            {('These settings will register (or deregister) Vortex to handle'
+            {t('These settings will register (or deregister) Vortex to handle'
               + ' OneClick links on BeatSaver, BeastSaber and ModelSaber.\n'
               + 'This will conflict with Mod Assistant if you also have it configured for OneClick. '
               + 'Enable OneClick in whichever app you want to use, and disable it in any others.\n')}
@@ -53,18 +53,18 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
                     checked={enableMaps}
                     onToggle={this.toggleMaps}
                 >
-                    Enable OneClick links for maps
+                    {t("Enable OneClick links for maps")}
                     <More id='more-oci-maps' name='OneClick Installs'>
-                        {('Enabling this option will register Vortex to handle the \'beatsaver\' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n')}
+                        {t('Enabling this option will register Vortex to handle the \'beatsaver\' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n')}
                     </More>
                 </Toggle>
                 <Toggle
                     checked={enableModels}
                     onToggle={this.toggleModels}
                 >
-                    Enable OneClick links for custom models
+                    {t("Enable OneClick links for custom models")}
                     <More id='more-oci-models' name='OneClick Installs'>
-                        {('Enabling this option will register Vortex to handle the \'modelsaber\' URLs used by OneClick links on ModelSaber.\n'
+                        {t('Enabling this option will register Vortex to handle the \'modelsaber\' URLs used by OneClick links on ModelSaber.\n'
                           + 'This option includes custom notes, walls and avatars.')}
                     </More>
                 </Toggle>

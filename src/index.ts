@@ -531,17 +531,3 @@ export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling
 module.exports = {
     default: main,
 };
-
-//#region Deprecated
-
-// previous revisions (see Git history) included quiet a few extra methods that have been essentially superseded by new code.
-// in particular, client classes and more generic revisions (i.e. setDownloadModInfo) have replaced quite a bit of old logic.
-
-//#endregion
-
-//#region Mod List
-
-
-  
-
-//#endregion
