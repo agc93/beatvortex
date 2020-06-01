@@ -4,7 +4,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Redux from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { Toggle, log, ComponentEx, More } from 'vortex-api';
+import { withTranslation } from 'react-i18next';
+import { Toggle, log, ComponentEx, More, util } from 'vortex-api';
 import { ILinkHandling, registerOneClickInstall } from './actions';
 import { IState } from 'vortex-api/lib/types/api';
 const { HelpBlock, FormGroup, ControlLabel } = require('react-bootstrap');
@@ -36,12 +37,12 @@ type IProps = IBaseProps & IConnectedProps & IActionProps;
  */
 class OneClickSettings extends ComponentEx<IProps, {}> {
     public render() : JSX.Element {
-        log('debug', 'rendering OneClick Settings');
+        const { t } = this.props;
         const { enableMaps, enableModels } = (this.props as IProps).linkHandling;
         return (
             <form>
                 <FormGroup>
-                <ControlLabel>Enable OneClick Installations</ControlLabel>
+                <ControlLabel>{t('Enable OneClick Installations')}</ControlLabel>
                 <HelpBlock>
             {('These settings will register (or deregister) Vortex to handle'
               + ' OneClick links on BeatSaver, BeastSaber and ModelSaber.\n'
@@ -87,14 +88,14 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
 
 
 function mapStateToProps(state: IState): IConnectedProps {
-    log('debug', 'mapping beatvortex state to props');
+    // log('debug', 'mapping beatvortex state to props');
     return {
         linkHandling: state.settings['beatvortex']['enableOCI']
     };
   }
   
   function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>, ownProps: IBaseProps): IActionProps {
-    log('debug', 'mapping beatvortex dispatch to props', {ownProps});
+    // log('debug', 'mapping beatvortex dispatch to props', {ownProps});
     return {
         onSetOneClick: (enable: boolean, scheme: string) => {
             return dispatch(
@@ -113,4 +114,4 @@ function mapStateToProps(state: IState): IConnectedProps {
 }
   
   export default
-    connect(mapStateToProps, mapDispatchToProps)(OneClickSettings);
+    withTranslation(['beatvortex', 'common'])(connect(mapStateToProps, mapDispatchToProps)(OneClickSettings));

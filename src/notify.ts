@@ -48,6 +48,15 @@ export function ShowRunPatchDialog(api: IExtensionApi, callback?: ()=> void) {
      });
 }
 
+/**
+ * Shows a modal dialog explaining the IPA auto-patching process.
+ *
+ * @param api - The extension context. Only required for translation of dialog text.
+ * @param toPatch - Whether we are attempting to run (true) or revert (false) IPA patching.
+ * @param patchFn - The patching function (callback) to execute when the dialog is accepted.
+ * 
+ * @returns 
+ */
 export async function showPatchDialog(api: IExtensionApi, toPatch: boolean, patchFn: PatchFunction, callback?: () => void): Promise<boolean> {
     var msg = toPatch 
         ? 'BeatVortex can attempt to auto-patch your Beat Saber install'

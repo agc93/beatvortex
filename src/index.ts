@@ -1,19 +1,23 @@
 import path = require('path');
 
+// external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink } from 'vortex-api/lib/types/api';
 import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName } from './util';
+import { ProfileClient } from "vortex-ext-common";
 
+// local modules
 import { showPatchDialog, showTermsNotification } from "./notify";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
-import { gameMetadata, STEAMAPP_ID } from './meta';
+import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent } from "./install";
 
-import { PROFILE_SETTINGS, ProfileClient } from './profileClient';
+// clients
 import { BeatSaverClient } from './beatSaverClient';
 import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient } from './modelSaberClient';
 
+// components etc
 import BeatModsList from "./BeatModsList";
 import { OneClickSettings, settingsReducer, ILinkHandling } from "./settings";
 
@@ -119,12 +123,13 @@ function main(context : IExtensionContext) {
     context.registerMainPage('search', 'BeatMods', BeatModsList, {
         group: 'per-game',
         visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
-        props: () => ({ api: context.api, mods: [], installed: (context.api.store.getState() as IState).persistent.mods[GAME_ID]}),
+        props: () => ({ api: context.api, mods: []}),
       });
 
       // ⬇ is only commented out because it doesn't work right now :(
       context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
       context.registerReducer(['settings', 'beatvortex'], settingsReducer);
+
 
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module
@@ -177,13 +182,6 @@ function addProfileFeatures(context: IExtensionContext) {
         'Skip Terms of Use', 
         "Skips the notification regarding BeatVortex's terms of use", 
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
-    /* context.registerProfileFeature(
-        PROFILE_SETTINGS.EnableOneClick,
-        'boolean',
-        'settings',
-        'Enable One-Click Handling',
-        'Enables Vortex to handle Mod Assistant One-Click links',
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID); */
     context.registerProfileFeature(
         PROFILE_SETTINGS.AllowUnknown,
         'boolean',
@@ -191,19 +189,12 @@ function addProfileFeatures(context: IExtensionContext) {
         'Allow Unknown Maps',
         'Enables installing of maps without metadata',
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
-    /* context.registerProfileFeature(
-        PROFILE_SETTINGS.EnablePlaylists,
-        'boolean',
-        'settings',
-        'Enable Playlist Links',
-        'Enables Vortex to handle OneClick Playlist links',
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID); */
 }
 
 /**
  * Preps the Beat Saber installation for mod deployment.
  * @remarks
- * Other than creating the Plugins folder (not strictly necessary), this is a basic sanity check only.
+ * Other than creating the CustomLevels folder (not strictly necessary), this is a basic sanity check only.
  *
  * @param discovery - The details for the discovered game.
  */

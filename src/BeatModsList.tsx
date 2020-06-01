@@ -1,17 +1,28 @@
-import { MainPage, log, FlexLayout, Icon, actions, Spinner } from 'vortex-api';
+import { MainPage, log, FlexLayout, Icon, actions, Spinner, ComponentEx } from 'vortex-api';
 const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonGroup, FormControl, FormGroup, ControlLabel } = require('react-bootstrap');
 import React, { Component } from 'react';
-import { IExtensionApi, IModTable, IMod } from 'vortex-api/lib/types/api';
+import * as Redux from 'redux';
+import { connect } from 'react-redux';
+import { IExtensionApi, IModTable, IMod, IState } from 'vortex-api/lib/types/api';
 import { IModDetails, BeatModsClient } from './beatModsClient';
-import { getGameVersion } from './util';
+import { getGameVersion, traceLog } from './util';
 import { util } from "vortex-api";
-import { handleDownloadInstall, setDownloadModInfo } from '.';
+import { handleDownloadInstall, setDownloadModInfo, GAME_ID } from '.';
 import { rsort } from "semver";
+import { withTranslation } from 'react-i18next';
+import { ThunkDispatch } from 'redux-thunk';
 
-class Props {
+interface IConnectedProps {
+    installed: { [modId: string]: IMod; };
+}
+
+interface IActionProps {
+    onStartInstall?: (mod: IModDetails) => void;
+}
+
+interface IBaseProps {
     api: IExtensionApi;
     mods: IModDetails[];
-    installed: IModTable;
 }
 
 interface IBeatModsListState {
@@ -23,7 +34,9 @@ interface IBeatModsListState {
     searchFilter: string;
 }
 
-export class BeatModsList extends React.Component {
+type IProps = IConnectedProps & IActionProps & IBaseProps;
+
+class BeatModsList extends ComponentEx<IProps, {}> {
 
     // there is a pretty brutal bug in the BeatMods API that's led to some very convoluted logic in this component.
     // Essentially, BeatMods reports completely different values for `gameVersion` based on the query.
@@ -45,7 +58,7 @@ export class BeatModsList extends React.Component {
 
     private highlightMod = (modId: string) => {
         // const modId = evt.currentTarget.getAttribute('data-modid');
-        const api = (this.props as Props).api;
+        const api = (this.props as IProps).api;
         api.events.emit('show-main-page', 'Mods');
         // give it time to transition to the mods page but also this is a workaround
         // for the fact that the mods page might not be mounted yet
@@ -57,7 +70,7 @@ export class BeatModsList extends React.Component {
       }
 
     async getVersions() {
-        var version = getGameVersion((this.props as Props).api)
+        var version = getGameVersion((this.props as IProps).api)
         var client = new BeatModsClient();
         var allMods = await client.getAllMods();
         var availableVersions = [...new Set(allMods.map(m => m.gameVersion))];
@@ -86,7 +99,7 @@ export class BeatModsList extends React.Component {
     }
 
     startInstall = (mod: IModDetails) => {
-        var { api } = this.props as Props;
+        var { api } = this.props as IProps;
         var downloadLinks = BeatModsClient.getDownloads(mod);
         log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});        
         api.events.emit('start-download', 
@@ -107,12 +120,13 @@ export class BeatModsList extends React.Component {
 
     public render() {
         const { selected, mods, gameVersion, availableVersions, isLoading, searchFilter } = this.state;
-        log('debug', 'rendering mod list', {searchFilter: searchFilter ?? 'none'});
+        const { t } = this.props;
+        traceLog('rendering mod list', {searchFilter: searchFilter ?? 'none'});
         const mod: IModDetails = (selected == undefined || !selected || mods.length == 0)
             ? null
             : mods.find(iter => iter._id == selected);
         if (mod) {
-            log('debug', 'matched mod from list entry selection', { name: mod?.name, category: mod?.category });
+            traceLog('matched mod from list entry selection', { name: mod?.name, category: mod?.category });
         }
         return (
             <MainPage ref={(mainPage) => { this.mainPage = mainPage; }}>
@@ -146,7 +160,7 @@ export class BeatModsList extends React.Component {
                                                         .filter(s => searchFilter ? s.name.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 : true)
                                                         .map(this.renderListEntry)} {/* only returns ListGroupEntry */}
                                                 </ListGroup>
-                                                : "If you don't see any mods, you may need to choose a different version above."
+                                                : t("If you don't see any mods, you may need to choose a different version above.")
                                             }
                                         {/* </div> */}
                                         <div className='beatmods-list-status'>
@@ -161,7 +175,7 @@ export class BeatModsList extends React.Component {
                                     {/* </div> */}
                                 </FlexLayout.Flex>
                             </FlexLayout>
-                            : <>Could not detect compatible mods for game version! Choose a version above to filter the mod list.</>
+                            : <>{t("Could not detect compatible mods for game version! Choose a version above to filter the mod list.")}</>
                             }
                         </Panel.Body>
                     </Panel>
@@ -172,7 +186,7 @@ export class BeatModsList extends React.Component {
     }
 
     private isInstalled = (mod: IModDetails): boolean => {
-        var {installed} = (this.props as Props);
+        var {installed} = (this.props as IProps);
         // var installedMods = Object.keys(installed);
         var keys = Object.keys(installed);
         // var installedMods = ((Object.values(installed) as any) as IMod[]).filter(im => im.type == 'bs-mod').map(m => m.attributes);
@@ -288,13 +302,14 @@ export class BeatModsList extends React.Component {
     }
 
     private renderDescription = (mod: IModDetails) => {
-        log('debug', 'attempting render of mod details', { name: mod.name, author: mod.author.username, category: mod.category, description: mod.description });
+        traceLog('attempting render of mod details', { name: mod.name, author: mod.author.username, category: mod.category, description: mod.description });
         var ready = {
             compatible: this.isCompatible(mod),
             installed: this.isInstalled(mod),
         };
         let mods = this.state.mods;
-        var installedVersion = getGameVersion((this.props as Props).api);
+        const { t } = this.props;
+        var installedVersion = getGameVersion((this.props as IProps).api);
         // ready.installReady = ready.compatible && !ready.installed
         return (
             <FlexLayout type='column'>
@@ -320,7 +335,7 @@ export class BeatModsList extends React.Component {
                                         onClick={this.openMoreInfo}
                                     >
                                         <Icon name='open-in-browser' />
-                                        {'More Info...'}
+                                        {t('More Info...')}
                                     </a>
                                 </div>
                                 </div>
@@ -339,27 +354,19 @@ export class BeatModsList extends React.Component {
                             <FlexLayout type="column" className="description-footer-deps">
                                 {mod.dependencies && mod.dependencies.length > 0 &&
                                     <Breadcrumb>
-                                        <Breadcrumb.Item active>Dependencies</Breadcrumb.Item>
+                                        <Breadcrumb.Item active>{t("Dependencies")}</Breadcrumb.Item>
                                         {mod.dependencies.map(d => {
                                             return <Breadcrumb.Item onClick={() => this.selectMod(d.name)}>{d.name}</Breadcrumb.Item>
                                         })}
                                     </Breadcrumb>
-                                /* BeatModsClient.getDependencies(mods, mod).map(d => {
-                                    log('debug', 'parsing dependency', {dependency: d})
-                                    return <Breadcrumb>
-                                        {d.map(di => {
-                                            log('debug', 'parsing child dependency', { child: di});
-                                            return <Breadcrumb.Item>{di.name}</Breadcrumb.Item>
-                                        })}
-                                    </Breadcrumb>
-                                }) */
                                 }
                             </FlexLayout>
                         </FlexLayout.Flex>
                         <FlexLayout.Fixed className="description-version-warning">
                             {installedVersion == mod.gameVersion
                                 ? <></>
-                                : <>This mod is built for Beat Saber {mod.gameVersion}! Make sure it is compatible with {installedVersion ?? 'your version'} before installing!</>}
+                                : t("This mod is built for Beat Saber {{gameVersion}}! Make sure it is compatible with {{installedVersion}} before installing!", {gameVersion: mod.gameVersion, installedVersion: installedVersion ?? t('your version')})
+                            }
                         </FlexLayout.Fixed>
                         <FlexLayout.Fixed>
                             {ready && <Button 
@@ -369,8 +376,8 @@ export class BeatModsList extends React.Component {
                             >{ready.installed
                                 ? 'Installed'
                                 : ready.compatible
-                                    ? 'Ready to Install'
-                                    : 'Not compatible' }
+                                    ? t('Ready to Install')
+                                    : t('Not compatible')}
                             </Button>}
                         </FlexLayout.Fixed>
                     </FlexLayout>
@@ -384,7 +391,7 @@ export class BeatModsList extends React.Component {
         log('debug', 'mod list component mounted');
         await this.getVersions();
         var response = await this.refreshMods();
-        log('debug', `setting state with ${response?.length} mods`, { currentCount: this.state.mods?.length ?? '0' });
+        traceLog(`setting state with ${response?.length} mods`, { currentCount: this.state.mods?.length ?? '0' });
         // (this.props as Props).mods = new BeatModsClient()
         // log('debug', 'set new state', { count: this.state.mods.length });
         this.setState({isLoading: false});
@@ -392,4 +399,15 @@ export class BeatModsList extends React.Component {
     }
 }
 
-export default BeatModsList;
+function mapStateToProps(state: IState): IConnectedProps {
+    // log('debug', 'mapping beatvortex state to props');
+    return {
+        installed : state.persistent.mods[GAME_ID]
+    };
+  }
+  
+  function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>, ownProps: IBaseProps): IActionProps {
+    return {}
+  }
+
+export default withTranslation(['beatvortex', 'common'])(connect(mapStateToProps)(BeatModsList));

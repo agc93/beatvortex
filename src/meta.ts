@@ -53,3 +53,9 @@ export const gameMetadata = {
         steamAppId: STEAMAPP_ID
     }
 }
+
+export const PROFILE_SETTINGS = {
+    SkipTerms: 'bs_skip_terms',
+    EnablePlaylists: 'bs_oci_playlist',
+    AllowUnknown: 'bs_allow_unknown'
+};
