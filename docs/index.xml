@@ -215,6 +215,22 @@ You will be notified of missing dependencies, but you will need to install them 
 &lt;p>As a middle ground, BeatVortex assumes that mod authors are following Semantic Versioning (SemVer) correctly and matches major versions only. That means that, for example, a mod asking for SongCore 2.7.5 could have SongCore 2.9.x installed.&lt;/p>
 &lt;blockquote>
 &lt;p>We're using the &lt;code>~&lt;/code> operator for those already familiar with the Node/npm semver format.&lt;/p>
+&lt;/blockquote></description></item><item><title>Docs: Translating BeatVortex</title><link>/docs/developer/translation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/translation/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>The information below &lt;strong>only&lt;/strong> applies to BeatVortex versions from 0.3.1 onwards. Versions prior to 0.3.1 did not include the code necessary to support translations.&lt;/p>
+&lt;/div>
+&lt;p>Vortex includes built-in translation support and there's already quite a few translations &lt;a href="https://www.nexusmods.com/site/mods/categories/7/">available on Nexus Mods&lt;/a>. Any of the &amp;ldquo;common&amp;rdquo; interface elements from Vortex that are used in BeatVortex (things like menus, tables and common buttons) will all use the language you specify in Settings (under Interface).&lt;/p>
+&lt;blockquote>
+&lt;p>For general information on translation support in Vortex, check out the &lt;a href="https://wiki.nexusmods.com/index.php/Translating_Vortex">Vortex wiki&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>However, there's quite a few Beat Saber-specific parts that we add to Vortex, and these won't automatically be translated. Of particular note are the BeatMods browser, Beat Saber-specific settings and some dialogs and notifications. We've built support for translating these elements but that requires atual, you know, translations!&lt;/p>
+&lt;h2 id="building-translations">Building Translations&lt;/h2>
+&lt;p>If you're already familiar with Vortex (or &lt;code>react-i18next&lt;/code>-based) translations then the short version is that BeatVortex uses a separate &lt;code>beatvortex&lt;/code> namespace (and &lt;code>beatvortex.json&lt;/code> file) to get localised strings.&lt;/p>
+&lt;p>More specifically, Vortex will look for a &lt;code>beatvortex.json&lt;/code> file inside &lt;code>%APPDATA%/Vortex/resources/locales/&amp;lt;ISO-CODE&amp;gt;&lt;/code> and use any translated strings it finds there, falling back to English if none is found.&lt;/p>
+&lt;h3 id="existing-translations">Existing Translations&lt;/h3>
+&lt;p>The ideal scenario would be for existing Vortex translations to support BeatVortex's namespace by adding a &lt;code>beatvortex.json&lt;/code> to their translations. A loose example file that should over most elements is available at &lt;a href="https://beatvortex.dev/beatvortex_en.json">beatvortex.dev/beatvortex_en.json&lt;/a> that translators can use for a good starting point.&lt;/p>
+&lt;blockquote>
+&lt;p>We haven't worked with Vortex translations much before: please raise an issue if something doesn't look right or needs changing!&lt;/p>
 &lt;/blockquote></description></item><item><title>Docs: Docs Contributions</title><link>/docs/developer/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/docs/</guid><description>
 &lt;p>Ironically, the documentation side of the project has slightly higher environment requirements than the project itself! We're using the Hugo static site generator with the Docsy template, so you will need to have a recent version of Hugo Extended installed, as well as &lt;code>npm&lt;/code> to restore the required tools.&lt;/p>
 &lt;p>Actual docs content is all stored in the &lt;code>content/&lt;/code> directory, organised under language. At this time only English (&lt;code>en&lt;/code>) is included, although translations are more than welcome!&lt;/p></description></item></channel></rss>

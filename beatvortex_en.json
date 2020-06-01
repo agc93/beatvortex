@@ -1,0 +1,16 @@
+{
+    "Ready to Install": "Ready to Install",
+    "Not Compatible": "Not Compatible",
+    "More Info...": "More Info...",
+    "If you don't see any mods, you may need to choose a different version above.": "If you don't see any mods, you may need to choose a different version above.",
+    "Could not detect compatible mods for game version! Choose a version above to filter the mod list.": "Could not detect compatible mods for game version! Choose a version above to filter the mod list.",
+    "Dependencies": "Dependencies",
+    "This mod is built for Beat Saber {{gameVersion}}! Make sure it is compatible with {{installedVersion}} before installing!": "This mod is built for Beat Saber {{gameVersion}}! Make sure it is compatible with {{installedVersion}} before installing!",
+    "your version": "your version",
+    "Enable OneClick Installations": "Enable OneClick Installations",
+    "These settings will register (or deregister) Vortex to handle OneClick links on BeatSaver, BeastSaber and ModelSaber.\nThis will conflict with Mod Assistant if you also have it configured for OneClick. Enable OneClick in whichever app you want to use, and disable it in any others.\n": "These settings will register (or deregister) Vortex to handle OneClick links on BeatSaver, BeastSaber and ModelSaber.\nThis will conflict with Mod Assistant if you also have it configured for OneClick. Enable OneClick in whichever app you want to use, and disable it in any others.\n",
+    "Enable OneClick links for maps": "Enable OneClick links for maps",
+    "Enable OneClick links for custom models": "Enable OneClick links for custom models",
+    "Enabling this option will register Vortex to handle the 'beatsaver' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n": "Enabling this option will register Vortex to handle the 'beatsaver' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n",
+    "Enabling this option will register Vortex to handle the 'modelsaber' URLs used by OneClick links on ModelSaber.\nThis option includes custom notes, walls and avatars.": "Enabling this option will register Vortex to handle the 'modelsaber' URLs used by OneClick links on ModelSaber.\nThis option includes custom notes, walls and avatars."
+}
