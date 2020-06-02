@@ -1,4 +1,6 @@
 import path = require('path');
+import * as fsx from 'fs-extra';
+
 
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
@@ -40,7 +42,7 @@ function main(context : IExtensionContext) {
         enableTrace();
         if (isActiveGame(context)) {}
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
-        
+        addTranslations(context.api, 'beatvortex');
         var state = context.api.getState();
         var enableLinks = util.getSafe(state, ['settings', 'beatvortex', 'enableOCI'], undefined) as ILinkHandling;
         registerProtocols(context.api, enableLinks);
@@ -189,6 +191,20 @@ function addProfileFeatures(context: IExtensionContext) {
         'Allow Unknown Maps',
         'Enables installing of maps without metadata',
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
+}
+
+async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : Promise<void> {
+    var ext = api.getLoadedExtensions().find(e => e.name == 'game-beatsaber');
+    if (ext) {
+        var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
+        var langFiles = fsx.readdirSync(ext.path).filter(f => re.test(f));
+        langFiles.forEach(async lang => {
+            var match = re.exec(lang);
+            log('debug', 'beatvortex loading translation file', {lang, match});
+            var langContent = await fsx.readFile(path.join(ext.path, lang), { encoding: 'utf-8' });
+            api.getI18n().addResources(match[1], ns, JSON.parse(langContent));
+        });
+    }
 }
 
 /**
