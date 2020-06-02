@@ -160,7 +160,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                                         .filter(s => searchFilter ? s.name.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 : true)
                                                         .map(this.renderListEntry)} {/* only returns ListGroupEntry */}
                                                 </ListGroup>
-                                                : t("If you don't see any mods, you may need to choose a different version above.")
+                                                : t("bs:BeatModsList:ChooseVersionHelp")
                                             }
                                         {/* </div> */}
                                         <div className='beatmods-list-status'>
@@ -175,7 +175,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                     {/* </div> */}
                                 </FlexLayout.Flex>
                             </FlexLayout>
-                            : <>{t("Could not detect compatible mods for game version! Choose a version above to filter the mod list.")}</>
+                            : <>{t("bs:BeatModsList:ChooseVersionUnknown")}</>
                             }
                         </Panel.Body>
                     </Panel>
@@ -335,7 +335,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                         onClick={this.openMoreInfo}
                                     >
                                         <Icon name='open-in-browser' />
-                                        {t('More Info...')}
+                                        {t('bs:BeatModsList:MoreInfo')}
                                     </a>
                                 </div>
                                 </div>
@@ -354,7 +354,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                             <FlexLayout type="column" className="description-footer-deps">
                                 {mod.dependencies && mod.dependencies.length > 0 &&
                                     <Breadcrumb>
-                                        <Breadcrumb.Item active>{t("Dependencies")}</Breadcrumb.Item>
+                                        <Breadcrumb.Item active>{t("bs:BeatModsList:Dependencies")}</Breadcrumb.Item>
                                         {mod.dependencies.map(d => {
                                             return <Breadcrumb.Item onClick={() => this.selectMod(d.name)}>{d.name}</Breadcrumb.Item>
                                         })}
@@ -365,7 +365,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                         <FlexLayout.Fixed className="description-version-warning">
                             {installedVersion == mod.gameVersion
                                 ? <></>
-                                : t("This mod is built for Beat Saber {{gameVersion}}! Make sure it is compatible with {{installedVersion}} before installing!", {gameVersion: mod.gameVersion, installedVersion: installedVersion ?? t('your version')})
+                                : t("bs:BeatModsList:VersionWarning", {gameVersion: mod.gameVersion, installedVersion: installedVersion ?? t('your version')})
                             }
                         </FlexLayout.Fixed>
                         <FlexLayout.Fixed>
@@ -376,8 +376,8 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                             >{ready.installed
                                 ? 'Installed'
                                 : ready.compatible
-                                    ? t('Ready to Install')
-                                    : t('Not compatible')}
+                                    ? t('bs:BeatModsList:ReadyToInstall')
+                                    : t('bs:BeatModsList:NotCompatible')}
                             </Button>}
                         </FlexLayout.Fixed>
                     </FlexLayout>

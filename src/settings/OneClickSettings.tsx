@@ -42,30 +42,26 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
         return (
             <form>
                 <FormGroup>
-                <ControlLabel>{t('Enable OneClick Installations')}</ControlLabel>
+                <ControlLabel>{t('bs:Settings:EnableOCI')}</ControlLabel>
                 <HelpBlock>
-            {t('These settings will register (or deregister) Vortex to handle'
-              + ' OneClick links on BeatSaver, BeastSaber and ModelSaber.\n'
-              + 'This will conflict with Mod Assistant if you also have it configured for OneClick. '
-              + 'Enable OneClick in whichever app you want to use, and disable it in any others.\n')}
+            {t('bs:Settings:EnableOCIHelp')}
             </HelpBlock>
                 <Toggle
                     checked={enableMaps}
                     onToggle={this.toggleMaps}
                 >
-                    {t("Enable OneClick links for maps")}
+                    {t("bs:Settings:EnableOCIMaps")}
                     <More id='more-oci-maps' name='OneClick Installs'>
-                        {t('Enabling this option will register Vortex to handle the \'beatsaver\' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n')}
+                        {t('bs:Settings:EnableOCIMapsHelp')}
                     </More>
                 </Toggle>
                 <Toggle
                     checked={enableModels}
                     onToggle={this.toggleModels}
                 >
-                    {t("Enable OneClick links for custom models")}
+                    {t("bs:Settings:EnableOCIModels")}
                     <More id='more-oci-models' name='OneClick Installs'>
-                        {t('Enabling this option will register Vortex to handle the \'modelsaber\' URLs used by OneClick links on ModelSaber.\n'
-                          + 'This option includes custom notes, walls and avatars.')}
+                        {t('bs:Settings:EnableOCIModelsHelp')}
                     </More>
                 </Toggle>
                 </FormGroup>

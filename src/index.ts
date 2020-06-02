@@ -1,6 +1,4 @@
 import path = require('path');
-import * as fsx from 'fs-extra';
-
 
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
@@ -197,11 +195,11 @@ async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : 
     var ext = api.getLoadedExtensions().find(e => e.name == 'game-beatsaber');
     if (ext) {
         var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
-        var langFiles = fsx.readdirSync(ext.path).filter(f => re.test(f));
-        langFiles.forEach(async lang => {
+        var langFiles = (await fs.readdirAsync(ext.path)).filter((f: string) => re.test(f));
+        langFiles.forEach(async (lang: string) => {
             var match = re.exec(lang);
             log('debug', 'beatvortex loading translation file', {lang, match});
-            var langContent = await fsx.readFile(path.join(ext.path, lang), { encoding: 'utf-8' });
+            var langContent = await fs.readFileAsync(path.join(ext.path, lang), { encoding: 'utf-8' });
             api.getI18n().addResources(match[1], ns, JSON.parse(langContent));
         });
     }

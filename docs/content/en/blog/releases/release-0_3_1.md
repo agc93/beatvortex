@@ -1,6 +1,6 @@
 ---
 title: "Alpha 3 Release"
-linkTitle: "Release 0.3.0"
+linkTitle: "Release 0.3.1"
 date: 2020-12-12
 description: >
   Alpha release of BeatVortex
@@ -17,11 +17,16 @@ This release adds some big new features and fixes to the previous alpha release 
 - Dependency tracking! Vortex will now warn you about missing dependencies when you install BeatMods mods.
 - Integrated OneClick Settings: settings to enable/disable OneClick link handling has been moved into the Settings page, on the Download tab.
 - Automatic BSIPA **un**patching: Vortex will now prompt you to revert BSIPA when you purge mods to restore things to default properly.
+- Support for translations! Check the [translation docs](/docs/developer/translation) to see how you can help translate BeatVortex into your language.
 - New reworked installation logic to cut down on errors and improve metadata.
 
 ### On Dependencies
 
-As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.0, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will *not* automatically install them for you! We're hoping to add this to a future release, but this also requires some changes on the Vortex side of things.
+As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will *not* automatically install them for you! We're hoping to add this to a future release, but this also requires some changes on the Vortex side of things.
+
+### What happened to 0.3.0?
+
+There was briefly a 0.3.0 release, but it wasn't in a state I liked so we skipped straight to 0.3.1 with some more big changes folded in.
 
 ### A note to Mod Assistant users
 
