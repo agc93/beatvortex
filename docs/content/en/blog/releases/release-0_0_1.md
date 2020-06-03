@@ -2,6 +2,9 @@
 title: "Initial Release"
 linkTitle: "Release 0.0.1"
 date: 2020-03-31
+aliases:
+  - /updates/hydrogen
+  - /updates/v0.0.1
 description: >
   The initial pre-alpha of BeatVortex
 ---

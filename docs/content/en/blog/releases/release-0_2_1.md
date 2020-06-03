@@ -2,6 +2,9 @@
 title: "Alpha 2.1 Release"
 linkTitle: "Release 0.2.1"
 date: 2020-04-17
+aliases:
+  - /updates/scandium
+  - /updates/v0.2.1
 description: >
   Alpha release of BeatVortex
 ---

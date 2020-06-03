@@ -2,6 +2,9 @@
 title: "Alpha 2.3 Release"
 linkTitle: "Release 0.2.3"
 date: 2020-04-20
+aliases:
+  - /updates/vanadium
+  - /updates/v0.2.3
 description: >
   Alpha release of BeatVortex
 ---

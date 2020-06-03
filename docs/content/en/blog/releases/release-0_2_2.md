@@ -2,6 +2,9 @@
 title: "Alpha 2.2 Release"
 linkTitle: "Release 0.2.2"
 date: 2020-04-19
+aliases:
+  - /updates/titanium
+  - /updates/v0.2.2
 description: >
   Alpha release of BeatVortex
 ---

@@ -1,7 +1,10 @@
 ---
 title: "Alpha 3 Release"
 linkTitle: "Release 0.3.1"
-date: 2020-12-12
+date: 2020-06-02
+aliases:
+  - /updates/gallium
+  - /updates/v0.3.1
 description: >
   Alpha release of BeatVortex
 ---
@@ -14,7 +17,7 @@ This release marks the next full alpha of the BeatVortex extension. If you can i
 
 This release adds some big new features and fixes to the previous alpha release including:
 
-- Dependency tracking! Vortex will now warn you about missing dependencies when you install BeatMods mods.
+- Dependency tracking! Vortex will now warn you about missing dependencies when you install BeatMods mods, and offer to install them automatically.
 - Integrated OneClick Settings: settings to enable/disable OneClick link handling has been moved into the Settings page, on the Download tab.
 - Automatic BSIPA **un**patching: Vortex will now prompt you to revert BSIPA when you purge mods to restore things to default properly.
 - Support for translations! Check the [translation docs](/docs/developer/translation) to see how you can help translate BeatVortex into your language.
@@ -22,7 +25,9 @@ This release adds some big new features and fixes to the previous alpha release 
 
 ### On Dependencies
 
-As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will *not* automatically install them for you! We're hoping to add this to a future release, but this also requires some changes on the Vortex side of things.
+As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will also automatically attempt to download and install the required dependencies when you install a new mod. However, this **requires Vortex 1.12.3 or later**.
+
+Vortex versions prior to this had some tricky bugs in how dependencies were resolved that should be fixed in 1.12.3.
 
 ### What happened to 0.3.0?
 

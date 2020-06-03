@@ -2,6 +2,9 @@
 title: "Alpha 2 Release"
 linkTitle: "Release 0.2.0"
 date: 2020-04-16
+aliases:
+  - /updates/calcium
+  - /updates/v0.2.0
 description: >
   Alpha release of BeatVortex
 ---
