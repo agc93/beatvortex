@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Documentation</title><link>/docs/</link><description>Recent content in Documentation on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Frequently Asked Questions</title><link>/docs/introduction/faq/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/introduction/faq/</guid><description>
 &lt;p>Below is a collection of frequent questions and the best answers I can give.&lt;/p>
 &lt;h3 id="why-do-i-need-vortex-for-this">Why do I need Vortex for this?&lt;/h3>
-&lt;p>You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, including dependency resolution.&lt;/p>
+&lt;p>You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, and the two tools work in fundamentally different ways.&lt;/p>
 &lt;p>BeatVortex is just an alternate method of installing mods for those who are more familiar with Vortex already.&lt;/p>
 &lt;h3 id="why-not-just-use-mod-assistant">Why not just use Mod Assistant?&lt;/h3>
 &lt;p>See above ⬆. Use what you prefer! Prefer the familiarity of Vortex? Use BeatVortex. Prefer the extra features of Mod Assistant? Use that. Got your own set of tools? Use those.&lt;/p>
@@ -13,12 +13,12 @@
 &lt;/blockquote>
 &lt;h3 id="why-cant-i-download-mods-from-the-nexus">Why can’t I download mods from the Nexus?&lt;/h3>
 &lt;p>Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.&lt;/p>
-&lt;h3 id="why-arent-dependencies-supported">Why aren't dependencies supported?&lt;/h3>
+&lt;h3 id="why-arent-dependencies-fully-supported">Why aren't dependencies fully supported?&lt;/h3>
 &lt;p>This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.&lt;/p>
-&lt;p>If you want the full technical breakdown, check out the full &lt;a href="../docs/developer/dependencies/">developer docs on dependencies&lt;/a>.&lt;/p>
 &lt;blockquote>
-&lt;p>Dependencies are &lt;em>shown&lt;/em> in the Mods list and BeatMods browser, but we don't automatically install them.&lt;/p>
+&lt;p>If you want the full technical breakdown, check out the full &lt;a href="../docs/developer/dependencies/">developer docs on dependencies&lt;/a>.&lt;/p>
 &lt;/blockquote>
+&lt;p>Dependencies are &lt;em>shown&lt;/em> in the Mods list and BeatMods browser, and we will &lt;em>try&lt;/em> and automatically install them when you install any mod from BeatMods, but this hasn't been fully tested and might still have some quirks or errors.&lt;/p>
 &lt;h3 id="why-arent-updates-supported">Why aren't updates supported?&lt;/h3>
 &lt;p>This has the same two problems as dependencies: Vortex and BeatMods&lt;/p>
 &lt;p>Vortex does natively support updates, but at current the only update implementation available (that I know of) is using Nexus Mods, which we obviously don't have. That means having to reverse engineer how Nexus handles triggering mod updates which is a) an absolute shitton of work and b) difficult with BeatMods.&lt;/p>
@@ -83,7 +83,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;li>Install from archives&lt;/li>
 &lt;/ul>
 &lt;h2 id="oneclick-installationsuppreviewsup">OneClick Installation&lt;sup>&lt;em>preview&lt;/em>&lt;/sup>&lt;/h2>
-&lt;p>One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber requires first enabling it in your Vortex profile settings.&lt;/p>
+&lt;p>One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber requires first enabling it in your Vortex settings.&lt;/p>
 &lt;blockquote>
 &lt;p>Enabling one-click installs in Vortex will most likely prevent Mod Assistant from handling one-click installs!&lt;/p>
 &lt;/blockquote>
@@ -98,8 +98,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>If you're looking to install any of the mods listed on BeatMods, you can easily do so from the BeatMods page in the sidebar (available from v0.2.0 onwards). This will list all approved mods for your current game version and you can quickly install them using the &lt;em>Ready to Install&lt;/em> button on the right.&lt;/p>
 &lt;p>Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.&lt;/p>
 &lt;blockquote>
-&lt;p>BeatVortex doesn't install dependencies for mods yet as Vortex's dependency resolution is &amp;hellip; complicated.
-You will be notified of missing dependencies, but you will need to install them yourself for now.&lt;/p>
+&lt;p>BeatVortex &lt;em>should&lt;/em> automatically prompt you to install dependencies when you install BeatMods mods from the browser. You can also check the Dependencies column of the Mods list to see what your mods need.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="download-in-vortex">Download in Vortex&lt;/h2>
 &lt;p>Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You might not have any mods here, but if you click on the &lt;em>But don't worry, I know a place&amp;hellip;&lt;/em> dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.&lt;/p>
@@ -112,7 +111,7 @@ You will be notified of missing dependencies, but you will need to install them 
 &lt;blockquote>
 &lt;p>Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.&lt;/p>
 &lt;/blockquote>
-&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will not work properly. Only archives are fully supported at this time.&lt;/p>
+&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will probably not work properly. Only archives are fully supported at this time.&lt;/p>
 &lt;h2 id="updating-mods">Updating Mods&lt;/h2>
 &lt;p>At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA &lt;em>should&lt;/em> automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.&lt;/p>
 &lt;blockquote>
@@ -152,7 +151,12 @@ You will be notified of missing dependencies, but you will need to install them 
 &lt;h3 id="what-information-does-the-metaserver-get">What information does the metaserver get?&lt;/h3>
 &lt;p>The BeatVortex metaserver in particular responds to two queries: &lt;code>by_key&lt;/code> and &lt;code>by_name&lt;/code>. The &lt;code>by_key&lt;/code> query is a single MD5 hash of a file currently being installed. We ignore these, since BeatMods doesn't support them. The &lt;code>by_name&lt;/code> query is a simple API call with two parts: a name (like &lt;code>SongCore&lt;/code>) and a version (like &lt;code>^2.9.1&lt;/code>). The server won't see any other details from your installation or settings.&lt;/p>
 &lt;h3 id="can-i-run-my-own-metaserver">Can I run my own metaserver?&lt;/h3>
-&lt;p>Yes! The code our server uses is &lt;a href="https://github.com/agc93/modmeta-relay">open source on GitHub&lt;/a> and easy enough to run on your own. Just run the server, then add its publicly accessible URL to your Vortex configuration.&lt;/p></description></item><item><title>Docs: Packaging for Mod Authors</title><link>/docs/developer/authoring/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/authoring/</guid><description>
+&lt;p>Yes! The code our server uses is &lt;a href="https://github.com/agc93/modmeta-relay">open source on GitHub&lt;/a> and easy enough to run on your own. Just run the server, add the BeatVortex plugin, then add its publicly accessible URL to your Vortex configuration.&lt;/p>
+&lt;h3 id="can-the-metaserver-be-turned-off">Can the metaserver be turned off?&lt;/h3>
+&lt;p>Yes, but you probably shouldn't. Unless you're testing your own server or something, it's best to leave it enabled. Disabling the metaserver will immediately remove the server from Vortex's configuration meaning anything that depends on a metaserver will stop working. Most notably, dependencies won't automatically be downloaded/installed anymore!&lt;/p>
+&lt;blockquote>
+&lt;p>There was also a bug in Vortex versions prior to 1.12.3 where disabling metaservers didn't actually remove them which could cause problems during install.&lt;/p>
+&lt;/blockquote></description></item><item><title>Docs: Packaging for Mod Authors</title><link>/docs/developer/authoring/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/authoring/</guid><description>
 &lt;p>In general, if your mod is compatible with Mod Assistant, it will work with BeatVortex! See below for some extra information on how different mod types are handled.&lt;/p>
 &lt;h3 id="song-maps">Song Maps&lt;/h3>
 &lt;p>BeatVortex includes special logic for installing song maps. As long as your mod archive includes any &lt;code>.dat&lt;/code> or &lt;code>.egg&lt;/code> files, the installer will automatically extract the archive into its own directory under the &lt;code>Beat Saber_Data/CustomLevels&lt;/code> directory.&lt;/p>
@@ -194,7 +198,7 @@ You will be notified of missing dependencies, but you will need to install them 
 &lt;/div>
 &lt;p>Dependency management in Vortex is always a bit of a mess and it's especially so if you're &lt;em>not&lt;/em> using Nexus Mods, which we are definitely not. As it stands, BeatVortex can notify you about missing dependencies and will &lt;strong>attempt&lt;/strong> to install them for you when you install a mod.&lt;/p>
 &lt;blockquote>
-&lt;p>We're actively working with the Vortex team to understand how to better support non-Nexus dependencies.&lt;/p>
+&lt;p>It's our understanding that BeatVortex is the only game extension handling non-Nexus dependencies so this is uncharted ground.&lt;/p>
 &lt;/blockquote>
 &lt;p>There's some limitations in how Vortex/&lt;code>modmeta-db&lt;/code>/BeatVortex/BeatMods interact that makes this story surprisingly hard.&lt;/p>
 &lt;h4 id="beatmods-doesnt-have-md5s-for-archives">BeatMods doesn't have MD5s for archives&lt;/h4>
@@ -202,19 +206,17 @@ You will be notified of missing dependencies, but you will need to install them 
 &lt;h4 id="beatmods-does-dependencies-weird">BeatMods does dependencies weird&lt;/h4>
 &lt;p>The BeatMods API, for reasons likely lost to time, returns dependencies from the API in a super-weird way: top-level dependencies are fine, but &lt;em>their&lt;/em> dependencies are only returned as document IDs, meaning we can't easily go from a single API call to a full dependency tree. Thankfully, Vortex (mostly) has our back here, and can do basic-but-good-enough dependency resolution.&lt;/p>
 &lt;h4 id="vortex-doesnt-fully-implement-modmeta-db">Vortex doesn't fully implement &lt;code>modmeta-db&lt;/code>&lt;/h4>
-&lt;p>The backing &lt;code>modmeta-db&lt;/code> supports looking up mod files by a couple of different &amp;ldquo;keys&amp;rdquo;: MD5 hash (see above), logical file name, and custom file expressions. At present, since Nexus uses MD5 hashes, Vortex pretty much only uses the MD5 hash for &lt;em>installation&lt;/em>. That means we can (and do) specify dependency rules, but Vortex won't know where to &lt;em>find&lt;/em> those dependencies.&lt;/p>
+&lt;p>The backing &lt;code>modmeta-db&lt;/code> supports looking up mod files by a couple of different &amp;ldquo;keys&amp;rdquo;: MD5 hash (see above), logical file name, and custom file expressions. At present, since Nexus uses MD5 hashes, Vortex mostly just uses the MD5 hash for installation. In earlier versions of Vortex, that meant we could specify dependency rules, but Vortex wouldn't know where to &lt;em>find&lt;/em> those dependencies.&lt;/p>
+&lt;p>Vortex releases from 1.12.2 added support for looking up mod dependencies using a logical file name, meaning we can now use a metaserver (essentially an implementation of &lt;code>modmeta-db&lt;/code> over REST) to return information on dependencies, including where to find them (i.e BeatMods). Finally, Vortex releases from 1.12.3 onwards improved dependency resolution so that BeatMods extensions installed from archives or the browser should automatically install all the required dependencies.&lt;/p>
 &lt;blockquote>
-&lt;p>This is currently changing! In cooperation with the Nexus team, newer releases of Vortex have added support for looking up mod info using logical file names.&lt;/p>
+&lt;p>A huge thanks to the Nexus/Vortex team, who have been very helpful in expanding and explaining Vortex's dependency support. Thanks Tannin!&lt;/p>
 &lt;/blockquote>
-&lt;p>In future, we should be able to provide a working meta server that can tell Vortex where to find a particular logical file name/version combo (i.e. the correct file on BeatMods), but this doesn't seem to work exactly right at current.&lt;/p>
-&lt;blockquote>
-&lt;p>It's our understanding that BeatVortex is the only game extension handling non-Nexus dependencies so this is uncharted ground.&lt;/p>
-&lt;/blockquote>
+&lt;p>We now add a metaserver at startup that returns metadata and dependency information for all the mods available on BeatMods. This behaviour can be toggled off in the Settings if desired. With the metaserver disabled, Vortex will still warn on missing &lt;em>immediate&lt;/em> dependencies, but it won't be able to automatically install them, or build a full dependency tree.&lt;/p>
 &lt;h4 id="beatmods-provides-only-basic-dependency-information">BeatMods provides only basic dependency information&lt;/h4>
 &lt;p>BeatMods dependencies can essentially be summarised down to a mod name and specific version. In practice, this is generally &lt;em>enough&lt;/em> and mod managers (whether it's BeatVortex or Mod Assistant) can just install that version. The only problem here is that we are now locking depenencies to very specific package versions which Vortex now has to take a hard-and-fast restriction.&lt;/p>
 &lt;p>As a middle ground, BeatVortex assumes that mod authors are following Semantic Versioning (SemVer) correctly and matches major versions only. That means that, for example, a mod asking for SongCore 2.7.5 could have SongCore 2.9.x installed.&lt;/p>
 &lt;blockquote>
-&lt;p>We're using the &lt;code>~&lt;/code> operator for those already familiar with the Node/npm semver format.&lt;/p>
+&lt;p>We're using the &lt;code>^&lt;/code> operator for those already familiar with the Node/npm semver format.&lt;/p>
 &lt;/blockquote></description></item><item><title>Docs: Translating BeatVortex</title><link>/docs/developer/translation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/translation/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>The information below &lt;strong>only&lt;/strong> applies to BeatVortex versions from 0.3.1 onwards. Versions prior to 0.3.1 did not include the code necessary to support translations.&lt;/p>
@@ -226,16 +228,17 @@ You will be notified of missing dependencies, but you will need to install them 
 &lt;p>However, there's quite a few Beat Saber-specific parts that we add to Vortex, and these won't automatically be translated. Of particular note are the BeatMods browser, Beat Saber-specific settings and some dialogs and notifications. We've built support for translating these elements but that requires actual, you know, translations!&lt;/p>
 &lt;h2 id="building-translations">Building Translations&lt;/h2>
 &lt;p>If you're already familiar with Vortex (or &lt;code>react-i18next&lt;/code>-based) translations then the short version is that BeatVortex uses a separate &lt;code>beatvortex&lt;/code> namespace (and &lt;code>beatvortex.json&lt;/code> file) to get localised strings.&lt;/p>
-&lt;p>More specifically, Vortex will &lt;strong>usually&lt;/strong> look for a &lt;code>beatvortex.json&lt;/code> file inside &lt;code>%APPDATA%/Vortex/resources/locales/&amp;lt;ISO-CODE&amp;gt;&lt;/code> and use any translated strings it finds there, falling back to English if none is found.&lt;/p>
-&lt;p>However, we've added an extra convention to make translations a bit easier: the extension contains a file called &lt;a href="https://github.com/agc93/beatvortex/blob/master/src/language_en.json">language_en.json&lt;/a> with all the currently translateable English strings. When Vortex starts up, BeatVortex will load in any &lt;code>language_&amp;lt;code&amp;gt;.json&lt;/code> files it finds, so you can create a &lt;code>language_fr.json&lt;/code> file to add French translations or a &lt;code>language_ru.json&lt;/code> file to add Russian translations.&lt;/p>
-&lt;blockquote>
-&lt;p>Once installed, these files will be at &lt;code>%APPDATA%/Vortex/plugins/game-beatsaber/&lt;/code>. You can manually create these files while translating.&lt;/p>
-&lt;/blockquote>
-&lt;p>Once you have a translation, open a PR to add the file to the repository and we'll push your translation out with the next update!&lt;/p>
-&lt;h3 id="existing-translations">Existing Translations&lt;/h3>
-&lt;p>If you are working on, or maintaining, an existing Vortex translation, you can add BeatVortex support by adding a &lt;code>beatvortex.json&lt;/code> file to your translation package for the BeatVortex-specific strings. A loose example file that should over most elements is available at &lt;a href="https://beatvortex.dev/beatvortex_en.json">beatvortex.dev/beatvortex_en.json&lt;/a> that translators can use for a good starting point.&lt;/p>
 &lt;blockquote>
 &lt;p>We haven't worked with Vortex translations much before: please raise an issue if something doesn't look right or needs changing!&lt;/p>
+&lt;/blockquote>
+&lt;p>More specifically, Vortex will &lt;strong>usually&lt;/strong> look for a &lt;code>beatvortex.json&lt;/code> file inside &lt;code>%APPDATA%/Vortex/resources/locales/&amp;lt;ISO-CODE&amp;gt;&lt;/code> and use any translated strings it finds there, falling back to English if none is found.&lt;/p>
+&lt;h3 id="existing-translations">Existing Translations&lt;/h3>
+&lt;p>If you are working on, or maintaining, an existing Vortex translation, you can add BeatVortex support by adding a &lt;code>beatvortex.json&lt;/code> file to your translation package for the BeatVortex-specific strings. A loose example file that should over most elements is available at &lt;a href="https://beatvortex.dev/beatvortex_en.json">beatvortex.dev/beatvortex_en.json&lt;/a> that translators can use for a good starting point.&lt;/p>
+&lt;h3 id="translation">Translation&lt;/h3>
+&lt;p>However, we've added an extra convention to make translations a bit easier: the extension contains a file called &lt;a href="https://github.com/agc93/beatvortex/blob/master/src/language_en.json">language_en.json&lt;/a> with all the currently translateable English strings. When Vortex starts up, BeatVortex will load in any &lt;code>language_&amp;lt;code&amp;gt;.json&lt;/code> files it finds, so you can create a &lt;code>language_fr.json&lt;/code> file to add French translations or a &lt;code>language_ru.json&lt;/code> file to add Russian translations.&lt;/p>
+&lt;p>Once installed, these files will be at &lt;code>%APPDATA%/Vortex/plugins/game-beatsaber/&lt;/code>. You can manually create these files while translating.&lt;/p>
+&lt;blockquote>
+&lt;p>To be clear, please try and contribute translations back to the many &lt;a href="https://www.nexusmods.com/site/mods/categories/7/">existing Vortex translations&lt;/a> primarily. If there isn't an existing translation or you're having trouble getting translations included, only then add them directly to the extension instead.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="documentation">Documentation&lt;/h2>
 &lt;p>This documentation, like the extension code, is &lt;a href="https://github.com/agc93/beatvortex/blob/master/docs/">all open-source&lt;/a>. If you'd like to help out with translating the documentation, you're an amazing person! Our docs builder (Hugo with Docsy) is capable of supporting multiple languages using folders under the &lt;code>docs/content/&lt;/code> path (for example, &lt;code>docs/content/es&lt;/code> or &lt;code>/docs/content/de&lt;/code>). If you submit a PR with any translated docs, we will enable that language in our site build and your translated docs will be available when we next publish.&lt;/p></description></item><item><title>Docs: Docs Contributions</title><link>/docs/developer/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/developer/docs/</guid><description>

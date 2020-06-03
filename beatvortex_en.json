@@ -12,5 +12,8 @@
     "bs:Settings:EnableOCIMaps": "Enable OneClick links for maps",
     "bs:Settings:EnableOCIModels": "Enable OneClick links for custom models",
     "bs:Settings:EnableOCIMapsHelp": "Enabling this option will register Vortex to handle the 'beatsaver' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n",
-    "bs:Settings:EnableOCIModelsHelp": "Enabling this option will register Vortex to handle the 'modelsaber' URLs used by OneClick links on ModelSaber.\nThis option includes custom notes, walls and avatars."
+    "bs:Settings:EnableOCIModelsHelp": "Enabling this option will register Vortex to handle the 'modelsaber' URLs used by OneClick links on ModelSaber.\nThis option includes custom notes, walls and avatars.",
+    "bs:Settings:EnableMetaserverTitle": "Enable BeatVortex Metaserver Integration",
+    "bs:Settings:EnableMetaserver": "Enable the metaserver",
+    "bs:Settings:EnableMetaserverHelp": "These settings will control how BeatVortex automatically registers a metaserver to handle some advanced Beat Saber-specific installation functionality, such as dependencies and playlist management.\n Only turn this off if you really know what you are doing!"
 }
