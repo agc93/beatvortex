@@ -25,9 +25,9 @@ This release adds some big new features and fixes to the previous alpha release 
 
 ### On Dependencies
 
-As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will also automatically attempt to download and install the required dependencies when you install a new mod. However, this **requires Vortex 1.12.3 or later**.
+As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will also automatically attempt to download and install the required dependencies when you install a new mod. However, this **requires Vortex 1.2.13 or later**.
 
-Vortex versions prior to this had some tricky bugs in how dependencies were resolved that should be fixed in 1.12.3.
+Vortex versions prior to this had some tricky bugs in how dependencies were resolved that should be fixed in 1.2.13.
 
 ### What happened to 0.3.0?
 

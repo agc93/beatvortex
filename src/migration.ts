@@ -19,7 +19,7 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
         return Promise.resolve();
     }
     var vortexVersion = app.getVersion();
-    if (semver.gte(vortexVersion, '1.2.14')) {
+    if (semver.gte(vortexVersion, '1.2.13')) {
         return Promise.resolve();
     }
     log('warn', 'detected beatvortex<->vortex version mismatch', {vortex: vortexVersion, extension: oldVersion});
