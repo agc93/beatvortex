@@ -14,7 +14,7 @@ Additionally, dependencies are an area of very active development and things are
 
 Dependency management in Vortex is always a bit of a mess and it's especially so if you're *not* using Nexus Mods, which we are definitely not. As it stands, BeatVortex can notify you about missing dependencies and will **attempt** to install them for you when you install a mod.
 
-> We're actively working with the Vortex team to understand how to better support non-Nexus dependencies.
+> It's our understanding that BeatVortex is the only game extension handling non-Nexus dependencies so this is uncharted ground.
 
 There's some limitations in how Vortex/`modmeta-db`/BeatVortex/BeatMods interact that makes this story surprisingly hard.
 
@@ -28,13 +28,13 @@ The BeatMods API, for reasons likely lost to time, returns dependencies from the
 
 #### Vortex doesn't fully implement `modmeta-db`
 
-The backing `modmeta-db` supports looking up mod files by a couple of different "keys": MD5 hash (see above), logical file name, and custom file expressions. At present, since Nexus uses MD5 hashes, Vortex pretty much only uses the MD5 hash for *installation*. That means we can (and do) specify dependency rules, but Vortex won't know where to *find* those dependencies.
+The backing `modmeta-db` supports looking up mod files by a couple of different "keys": MD5 hash (see above), logical file name, and custom file expressions. At present, since Nexus uses MD5 hashes, Vortex mostly just uses the MD5 hash for installation. In earlier versions of Vortex, that meant we could specify dependency rules, but Vortex wouldn't know where to *find* those dependencies.
 
-> This is currently changing! In cooperation with the Nexus team, newer releases of Vortex have added support for looking up mod info using logical file names.
+Vortex releases from 1.12.2 added support for looking up mod dependencies using a logical file name, meaning we can now use a metaserver (essentially an implementation of `modmeta-db` over REST) to return information on dependencies, including where to find them (i.e BeatMods). Finally, Vortex releases from 1.12.3 onwards improved dependency resolution so that BeatMods extensions installed from archives or the browser should automatically install all the required dependencies.
 
-In future, we should be able to provide a working meta server that can tell Vortex where to find a particular logical file name/version combo (i.e. the correct file on BeatMods), but this doesn't seem to work exactly right at current.
+> A huge thanks to the Nexus/Vortex team, who have been very helpful in expanding and explaining Vortex's dependency support. Thanks Tannin!
 
-> It's our understanding that BeatVortex is the only game extension handling non-Nexus dependencies so this is uncharted ground.
+We now add a metaserver at startup that returns metadata and dependency information for all the mods available on BeatMods. This behaviour can be toggled off in the Settings if desired. With the metaserver disabled, Vortex will still warn on missing _immediate_ dependencies, but it won't be able to automatically install them, or build a full dependency tree.
 
 #### BeatMods provides only basic dependency information
 
@@ -42,4 +42,4 @@ BeatMods dependencies can essentially be summarised down to a mod name and speci
 
 As a middle ground, BeatVortex assumes that mod authors are following Semantic Versioning (SemVer) correctly and matches major versions only. That means that, for example, a mod asking for SongCore 2.7.5 could have SongCore 2.9.x installed.
 
-> We're using the `~` operator for those already familiar with the Node/npm semver format.
+> We're using the `^` operator for those already familiar with the Node/npm semver format.

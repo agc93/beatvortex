@@ -27,7 +27,7 @@ There's a few main ways to install mods:
 
 ## OneClick Installation<sup>*preview*</sup>
 
-One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber requires first enabling it in your Vortex profile settings.
+One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber requires first enabling it in your Vortex settings.
 
 > Enabling one-click installs in Vortex will most likely prevent Mod Assistant from handling one-click installs!
 
@@ -47,8 +47,7 @@ If you're looking to install any of the mods listed on BeatMods, you can easily 
 
 Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.
 
-> BeatVortex doesn't install dependencies for mods yet as Vortex's dependency resolution is ... complicated.
-> You will be notified of missing dependencies, but you will need to install them yourself for now.
+> BeatVortex *should* automatically prompt you to install dependencies when you install BeatMods mods from the browser. You can also check the Dependencies column of the Mods list to see what your mods need.
 
 ## Download in Vortex
 
@@ -64,7 +63,7 @@ You can also download mod/map archives directly from BeastSaber, BeatSaver, Beat
 
 > Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.
 
-Please note that "raw" mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will not work properly. Only archives are fully supported at this time.
+Please note that "raw" mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will probably not work properly. Only archives are fully supported at this time.
 
 ## Updating Mods
 

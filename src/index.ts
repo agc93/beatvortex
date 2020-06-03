@@ -8,6 +8,7 @@ import { ProfileClient } from "vortex-ext-common";
 
 // local modules
 import { showPatchDialog, showTermsNotification } from "./notify";
+import { migrate031 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent } from "./install";
@@ -19,7 +20,7 @@ import { ModelSaberClient } from './modelSaberClient';
 
 // components etc
 import BeatModsList from "./BeatModsList";
-import { OneClickSettings, settingsReducer, ILinkHandling } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings } from "./settings";
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
@@ -41,12 +42,11 @@ function main(context : IExtensionContext) {
         if (isActiveGame(context)) {}
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
         addTranslations(context.api, 'beatvortex');
-        var state = context.api.getState();
-        var enableLinks = util.getSafe(state, ['settings', 'beatvortex', 'enableOCI'], undefined) as ILinkHandling;
-        registerProtocols(context.api, enableLinks);
-        context.api.onStateChange(['settings', 'beatvortex', 'enableOCI'], (previous : ILinkHandling, current: ILinkHandling) => {
+        handleSettings(context.api, 'enableOCI', registerProtocols);
+        handleSettings(context.api, 'metaserver', registerMetaserver);
+        context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
             log('debug', 'got settings change', {current});
-            registerProtocols(context.api, current);
+            logMetaservers(context.api, current);
         });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
@@ -97,6 +97,8 @@ function main(context : IExtensionContext) {
             gamepath: GAME_PATH
         }
     });
+    context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
+
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods'});
     addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs'});
     addModSource(context, { id: 'beatsaver', name: 'BeatSaver', 'url': 'https://beatsaver.com/browse/hot'});
@@ -126,7 +128,8 @@ function main(context : IExtensionContext) {
         props: () => ({ api: context.api, mods: []}),
       });
 
-      // ⬇ is only commented out because it doesn't work right now :(
+      // ↘ affected by https://github.com/Nexus-Mods/Vortex/issues/6315
+      context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
       context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
       context.registerReducer(['settings', 'beatvortex'], settingsReducer);
 
@@ -191,6 +194,17 @@ function addProfileFeatures(context: IExtensionContext) {
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
 }
 
+/**
+ * Loads extension-specific translation files directly into `i18next`
+ * 
+ * @remarks
+ * - A note for other extension authors: **DON'T DO THIS**.
+ * - See https://github.com/Nexus-Mods/Vortex/issues/6311 for why this is a bad idea
+ * - I'm leaving this here because I'm wilfully breaking things, but please don't do this.
+ * 
+ * @param api The extension API
+ * @param ns The namespace to load translations for
+ */
 async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : Promise<void> {
     var ext = api.getLoadedExtensions().find(e => e.name == 'game-beatsaber');
     if (ext) {
@@ -314,6 +328,16 @@ async function handleDeploymentEvent(api: IExtensionApi, profileId: string, depl
     if (ev.isBeatSaber) {
         await handler(api, ev.profile, deployment);
     }
+}
+
+async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc: (api: IExtensionApi, stateValue: T) => void) {
+    var state = api.getState();
+    var currentState = util.getSafe(state, ['settings', 'beatvortex', key], undefined) as T;
+    stateFunc(api, currentState);
+    api.onStateChange(['settings', 'beatvortex', key], (previous : T, current: T) => {
+        log('debug', 'got settings change', {current});
+        stateFunc(api, current);
+    });
 }
 
 /**
@@ -481,6 +505,16 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
     }
 }
 
+export function directDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
+    if (!err) {
+        callback(api);
+        api.events.emit('start-install-download', id, true);
+    } else {
+        //TODO: need to actually handle this, obviously
+        api.showErrorNotification(`Failed to download ${details.name}!`, `Error encountered during download and install: ${err.name}\n${err.message}`, {allowReport: false});
+    }
+}
+
 //#endregion
 
 //#region Event Handlers
@@ -537,6 +571,24 @@ export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling
             api.deregisterProtocol('modelsaber');
         }
     }
+}
+
+function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSettings) {
+    if (metaSettings != undefined) {
+        log('debug', 'beatvortex: initialising metaserver', { metaSettings });
+        if (metaSettings.enableServer && metaSettings.serverUrl) {
+            api.addMetaServer('bs-metaserver', { url: metaSettings.serverUrl});
+        } else if (metaSettings.enableServer === false) {
+            api.addMetaServer('bs-metaserver', undefined);
+        }
+    }
+}
+
+function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url: string; priority: number; } }) {
+    var servers = Object.keys(metaSettings).map(k => {
+        return { id: k, url: metaSettings[k].url}
+    });
+    log('debug', 'got metaserver state', {count: servers.length, servers: servers});
 }
 
 //#endregion

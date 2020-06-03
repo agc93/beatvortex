@@ -7,7 +7,7 @@ import { IExtensionApi, IModTable, IMod, IState } from 'vortex-api/lib/types/api
 import { IModDetails, BeatModsClient } from './beatModsClient';
 import { getGameVersion, traceLog } from './util';
 import { util } from "vortex-api";
-import { handleDownloadInstall, setDownloadModInfo, GAME_ID } from '.';
+import { handleDownloadInstall, setDownloadModInfo, GAME_ID, directDownloadInstall } from '.';
 import { rsort } from "semver";
 import { withTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
@@ -110,7 +110,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             }, 
             mod.name, 
             (err: Error, id?: string) => {
-                handleDownloadInstall(api, mod, err, id, (api) => {
+                directDownloadInstall(api, mod, err, id, (api) => {
                     setDownloadModInfo(api.store, id, {...mod, source: 'beatmods'});
                     this.refreshMods();
                 });

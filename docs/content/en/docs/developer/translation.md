@@ -20,19 +20,21 @@ However, there's quite a few Beat Saber-specific parts that we add to Vortex, an
 
 If you're already familiar with Vortex (or `react-i18next`-based) translations then the short version is that BeatVortex uses a separate `beatvortex` namespace (and `beatvortex.json` file) to get localised strings.
 
+> We haven't worked with Vortex translations much before: please raise an issue if something doesn't look right or needs changing!
+
 More specifically, Vortex will **usually** look for a `beatvortex.json` file inside `%APPDATA%/Vortex/resources/locales/<ISO-CODE>` and use any translated strings it finds there, falling back to English if none is found.
-
-However, we've added an extra convention to make translations a bit easier: the extension contains a file called [language_en.json](https://github.com/agc93/beatvortex/blob/master/src/language_en.json) with all the currently translateable English strings. When Vortex starts up, BeatVortex will load in any `language_<code>.json` files it finds, so you can create a `language_fr.json` file to add French translations or a `language_ru.json` file to add Russian translations.
-
-> Once installed, these files will be at `%APPDATA%/Vortex/plugins/game-beatsaber/`. You can manually create these files while translating.
-
-Once you have a translation, open a PR to add the file to the repository and we'll push your translation out with the next update!
 
 ### Existing Translations
 
 If you are working on, or maintaining, an existing Vortex translation, you can add BeatVortex support by adding a `beatvortex.json` file to your translation package for the BeatVortex-specific strings. A loose example file that should over most elements is available at [beatvortex.dev/beatvortex_en.json](https://beatvortex.dev/beatvortex_en.json) that translators can use for a good starting point.
 
-> We haven't worked with Vortex translations much before: please raise an issue if something doesn't look right or needs changing!
+### Translation
+
+However, we've added an extra convention to make translations a bit easier: the extension contains a file called [language_en.json](https://github.com/agc93/beatvortex/blob/master/src/language_en.json) with all the currently translateable English strings. When Vortex starts up, BeatVortex will load in any `language_<code>.json` files it finds, so you can create a `language_fr.json` file to add French translations or a `language_ru.json` file to add Russian translations.
+
+Once installed, these files will be at `%APPDATA%/Vortex/plugins/game-beatsaber/`. You can manually create these files while translating.
+
+> To be clear, please try and contribute translations back to the many [existing Vortex translations](https://www.nexusmods.com/site/mods/categories/7/) primarily. If there isn't an existing translation or you're having trouble getting translations included, only then add them directly to the extension instead.
 
 ## Documentation
 

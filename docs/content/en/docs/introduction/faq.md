@@ -8,7 +8,7 @@ Below is a collection of frequent questions and the best answers I can give.
 
 ### Why do I need Vortex for this?
 
-You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, including dependency resolution.
+You don't! If you prefer using any of the other community-provided mod tools (like Mod Assistant), I recommend using them! In fact, Mod Assistant provides a few features that BeatVortex/Vortex (or Nexus Mods) simply doesn't support, and the two tools work in fundamentally different ways.
 
 BeatVortex is just an alternate method of installing mods for those who are more familiar with Vortex already.
 
@@ -28,13 +28,13 @@ They probably already are! If you want to maximise support and avoid some issues
 
 Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.
 
-### Why aren't dependencies supported?
+### Why aren't dependencies fully supported?
 
 This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.
 
-If you want the full technical breakdown, check out the full [developer docs on dependencies](/docs/developer/dependencies/).
+> If you want the full technical breakdown, check out the full [developer docs on dependencies](/docs/developer/dependencies/).
 
-> Dependencies are *shown* in the Mods list and BeatMods browser, but we don't automatically install them.
+Dependencies are *shown* in the Mods list and BeatMods browser, and we will *try* and automatically install them when you install any mod from BeatMods, but this hasn't been fully tested and might still have some quirks or errors.
 
 ### Why aren't updates supported?
 

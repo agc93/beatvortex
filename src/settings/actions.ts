@@ -10,6 +10,9 @@ import { IReducerSpec } from 'vortex-api/lib/types/api';
 export const registerOneClickInstall =
   createAction('BS_ENABLE_OCI', (register: ILinkHandling) => register);
 
+export const enableMetaserverIntegration =
+  createAction('BS_ENABLE_META', (serverSettings: IMetaserverSettings) => serverSettings);
+
 /**
  * reducer for changes to the authentication
  */
@@ -19,10 +22,14 @@ export const settingsReducer: IReducerSpec = {
         // const { url, instructions, subscriber } = payload;
         return util.merge(state, ['enableOCI'], payload);
         // util.setSafe(state, [ 'enableOCI' ], payload);
+      },
+      [enableMetaserverIntegration as any]: (state, payload: IMetaserverSettings) => {
+        return util.merge(state, ['metaserver'], payload);
       }
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
+      metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev/'} as IMetaserverSettings
     },
   };
 
@@ -31,4 +38,9 @@ export interface ILinkHandling {
     enableMaps?: boolean;
     enablePlaylists?: boolean;
     enableModels?: boolean;
+}
+
+export interface IMetaserverSettings {
+  enableServer?: boolean;
+  serverUrl?: string;
 }

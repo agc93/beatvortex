@@ -1,0 +1,112 @@
+import * as React from 'react';
+// import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
+// import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import * as Redux from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { withTranslation } from 'react-i18next';
+import { Toggle, log, ComponentEx, More, util } from 'vortex-api';
+import { IMetaserverSettings, enableMetaserverIntegration } from './actions';
+import { IState } from 'vortex-api/lib/types/api';
+const { HelpBlock, FormGroup, ControlLabel, InputGroup, FormControl } = require('react-bootstrap');
+
+interface IConnectedProps {
+    metaSettings: IMetaserverSettings;
+}
+
+interface IActionProps {
+    onSetMetaSettings: (enable: boolean, server?: string) => void;
+}
+
+interface IComponentState {
+    enableServer: boolean;
+    serverUrl: boolean;
+}
+
+type IProps = IConnectedProps & IActionProps;
+
+/* interface IBeatModsListState {
+    mods: IModDetails[];
+    selected?: string; //mod ID
+    gameVersion: string;
+    availableVersions: string[];
+    isLoading: boolean;
+    searchFilter: string;
+}
+ */
+class GeneralSettings extends ComponentEx<IProps, {}> {
+    /* *
+     *
+     */
+    /* constructor(props: IProps) {
+        super(props);
+
+        this.initState({
+            serverUrl: ''
+        } as IComponentState)
+        
+    } */
+    public render(): JSX.Element {
+        const { t } = this.props;
+        const { enableServer, serverUrl } = (this.props as IProps).metaSettings;
+        return (
+            <form>
+                <FormGroup>
+                    <ControlLabel>{t('bs:Settings:EnableMetaserverTitle')}</ControlLabel>
+                    <HelpBlock>
+                        {t('bs:Settings:EnableMetaserverHelp')}
+                    </HelpBlock>
+                    <Toggle
+                        checked={enableServer}
+                        onToggle={this.toggleServer}
+                    >
+                        {t("bs:Settings:EnableMetaserver")}
+                        {/* <More id='more-oci-maps' name='Metaserver Integration'>
+                        {t('bs:Settings:EnableOCIMapsHelp')}
+                    </More> */}
+                    </Toggle>
+                    {/* <InputGroup>
+                    <FormControl
+                        value={this.getServerUrl(serverUrl)}
+                        placeholder={t('Server URL')}
+                        onChange={this.setDownloadPathEvt as any}
+                        />
+                </InputGroup> */}
+                </FormGroup>
+            </form>
+        );
+    }
+
+    private getServerUrl = (serverUrl: string) => {
+        const { metaSettings } = this.props as IProps;
+        return serverUrl ?? metaSettings.serverUrl ?? '';
+    }
+
+    private toggleServer = (enable: boolean) => {
+        const { onSetMetaSettings, metaSettings } = this.props as IProps;
+        onSetMetaSettings(enable, metaSettings.serverUrl);
+    }
+
+
+}
+
+
+function mapStateToProps(state: IState): IConnectedProps {
+    // log('debug', 'mapping beatvortex state to props');
+    return {
+        metaSettings: state.settings['beatvortex']['metaserver']
+    };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): IActionProps {
+    // log('debug', 'mapping beatvortex dispatch to props', {ownProps});
+    return {
+        onSetMetaSettings: (enable: boolean, server?: string) => {
+            log('debug', 'beatvortex: setting metaserver integration', { enable, server });
+            return dispatch(enableMetaserverIntegration({ enableServer: enable, serverUrl: server }));
+        }
+    }
+}
+
+export default
+    withTranslation(['beatvortex', 'common'])(connect(mapStateToProps, mapDispatchToProps)(GeneralSettings));

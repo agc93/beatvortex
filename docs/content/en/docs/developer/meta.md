@@ -38,4 +38,10 @@ The BeatVortex metaserver in particular responds to two queries: `by_key` and `b
 
 ### Can I run my own metaserver?
 
-Yes! The code our server uses is [open source on GitHub](https://github.com/agc93/modmeta-relay) and easy enough to run on your own. Just run the server, then add its publicly accessible URL to your Vortex configuration.
+Yes! The code our server uses is [open source on GitHub](https://github.com/agc93/modmeta-relay) and easy enough to run on your own. Just run the server, add the BeatVortex plugin, then add its publicly accessible URL to your Vortex configuration.
+
+### Can the metaserver be turned off?
+
+Yes, but you probably shouldn't. Unless you're testing your own server or something, it's best to leave it enabled. Disabling the metaserver will immediately remove the server from Vortex's configuration meaning anything that depends on a metaserver will stop working. Most notably, dependencies won't automatically be downloaded/installed anymore!
+
+> There was also a bug in Vortex versions prior to 1.12.3 where disabling metaservers didn't actually remove them which could cause problems during install.
