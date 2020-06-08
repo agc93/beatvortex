@@ -2,12 +2,29 @@ import { IExtensionApi } from "vortex-api/lib/types/api";
 import { util, log } from "vortex-api";
 import * as semver from "semver";
 import { GAME_ID } from ".";
-import { app } from 'electron';
+import { app, remote } from 'electron';
 
 const I18N_NAMESPACE = 'beatvortex';
 
+type VersionMatrix = {[extensionVersion: string]: string};
+
+var minimumVersions: VersionMatrix = {
+    '0.3.1': '1.2.13'
+};
+
+export function getVortexVersion(defaultValue?: string): string {
+    var vortexVersion = app?.getVersion() ?? remote?.app?.getVersion() ?? defaultValue;
+    return vortexVersion;
+}
+
+export function meetsMinimum(version: string): boolean {
+    return semver.gte(getVortexVersion(), version);
+}
+
 export function migrate031(api: IExtensionApi, oldVersion: string) {
-    if (semver.gte(oldVersion, '0.3.1')) {
+    const extVersion = '0.3.1'
+    var minVortexVersion = minimumVersions[extVersion];
+    if (semver.gte(oldVersion, extVersion)) {
         return Promise.resolve();
     }
 
@@ -19,7 +36,7 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
         return Promise.resolve();
     }
     var vortexVersion = app.getVersion();
-    if (semver.gte(vortexVersion, '1.2.13')) {
+    if (semver.gte(vortexVersion, minVortexVersion)) {
         return Promise.resolve();
     }
     log('warn', 'detected beatvortex<->vortex version mismatch', {vortex: vortexVersion, extension: oldVersion});
@@ -27,7 +44,7 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
         return api.sendNotification({
             id: 'beatvortex-requires-upgrade',
             type: 'warning',
-            message: api.translate('BeatVortex requires Vortex v1.12.3 or higher!',
+            message: api.translate(`BeatVortex requires Vortex v${minVortexVersion} or higher!`,
                 { ns: I18N_NAMESPACE }),
             noDismiss: true,
             actions: [
@@ -35,7 +52,7 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
                     title: 'Explain',
                     action: () => {
                         api.showDialog('info', 'Beat Saber Support for Vortex', {
-                            text: api.translate("A number of the extra features added in v0.3.1 of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!", { ns: I18N_NAMESPACE }),
+                            text: api.translate("A number of the extra features added in v{{extensionVersion}} of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!", { ns: I18N_NAMESPACE, extensionVersion: extVersion }),
                         }, [
                             { label: 'Close' },
                         ]);

@@ -38,7 +38,7 @@ type IProps = IBaseProps & IConnectedProps & IActionProps;
 class OneClickSettings extends ComponentEx<IProps, {}> {
     public render() : JSX.Element {
         const { t } = this.props;
-        const { enableMaps, enableModels } = (this.props as IProps).linkHandling;
+        const { enableMaps, enableModels, enablePlaylists } = (this.props as IProps).linkHandling;
         return (
             <form>
                 <FormGroup>
@@ -64,6 +64,15 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
                         {t('bs:Settings:EnableOCIModelsHelp')}
                     </More>
                 </Toggle>
+                <Toggle
+                    checked={enablePlaylists}
+                    onToggle={this.togglePlaylists}
+                >
+                    {t("bs:Settings:EnableOCIPlaylists")}
+                    <More id='more-oci-models' name='OneClick Installs'>
+                        {t('bs:Settings:EnableOCIPlaylistsHelp')}
+                    </More>
+                </Toggle>
                 </FormGroup>
             </form>
         );
@@ -77,6 +86,11 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
       private toggleModels = (enable: boolean) => {
         const { onSetOneClick } = this.props as IProps;
         onSetOneClick(enable, 'modelsaber');
+      }
+
+      private togglePlaylists = (enable: boolean) => {
+        const { onSetOneClick } = this.props as IProps;
+        onSetOneClick(enable, 'bsplaylist');
       }
 
 

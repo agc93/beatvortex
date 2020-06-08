@@ -13,6 +13,9 @@ export const registerOneClickInstall =
 export const enableMetaserverIntegration =
   createAction('BS_ENABLE_META', (serverSettings: IMetaserverSettings) => serverSettings);
 
+export const enablePreviewFeatures =
+  createAction('BS_ENABLE_PREVIEW', (previewSettings: IPreviewSettings) => previewSettings);
+
 /**
  * reducer for changes to the authentication
  */
@@ -25,11 +28,15 @@ export const settingsReducer: IReducerSpec = {
       },
       [enableMetaserverIntegration as any]: (state, payload: IMetaserverSettings) => {
         return util.merge(state, ['metaserver'], payload);
+      },
+      [enablePreviewFeatures as any]: (state, payload: IPreviewSettings) => {
+        return util.merge(state, ['preview'], payload);
       }
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
-      metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev/'} as IMetaserverSettings
+      metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev/'} as IMetaserverSettings,
+      preview: { enablePlaylists: false } as IPreviewSettings
     },
   };
 
@@ -43,4 +50,8 @@ export interface ILinkHandling {
 export interface IMetaserverSettings {
   enableServer?: boolean;
   serverUrl?: string;
+}
+
+export interface IPreviewSettings {
+  enablePlaylists?: boolean;
 }

@@ -1,13 +1,15 @@
-import { IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ISupportedResult } from 'vortex-api/lib/types/api';
+import { IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ISupportedResult, IMod } from 'vortex-api/lib/types/api';
 import { toInstructions } from "vortex-ext-common";
 import { BeatModsClient } from "./beatModsClient";
 import { GAME_ID } from '.';
 import path from 'path';
-import { log, actions } from 'vortex-api';
+import { log, actions, selectors } from 'vortex-api';
 import { InstructionType } from 'vortex-api/lib/extensions/mod_management/types/IInstallResult';
 import { BeatSaverClient } from './beatSaverClient';
 import { getCustomFolder, ModelType, ModelSaberClient } from './modelSaberClient';
-import { isSongMod, isModelMod, isGameMod } from './util';
+import { PlaylistClient } from "./playlistClient";
+import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName } from './util';
+import { installMaps, IPlaylistEntry } from './playlists';
 
 // export interface FileInstaller {
 //     (api: IExtensionApi, files: string[], rootPath: string, enrich: MetadataSource): IInstruction[];
@@ -146,7 +148,7 @@ export async function installBeatSaverArchive(modName: string) : Promise<IInstru
                 author: mapDetails.metadata.levelAuthorName,
                 customFileName: mapName,
                 logicalFileName: mapDetails.key,
-                // source: "beatsaver",
+                mapHash: mapDetails.hash,
                 uploadedTimestamp: mapDetails.uploaded,
                 pictureUrl: `https://beatsaver.com${mapDetails.coverURL}`,
                 source: 'beatsaver'
@@ -182,4 +184,69 @@ export async function installModelSaberFile(modName: string) : Promise<IInstruct
         instructions.push(...toInstructions(modelAttributes));
     }
     return instructions;
+}
+
+export async function installPlaylist(api: IExtensionApi, installUrl: string) {
+    var client = new PlaylistClient()
+    var ref = client.parseUrl(installUrl);
+    var u = new URL(ref.fileUrl);
+    var info = await client.getPlaylist(ref.fileName);
+    var targetPath = await client.saveToFile(api, ref);
+    var installPath = path.basename(path.dirname(targetPath));
+    var sourceName = getModName(u.host); //i.e. `beatsaver` or `bsaber`
+    const vortexMod: IMod = {
+        id: installPath,
+        state: 'installed',
+        type: 'bs-playlist',
+        installationPath: installPath,
+        attributes: {
+            name: info.playlistTitle,
+            author: info.playlistAuthor,
+            pictureUrl: info.image,
+            installTime: new Date(),
+            // version: '1.0.0',
+            notes: `Installed from ${ref.fileUrl}`,
+            source: sourceName,
+            playlistFile: ref.fileName
+        },
+    };
+    api.store.dispatch(actions.addMod(GAME_ID, vortexMod));
+    const profileId = api.getState().settings.profiles.lastActiveProfile[GAME_ID];
+    api.store.dispatch(actions.setModEnabled(profileId, installPath, true));
+    api.events.emit('mods-enabled', [ installPath ], true, GAME_ID);
+    
+    api.sendNotification({
+        id: `ready-to-install-${installPath}`,
+        type: 'success',
+        title: api.translate('Playlist installed'),
+        message: `Installed ${installPath} playlist from ${u.host}.`,
+        actions: [
+          {
+            title: 'Install Maps', action: dismiss => {
+                installPlaylistMaps(api, info.songs);
+                dismiss();
+            },
+          },
+        ],
+      });
+}
+
+export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[]) {
+    var installed = api.getState().persistent.mods[GAME_ID];
+    var toInstall = maps.filter(plm => !Object.values(installed).some(i => (i.id == plm.key) || (i?.attributes['mapHash'] == plm.hash)));
+    api.sendNotification({
+        type: 'info',
+        title: "Now installing playlist",
+        message: `Installing ${toInstall.length} maps from BeatSaver`,
+        noDismiss: true,
+        displayMS: 4000
+    });
+    var profileId = getCurrentProfile(api);
+    await installMaps(api, toInstall.map(i => i.hash ?? i.key), (api, modIds) => {
+        for (const id of modIds) {
+            api.store.dispatch(actions.setModEnabled(profileId, id, true));
+        }
+        api.events.emit('mods-enabled', modIds, true, GAME_ID);
+    });
+    // we should probably be auto-enabling these maps too
 }

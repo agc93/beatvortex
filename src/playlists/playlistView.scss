@@ -1,0 +1,144 @@
+.pv-playlistlist {
+  max-width: 40%;
+  min-width: 20%;
+  margin-right: 4px;
+  border-right: $border-width solid $border-color;
+  overflow: auto;
+
+  .list-group {
+    overflow-y: auto;
+  }
+}
+
+// this is the state of the list (i.e number of mods etc)
+.pv-list-status {
+  font-size: smaller;
+  font-style: italic;
+  color: $text-color-disabled;
+
+  .btn {
+    @extend .btn-embed;
+    margin-left: 1em;
+  }
+}
+
+//base class only
+.pv-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+//listgroupitem for playlists
+.pv-playlist-item {
+
+  &.selected {
+    background-color: $table-bg-active;
+  }
+
+  .pv-playlist-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    flex: 1 1 0;
+
+    .pv-playlist-item-title {
+      @extend .pv-text;
+      font-weight: bolder;
+    }
+
+    .pv-playlist-item-length {
+      opacity: 0.9;
+      font-size: small;
+      padding-left: 6px;
+    }
+  }
+
+  .pv-playlist-item-footer {
+    display: flex;
+    justify-content: space-between;
+
+    .pv-playlist-item-author {
+      @extend .pv-text;
+      font-weight: bold;
+    }
+  }
+}
+
+.pv-detail {
+
+  .pv-detail-header {
+    border-bottom: $border-width solid $border-color;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem;
+
+    .pv-detail-header-content {
+      margin-left: $gutter-width;
+      justify-content: space-evenly;
+    }
+
+    .pv-detail-name {
+      font-weight: bolder;
+      font-size: x-large;
+    }
+
+    .pv-detail-author {
+      font-weight: bold;
+      font-style: italic;
+      margin-left: 1em;
+    }
+
+    .pv-detail-install-action {
+      float: right;
+      padding: 1em;
+      margin: 1em 0.5em 1em;
+    }
+  }
+
+  .pv-detail-base {
+    height: 100%;
+  }
+}
+
+.pv-map-meta {
+  margin: 0.25rem;
+  margin-left: 1rem;
+
+  .pv-map-meta-title {
+    font-size: large;
+  }
+
+  .pv-map-meta-source {
+    border-bottom: $border-width solid $border-color;
+    font-style: italic;
+  }
+}
+
+.pv-map-description {
+  @extend %description-text;
+  overflow: auto;
+  height: 100%;
+  white-space: pre-wrap;
+}
+
+%description-text {
+  height: 100%;
+  overflow: auto;
+  margin: 1em;
+}
+
+%footer-container {
+  max-height: 20%;
+  border-top: $border-width solid $border-color;
+  min-height: 10%;
+}
+
+%footer-actions {
+  float: right;
+  padding: 1em;
+  margin: 0.5em;
+  margin-top: 1.5em;
+}

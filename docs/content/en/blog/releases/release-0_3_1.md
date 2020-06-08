@@ -23,11 +23,11 @@ This release adds some big new features and fixes to the previous alpha release 
 - Support for translations! Check the [translation docs](/docs/developer/translation) to see how you can help translate BeatVortex into your language.
 - New reworked installation logic to cut down on errors and improve metadata.
 
-### On Dependencies
+A few of the changes introduced in this release including dependencies, metaserver integration and custom mod types require some new features and fixes included in Vortex 1.2.12 and 1.2.13. As such, we **strongly** recommend only using this version of the extension with Vortex 1.2.13 *or higher*.
+
+### Dependencies
 
 As covered in the [developer docs](/docs/developer/dependencies), dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will also automatically attempt to download and install the required dependencies when you install a new mod. However, this **requires Vortex 1.2.13 or later**.
-
-Vortex versions prior to this had some tricky bugs in how dependencies were resolved that should be fixed in 1.2.13.
 
 ### What happened to 0.3.0?
 

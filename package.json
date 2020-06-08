@@ -6,7 +6,7 @@
   "scripts": {
     "webpack": "node ./node_modules/webpack/bin/webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "bundle7z": "7z a -t7z game-beatsaber.7z .\\dist\\index.js .\\dist\\info.json .\\gameart.png",
-    "build": "npm run webpack && extractInfo",
+    "build": "npm run webpack && extractInfo && copyfiles -f ./src/**/*.scss ./dist/",
     "tsdoc": "typedoc"
   },
   "config": {
@@ -35,6 +35,7 @@
     "@types/semver": "^7.1.0",
     "axios": "^0.19.2",
     "bluebird": "^3.5.5",
+    "copyfiles": "^2.3.0",
     "electron": "4.2.4",
     "i18next": "^17.0.4",
     "react": "^16.8.6",

@@ -43,8 +43,7 @@ export class BeatSaverClient {
             headers: {'User-Agent': 'BeatVortex/0.1.0' }
         }).then((resp: AxiosResponse<IMapDetails>) => {
             const { data } = resp;
-            log('debug', JSON.stringify(data));
-            //log('debug', JSON.stringify(resp));
+            // traceLog(JSON.stringify(data));
             return data;
         }).catch(err => {
             log('error', err);
@@ -86,6 +85,13 @@ export class BeatSaverClient {
  */
 export interface IMapDetails {
     metadata : {
+        difficulties: {
+            easy: boolean;
+            normal: boolean;
+            hard: boolean;
+            expert: boolean;
+            expertPlus: boolean;
+        }
         levelAuthorName: string,
         bpm: string;
     },

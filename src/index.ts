@@ -3,7 +3,7 @@ import path = require('path');
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink } from 'vortex-api/lib/types/api';
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName } from './util';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod } from './util';
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
@@ -11,16 +11,17 @@ import { showPatchDialog, showTermsNotification } from "./notify";
 import { migrate031 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS } from './meta';
-import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent } from "./install";
+import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist } from "./install";
 
 // clients
-import { BeatSaverClient } from './beatSaverClient';
+import { BeatSaverClient, IMapDetails } from './beatSaverClient';
 import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient } from './modelSaberClient';
 
 // components etc
 import BeatModsList from "./BeatModsList";
-import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings } from "./settings";
+import { PlaylistView } from "./playlists";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings } from "./settings";
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
@@ -37,13 +38,18 @@ function main(context : IExtensionContext) {
     const getModPath = (game: IGame): string => {
         return getGamePath(context.api, game, false);
     };
+    const getPlaylistPath = (game: IGame): string => {
+        return path.join(getGamePath(context.api, game, false), 'Playlists');
+    }
     context.once(() => {
         enableTrace();
         if (isActiveGame(context)) {}
-        context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'))
+        context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
+        context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
         addTranslations(context.api, 'beatvortex');
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
+        handleSettings(context.api, 'preview', (api, settings) => registerPreviewSettings(context, settings));
         context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
             log('debug', 'got settings change', {current});
             logMetaservers(context.api, current);
@@ -67,6 +73,11 @@ function main(context : IExtensionContext) {
             log('debug', 'beatvortex got did-purge', { profileId });
             return Promise.resolve();
         });
+        context.api.onAsync('install-playlist', async (installUrl: string) => {
+            traceLog('attempting install of playlist', {playlist: installUrl});
+            await installPlaylist(context.api, installUrl);
+            return Promise.resolve();
+        });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
                 var profileClient = new ProfileClient(context.api);
@@ -84,6 +95,7 @@ function main(context : IExtensionContext) {
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
     context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });
     context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true, name: 'Custom Model'});
+    context.registerModType('bs-playlist', 100, gameId => gameId === GAME_ID, getPlaylistPath, (inst) => Promise.resolve(isPlaylistMod(inst)), {mergeMods: true, name: 'Playlist'});
     context.registerGame({
         ...gameMetadata,
         id: GAME_ID,
@@ -127,10 +139,19 @@ function main(context : IExtensionContext) {
         visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
         props: () => ({ api: context.api, mods: []}),
       });
+      context.registerMainPage('layout-list', 'Playlists', PlaylistView, {
+        group: 'per-game',
+        visible: () => {
+            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
+                && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enablePlaylists)
+            },
+        props: () => ({ api: context.api }),
+    });
 
       // ↘ affected by https://github.com/Nexus-Mods/Vortex/issues/6315
       context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
       context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
+      context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
       context.registerReducer(['settings', 'beatvortex'], settingsReducer);
 
 
@@ -330,13 +351,13 @@ async function handleDeploymentEvent(api: IExtensionApi, profileId: string, depl
     }
 }
 
-async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc: (api: IExtensionApi, stateValue: T) => void) {
+async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (api: IExtensionApi, stateValue: T) => void) {
     var state = api.getState();
     var currentState = util.getSafe(state, ['settings', 'beatvortex', key], undefined) as T;
-    stateFunc(api, currentState);
+    stateFunc?.(api, currentState);
     api.onStateChange(['settings', 'beatvortex', key], (previous : T, current: T) => {
         log('debug', 'got settings change', {current});
-        stateFunc(api, current);
+        stateFunc?.(api, current);
     });
 }
 
@@ -465,7 +486,8 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
 }
 
 async function handlePlaylistLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
-    log('info', 'handling playlist oneclick install', {url, install});
+    log('info', 'handling playlist oneclick install', {url});
+    await api.emitAndAwait('install-playlist', url);
 }
 
 /**
@@ -570,6 +592,12 @@ export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling
         else if (enableLinks?.enableModels === false) {
             api.deregisterProtocol('modelsaber');
         }
+        if (enableLinks?.enablePlaylists) {
+            api.registerProtocol('bsplaylist', true, (url: string, install: boolean) => handlePlaylistLinkLaunch(api, url, install));
+        }
+        else if (enableLinks?.enablePlaylists === false) {
+            api.deregisterProtocol('bsplaylist');
+        }
     }
 }
 
@@ -582,6 +610,15 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
             api.addMetaServer('bs-metaserver', undefined);
         }
     }
+}
+
+function registerPreviewSettings(context: IExtensionContext, previewSettings: IPreviewSettings) {
+    /* if (previewSettings != undefined) {
+        log('debug', 'beatvortex: initialising metaserver', { previewSettings });
+        if (previewSettings.enablePlaylists) {
+            
+        }
+    } */
 }
 
 function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url: string; priority: number; } }) {

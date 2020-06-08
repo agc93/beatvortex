@@ -295,7 +295,6 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                 <div className='beatmods-description'>{mod.description}</div>
                 <div className='beatmods-footer'>
                     <div className='beatmods-author'>{mod.author?.username ?? 'Unknown'}</div>
-                    {/* {action} */}
                 </div>
             </ListGroupItem>
         )

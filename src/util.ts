@@ -100,6 +100,11 @@ export function isModelMod(files: string[]) : boolean {
         // && models.some(m => path.extname(path.basename(files[0])).toLowerCase() == m);
 }
 
+export function isPlaylistMod(instructions: IInstruction[]) : boolean {
+    var files = instructions.map(i => i.source);
+    return files.some(f => path.extname(f) == '.bplist');
+}
+
 export function isModelModInstructions(instructions: IInstruction[]) : boolean {
     var files = instructions.map(i => i.source);
     return isModelMod(files);
@@ -146,6 +151,10 @@ export function getProfile(api: IExtensionApi, profileId: string) : {isBeatSaber
         profile: newProfile,
         isBeatSaber: ((newProfile !== undefined) && newProfile.gameId === GAME_ID)
     };
+}
+
+export function getCurrentProfile(api: IExtensionApi): string {
+    return api.getState().settings.profiles.lastActiveProfile[GAME_ID];
 }
 
 export function traceLog(message: string, metadata?: object) : void {
