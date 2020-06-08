@@ -105,4 +105,56 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>If you want to take your game back to a default, unmodded state, you can use Vortex's &lt;em>Purge&lt;/em> feature. Click the Purge Mods button from the Mods list and Vortex will undeploy all your enabled mods, leaving your game directory essentially unmodded.&lt;/p>
 &lt;blockquote>
 &lt;p>You should be prompted to revert BSIPA patching when you purge, and prompted to rerun patching when you next deploy mods.&lt;/p>
-&lt;/blockquote></description></item></channel></rss>
+&lt;/blockquote></description></item><item><title>Docs: Installing Playlists</title><link>/docs/usage/playlists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/playlists/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>BeatVortex 0.3.1 or later is required to install playlists using Vortex.&lt;/p>
+&lt;p>If you're currently using Beatlist for playlists, see below for extra information.&lt;/p>
+&lt;/div>
+&lt;p>Playlist support in BeatVortex is very new and very experimental! The notion of playlists isn't something that easily maps into the Vortex way of handling things so there might be some rough patches.&lt;/p>
+&lt;h2 id="enabling-playlist-installation">Enabling Playlist Installation&lt;/h2>
+&lt;p>To enable installing playlists with Vortex, check the &amp;ldquo;Enable OneClick links for playlists&amp;rdquo; option in the Download tab of the Settings page. When you click a OneClick link for a playlist, it should be automatically downloaded and installed into Vortex and will give you the option of immediately installing all the maps from that playlist.&lt;/p>
+&lt;blockquote>
+&lt;p>This can take a while for large playlists! Check the Downloads page to see your progress.&lt;/p>
+&lt;/blockquote>
+&lt;p>Playlists will have their own entry in your Mods list so you can edit or remove the playlist without affecting all the songs in the playlist.&lt;/p>
+&lt;h3 id="preview-feature-playlists-view">Preview Feature: Playlists view&lt;/h3>
+&lt;p>We have also included a &lt;em>very&lt;/em> early release of a basic Playlists management interface as a preview feature in the latest extension versions.&lt;/p>
+&lt;p>To enable it, head over to the Interface tab of the Settings page and look for &amp;ldquo;BeatVortex Preview Features&amp;rdquo;. Check &amp;ldquo;Enable Playlists Management&amp;rdquo; on to enable the new interface, and you should see the new page appear in the sidebar.&lt;/p>
+&lt;blockquote>
+&lt;p>Sometimes you'll need to open your Mods list again to have it show up!&lt;/p>
+&lt;/blockquote>
+&lt;p>This will allow you to quickly list and inspect the playlists you have installed and deployed locally, as well as check the details of any songs included in the playlist. You can also use the button at the top right to immediately install the whole playlist (or just the maps you don't already have).&lt;/p>
+&lt;p>This feature is &lt;em>very new&lt;/em> and there's certain to be some bugs. If you do enable the feature and encounter any bugs, please report them &lt;a href="https://github.com/agc93/beatvortex/issues">on GitHub&lt;/a>.&lt;/p>
+&lt;h2 id="beatlist-users">Beatlist Users&lt;/h2>
+&lt;p>If you're currently using Beatlist for managing your playlists, I &lt;em>strongly&lt;/em> recommend sticking with it! BeatVortex will likely never support the same features as Beatlist, nor have the same level of polish or user-friendliness.&lt;/p>
+&lt;p>If you do want to use Vortex to manage your playlists, just be aware that enabling playlist handling in your Vortex settings will stop Beatlist from automatically handling playlist install links (it will also prevent Mod Assistant from handling them). You &lt;strong>should&lt;/strong> be able to continue using Beatlist to view and manage your playlist library, but this has not been tested (at all!) and might lead to some weirdness.&lt;/p>
+&lt;h2 id="mod-assistant-users">Mod Assistant Users&lt;/h2>
+&lt;p>If you're currently using Mod Assistant to install your playlists, you should also be aware of a few things:&lt;/p>
+&lt;ul>
+&lt;li>Enabling playlist link handling in your Vortex settings will likely prevent Mod Assistant from handling those links.&lt;/li>
+&lt;li>Installing a playlist with Vortex will separately install each song in the playlist as a manageable mod in Vortex. Your mod list could get very long, very fast.&lt;/li>
+&lt;/ul></description></item><item><title>Docs: BeatVortex for Mod Assistant Users</title><link>/docs/usage/mod-assistant/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/mod-assistant/</guid><description>
+&lt;p>First and foremost, the best advice for Mod Assistant users is this: if you don't want to change, &lt;strong>you don't have to!&lt;/strong>&lt;/p>
+&lt;p>BeatVortex is a completely unofficial project and is &lt;strong>not&lt;/strong> intended as a replacement to Mod Assistant, which is also a very good way of handling Beat Saber mods. If you're happy with Mod Assistant and don't have any preference for using Vortex, don't feel like you need to make the switch!&lt;/p>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This document assumes a basic understanding of Vortex and its concepts.&lt;/p>
+&lt;p>For help with Vortex, check out the &lt;a href="https://www.nexusmods.com/about/vortex/">Vortex Support page&lt;/a> or use the Knowledge Base page inside Vortex.&lt;/p>
+&lt;/div>
+&lt;h2 id="basic-differences">Basic Differences&lt;/h2>
+&lt;p>One of the biggest differences when modding Beat Saber with Vortex is a consequence of how Vortex works: &lt;em>everything is a mod&lt;/em>.&lt;/p>
+&lt;p>That means that when using BeatVortex, every map is a mod, every custom saber is a mod, every playlist is a mod, and every plugin is a mod. While that sounds daunting, it also means you can easily manage every part of your installation from the one place.&lt;/p>
+&lt;p>In particular, even songs installed using OneClick links will install as a fully manageable mod in Vortex that can be enabled, disabled and deployed to your install directory like any other mod.&lt;/p>
+&lt;h3 id="state-and-deployments">State and Deployments&lt;/h3>
+&lt;p>The other thing worth remembering if you're coming from Mod Assistant is that everything you do in Vortex happens in a staging folder first. Your mods and maps are all installed and enabled from your staging folder. It's not until you &lt;em>Deploy&lt;/em> your mods that the changes happen in your installation directory.&lt;/p>
+&lt;p>For example, when Mod Assistant starts up it loads your current mods directly from the installation directory each time. In Vortex, your Mods list is the state of your staging folder and your changes are made to the installation directory when you deploy your mods.&lt;/p>
+&lt;h3 id="oneclick-installation">OneClick Installation&lt;/h3>
+&lt;p>We have added &lt;em>preview&lt;/em> support for OneClick installation links for maps, custom models and playlists, but this is a quite new feature! They are also not enabled by default: you can enable OneClick links for any specific mod type (or all of them) from the Download tab of your Vortex settings.&lt;/p>
+&lt;p>Unlike Mod Assistant, which doesn't &amp;ldquo;track&amp;rdquo; maps or playlists installed with OneClick links, Vortex will handle OneClick links like any other installation: the map/model/mod is installed as a complete mod, manageable from your Mods list and then deployed to your install directory.&lt;/p>
+&lt;h2 id="compatibility">Compatibility&lt;/h2>
+&lt;p>While I don't recommend it, it should be possible to use BeatVortex &lt;em>alongside&lt;/em> Mod Assistant, BeatList or any other modding tools. This is not something I actively test and Vortex will likely react in funny ways to changes made by the other tools, but it shouldn't break anything major.&lt;/p>
+&lt;blockquote>
+&lt;p>If you do end up using BeatVortex side-by-side with Mod Assistant or other tools, please report any issues you see.&lt;/p>
+&lt;/blockquote>
+&lt;p>Of particular note: only enable OneClick links in &lt;strong>one&lt;/strong> tool. If you want to use Mod Assistant to install maps with OneClick, enable it in Mod Assistant's settings and &lt;strong>do not&lt;/strong> enable it in Vortex's settings.&lt;/p>
+&lt;h2 id="support">Support&lt;/h2>
+&lt;p>As covered in the &lt;a href="../../docs/introduction/faq">FAQ&lt;/a>, BeatVortex is not supported by any of Nexus Mods, the Vortex team, or the Beat Saber Modding Group. BeatVortex is exclusively a community project, currently run by one not-a-real-developer, so please don't complain to anyone from Nexus or BSMG if things don't work quite right.&lt;/p></description></item></channel></rss>
