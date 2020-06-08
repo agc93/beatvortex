@@ -10,7 +10,7 @@ description: >
 ---
 
 {{% pageinfo %}}
-This release is still in development, and available for testing using the [GitHub CI Builds](https://github.com/agc93/beatvortex/actions/)
+This release is now available [on Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files).
 {{% /pageinfo %}}
 
 This release marks the next full alpha of the BeatVortex extension. If you can install and test this extension, all feedback (on Nexus Mods or GitHub) is very appreciated!
@@ -18,9 +18,11 @@ This release marks the next full alpha of the BeatVortex extension. If you can i
 This release adds some big new features and fixes to the previous alpha release including:
 
 - Dependency tracking! Vortex will now warn you about missing dependencies when you install BeatMods mods, and offer to install them automatically.
-- Integrated OneClick Settings: settings to enable/disable OneClick link handling has been moved into the Settings page, on the Download tab.
+- Playlist support: BeatVortex can now install playlists, including from OneClick links, and install maps from an installed playlist.
+- Integrated OneClick Settings: settings to enable/disable OneClick link handling have been moved into the Settings page, on the Download tab.
 - Automatic BSIPA **un**patching: Vortex will now prompt you to revert BSIPA when you purge mods to restore things to default properly.
 - Support for translations! Check the [translation docs](/docs/developer/translation) to see how you can help translate BeatVortex into your language.
+- New preview feature: Playlists interface for managing installed playlists. Enable it from the Interface settings.
 - New reworked installation logic to cut down on errors and improve metadata.
 
 A few of the changes introduced in this release including dependencies, metaserver integration and custom mod types require some new features and fixes included in Vortex 1.2.12 and 1.2.13. As such, we **strongly** recommend only using this version of the extension with Vortex 1.2.13 *or higher*.
