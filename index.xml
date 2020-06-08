@@ -1,14 +1,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – BeatVortex</title><link>/</link><description>Recent content on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Tue, 02 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3 Release</title><link>/blog/2020/06/02/alpha-3-release/</link><pubDate>Tue, 02 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/02/alpha-3-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
-&lt;p>This release is still in development, and available for testing using the &lt;a href="https://github.com/agc93/beatvortex/actions/">GitHub CI Builds&lt;/a>&lt;/p>
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
 &lt;p>This release marks the next full alpha of the BeatVortex extension. If you can install and test this extension, all feedback (on Nexus Mods or GitHub) is very appreciated!&lt;/p>
 &lt;p>This release adds some big new features and fixes to the previous alpha release including:&lt;/p>
 &lt;ul>
 &lt;li>Dependency tracking! Vortex will now warn you about missing dependencies when you install BeatMods mods, and offer to install them automatically.&lt;/li>
-&lt;li>Integrated OneClick Settings: settings to enable/disable OneClick link handling has been moved into the Settings page, on the Download tab.&lt;/li>
+&lt;li>Playlist support: BeatVortex can now install playlists, including from OneClick links, and install maps from an installed playlist.&lt;/li>
+&lt;li>Integrated OneClick Settings: settings to enable/disable OneClick link handling have been moved into the Settings page, on the Download tab.&lt;/li>
 &lt;li>Automatic BSIPA &lt;strong>un&lt;/strong>patching: Vortex will now prompt you to revert BSIPA when you purge mods to restore things to default properly.&lt;/li>
 &lt;li>Support for translations! Check the &lt;a href="./docs/developer/translation">translation docs&lt;/a> to see how you can help translate BeatVortex into your language.&lt;/li>
+&lt;li>New preview feature: Playlists interface for managing installed playlists. Enable it from the Interface settings.&lt;/li>
 &lt;li>New reworked installation logic to cut down on errors and improve metadata.&lt;/li>
 &lt;/ul>
 &lt;p>A few of the changes introduced in this release including dependencies, metaserver integration and custom mod types require some new features and fixes included in Vortex 1.2.12 and 1.2.13. As such, we &lt;strong>strongly&lt;/strong> recommend only using this version of the extension with Vortex 1.2.13 &lt;em>or higher&lt;/em>.&lt;/p>
