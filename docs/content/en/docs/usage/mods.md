@@ -6,6 +6,8 @@ description: >
   How to install, view and manage your mods in Vortex.
 ---
 
+
+
 {{% pageinfo %}}
 BeatVortex 0.2.1 (and later) includes beta support for prompting when an IPA patch is needed and automatically running it.
 
@@ -33,6 +35,11 @@ One-click installation of custom songs from BeastSaber, BeatSaver or ModelSaber 
 
 From the Settings screen, open the Download tab and scroll down to the "Enable OneClick Installations" section. Check the boxes to enable OneClick installations for maps or custom models (or both!). You can also toggle these back off to "unregister" Vortex for handling these links.
 
+![installation process][enableOCI]
+
+[enableOCI]: /enableOCI.gif
+[beatModsInstall]: /installBeatMods.gif
+
 > You *should* see this change immediately, but if you're having problems, try restarting Vortex
 
 Open up BeatSaver/BeastSaber/ModelSaber and click any of the OneClick install links: Vortex should pick up the link in the background, fetch the song details and download the map (or mod) directly into your mod list. Install and Enable as per usual to deploy into your game.
@@ -48,6 +55,8 @@ If you're looking to install any of the mods listed on BeatMods, you can easily 
 Note that since Vortex can't tell which Beat Saber versions are mod-compatible (i.e. 1.8.0 mods work in 1.9.0), you may have to manually choose a version using the switcher at the top of the page to see all available mods.
 
 > BeatVortex *should* automatically prompt you to install dependencies when you install BeatMods mods from the browser. You can also check the Dependencies column of the Mods list to see what your mods need.
+
+![beatmods installation][beatModsInstall]
 
 ## Download in Vortex
 

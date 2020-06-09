@@ -227,17 +227,17 @@ function addProfileFeatures(context: IExtensionContext) {
  * @param ns The namespace to load translations for
  */
 async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : Promise<void> {
-    var ext = api.getLoadedExtensions().find(e => e.name == 'game-beatsaber');
-    if (ext) {
+    // var ext = api.getLoadedExtensions().find(e => e.name == 'game-beatsaber');
+    // if (ext) {
         var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
-        var langFiles = (await fs.readdirAsync(ext.path)).filter((f: string) => re.test(f));
+        var langFiles = (await fs.readdirAsync(__dirname)).filter((f: string) => re.test(f));
         langFiles.forEach(async (lang: string) => {
             var match = re.exec(lang);
             log('debug', 'beatvortex loading translation file', {lang, match});
-            var langContent = await fs.readFileAsync(path.join(ext.path, lang), { encoding: 'utf-8' });
+            var langContent = await fs.readFileAsync(path.join(__dirname, lang), { encoding: 'utf-8' });
             api.getI18n().addResources(match[1], ns, JSON.parse(langContent));
         });
-    }
+    // }
 }
 
 /**
