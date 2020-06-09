@@ -88,6 +88,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>Enabling one-click installs in Vortex will most likely prevent Mod Assistant from handling one-click installs!&lt;/p>
 &lt;/blockquote>
 &lt;p>From the Settings screen, open the Download tab and scroll down to the &amp;ldquo;Enable OneClick Installations&amp;rdquo; section. Check the boxes to enable OneClick installations for maps or custom models (or both!). You can also toggle these back off to &amp;ldquo;unregister&amp;rdquo; Vortex for handling these links.&lt;/p>
+&lt;p>&lt;img src="../enableOCI.gif" alt="installation process">&lt;/p>
 &lt;blockquote>
 &lt;p>You &lt;em>should&lt;/em> see this change immediately, but if you're having problems, try restarting Vortex&lt;/p>
 &lt;/blockquote>
@@ -100,6 +101,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;blockquote>
 &lt;p>BeatVortex &lt;em>should&lt;/em> automatically prompt you to install dependencies when you install BeatMods mods from the browser. You can also check the Dependencies column of the Mods list to see what your mods need.&lt;/p>
 &lt;/blockquote>
+&lt;p>&lt;img src="../installBeatMods.gif" alt="beatmods installation">&lt;/p>
 &lt;h2 id="download-in-vortex">Download in Vortex&lt;/h2>
 &lt;p>Once you've added Beat Saber, you can jump over to the usual Mods screen using the menu on the left. You might not have any mods here, but if you click on the &lt;em>But don't worry, I know a place&amp;hellip;&lt;/em> dropdown, you'll get the choice of installing from BeatMods, BeatSaver or BeastSaber.&lt;/p>
 &lt;blockquote>
