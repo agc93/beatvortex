@@ -93,7 +93,9 @@ export interface IMapDetails {
             expertPlus: boolean;
         }
         levelAuthorName: string,
-        bpm: string;
+        bpm: string,
+        duration: number,
+        songAuthorName: string
     },
     hash: string;
     downloadURL: string;

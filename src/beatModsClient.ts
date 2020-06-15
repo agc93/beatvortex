@@ -252,6 +252,7 @@ export interface IModDetails {
     link: string;
     category: string;
     required: boolean;
+    uploadDate: string;
     downloads: IModDownload[],
     _id: string,
     dependencies: {_id: string, name: string, version: string, dependencies: string[]}[]

@@ -9,6 +9,7 @@ import { BeatSaverClient } from './beatSaverClient';
 import { getCustomFolder, ModelType, ModelSaberClient } from './modelSaberClient';
 import { PlaylistClient } from "./playlistClient";
 import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName } from './util';
+// import { exportDifficulties } from "./maps";
 import { installMaps, IPlaylistEntry } from './playlists';
 
 // export interface FileInstaller {
@@ -107,7 +108,9 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
         author: details.author.username,
         logicalFileName: details.name,
         source: "beatmods",
-        version: details.version
+        version: details.version,
+        gameVersion: details.gameVersion,
+        uploadedTimestamp: details.uploadDate
         };
     var instructions = toInstructions(modAtrributes);
     var depInstructions : IInstruction[] = details.dependencies.map(d => {
@@ -151,7 +154,11 @@ export async function installBeatSaverArchive(modName: string) : Promise<IInstru
                 mapHash: mapDetails.hash,
                 uploadedTimestamp: mapDetails.uploaded,
                 pictureUrl: `https://beatsaver.com${mapDetails.coverURL}`,
-                source: 'beatsaver'
+                source: 'beatsaver',
+                difficulties: Object.keys(mapDetails.metadata.difficulties).filter(d => mapDetails.metadata.difficulties[d] == true),
+                bpm: mapDetails.metadata.bpm,
+                duration: mapDetails.metadata.duration,
+                songAuthor: mapDetails.metadata.songAuthorName
               };
             instructions.push(...toInstructions(mapAtrributes));
         } catch (error) {
@@ -166,22 +173,23 @@ export async function installModelSaberFile(modName: string) : Promise<IInstruct
     let instructions : IInstruction[] = [];
     var modelClient = new ModelSaberClient();
     var modelDetails = await modelClient.getModelByFileName(modName);
-    log('info', "beatvortex doesn't currently include metadata for manually installed models!");
     if (modelDetails !== null) {
         log('debug', 'Got details on model from ModelSaber!', modelDetails);
         var modelAttributes = {
             allowRating: false,
             downloadGame: GAME_ID,
             modId: modelDetails.id,
-            modNam: modelDetails.name,
+            modName: modelDetails.name,
             author: modelDetails.author,
             customFileName: modelDetails.name,
             logicalFileName: `model:${modelDetails.id}`,
-            uploadedTimestamp: modelDetails.date,
             pictureUrl: modelDetails.thumbnail,
-            source: 'modelsaber'
+            source: 'modelsaber',
+            uploadedTimestamp: new Date(Date.parse(modelDetails.date)).toISOString()
         };
         instructions.push(...toInstructions(modelAttributes));
+    } else {
+        log('warn', "beatvortex doesn't currently include metadata for manually installed models!");
     }
     return instructions;
 }

@@ -2,8 +2,8 @@ import path = require('path');
 
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
-import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink } from 'vortex-api/lib/types/api';
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod } from './util';
+import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod } from 'vortex-api/lib/types/api';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase } from './util';
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
@@ -21,6 +21,7 @@ import { ModelSaberClient } from './modelSaberClient';
 // components etc
 import BeatModsList from "./BeatModsList";
 import { PlaylistView } from "./playlists";
+import { difficultiesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings } from "./settings";
 
 export const GAME_ID = 'beatsaber'
@@ -46,33 +47,32 @@ function main(context : IExtensionContext) {
         if (isActiveGame(context)) {}
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
+        context.api.setStylesheet('bs-map-difficulties', path.join(__dirname, 'attributes.scss'));
+        util.installIconSet('beatvortex', path.join(__dirname, 'icons.svg'));
         addTranslations(context.api, 'beatvortex');
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
         handleSettings(context.api, 'preview', (api, settings) => registerPreviewSettings(context, settings));
-        context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
-            log('debug', 'got settings change', {current});
-            logMetaservers(context.api, current);
-        });
-        context.api.events.on('profile-did-change', (profileId: string) => {
-            handleProfileChange(context.api, profileId, (profile) => {
-                log('debug', 'beatvortex got the profile change event! checking profile.');
-                traceLog(`configured profile features: ${JSON.stringify(profile.features)}`);
+        if (useTrace) {
+            context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
+                log('debug', 'got settings change', {current});
+                logMetaservers(context.api, current);
             });
-        });
+            context.api.events.on('profile-did-change', (profileId: string) => {
+                handleProfileChange(context.api, profileId, (profile) => {
+                    log('debug', 'beatvortex got the profile change event! checking profile.');
+                    traceLog(`configured profile features: ${JSON.stringify(profile.features)}`);
+                });
+            });
+        }
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
-            // runDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
         });
         context.api.onAsync('will-purge', async (profileId: string, deployment: {[modType: string]: IDeployedFile[]}) => {
             traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment)});
             await handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAPurge)
             Promise.resolve();
           });
-        context.api.onAsync('did-purge', (profileId: string) => {
-            log('debug', 'beatvortex got did-purge', { profileId });
-            return Promise.resolve();
-        });
         context.api.onAsync('install-playlist', async (installUrl: string) => {
             traceLog('attempting install of playlist', {playlist: installUrl});
             await installPlaylist(context.api, installUrl);
@@ -110,6 +110,7 @@ function main(context : IExtensionContext) {
         }
     });
     context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
+    addTableAttributes(context);
 
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods'});
     addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs'});
@@ -227,17 +228,60 @@ function addProfileFeatures(context: IExtensionContext) {
  * @param ns The namespace to load translations for
  */
 async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : Promise<void> {
-    // var ext = api.getLoadedExtensions().find(e => e.name == 'game-beatsaber');
-    // if (ext) {
-        var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
-        var langFiles = (await fs.readdirAsync(__dirname)).filter((f: string) => re.test(f));
-        langFiles.forEach(async (lang: string) => {
-            var match = re.exec(lang);
-            log('debug', 'beatvortex loading translation file', {lang, match});
-            var langContent = await fs.readFileAsync(path.join(__dirname, lang), { encoding: 'utf-8' });
-            api.getI18n().addResources(match[1], ns, JSON.parse(langContent));
-        });
-    // }
+    var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
+    var langFiles = (await fs.readdirAsync(__dirname)).filter((f: string) => re.test(f));
+    langFiles.forEach(async (lang: string) => {
+        var match = re.exec(lang);
+        log('debug', 'beatvortex loading translation file', {lang, match});
+        var langContent = await fs.readFileAsync(path.join(__dirname, lang), { encoding: 'utf-8' });
+        api.getI18n().addResources(match[1], ns, JSON.parse(langContent));
+    });
+}
+
+async function addTableAttributes(context: IExtensionContext) {
+    
+    context.registerTableAttribute(
+        'mods', 
+        {
+            id: 'bs-song-artist',
+            placement: 'both',
+            calc: (mod: IMod) => util.getSafe(mod.attributes, ['songAuthor'], ''),
+            edit: {},
+            isToggleable: true,
+            isSortable: true,
+            condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID,
+            name: 'Artist',
+            help: 'Artist name for this map. Only available on BeatSaver maps!',
+            isGroupable: true
+        }
+    );
+    context.registerTableAttribute(
+        'mods',
+        {
+            edit: {},
+            id: 'bs-song-difficulties',
+            name: 'Difficulties',
+            placement: 'table',
+            calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'difficulties'], []).map(toTitleCase),
+            customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod),
+            icon: 'inspect',
+            isGroupable: false,
+            isSortable: false,
+            isDefaultVisible: false,
+            isToggleable: true
+        }
+    );
+    context.registerTableAttribute(
+        'mods',
+        {
+            edit: {},
+            id:'bs-song-bpm',
+            name: 'BPM',
+            placement: 'detail',
+            calc: (mod: IMod) => util.getSafe(mod.attributes, ['bpm'], []),
+            help: 'Beats per minute average for this map. Only available on BeatSaver maps!'
+        }
+    );
 }
 
 /**

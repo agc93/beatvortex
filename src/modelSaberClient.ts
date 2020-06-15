@@ -194,7 +194,9 @@ export interface IModelDetails {
     hash: string,
     platform: string,
     download: URL,
-    date: string
+    date: string,
+    tags: string[],
+    install_link: string
 }
 
 export declare type ModelType = 'saber' | 'avatar' | 'platform' | 'bloq';
