@@ -28,30 +28,6 @@ export function showTermsNotification(api: IExtensionApi, dismissCallback : ((di
  * Shows a modal dialog explaining the IPA auto-patching process.
  *
  * @param api - The extension context. Only required for translation of dialog text.
- * @param callback - A callback to execute when the dialog is dismissed.
- */
-export function ShowRunPatchDialog(api: IExtensionApi, callback?: ()=> void) {
-    var msg = 'BeatVortex can attempt to auto-patch your Beat Saber install';
-    var detail = "It looks like you've deployed BSIPA, but it hasn't been run for this install.\n\nBeatVortex can attempt to automatically run IPA's first-time setup and patch your installation for you, but this isn't guaranteed to work. You should only need to do this once!";
-    remote.dialog.showMessageBox(vtx.getVisibleWindow(), {
-        type: 'info',
-        message: api ? api.translate(msg) : msg,
-        detail: api ? api.translate(detail) : detail,
-        buttons: ["Run Patch"],
-        defaultId: 0
-    }, (resp: number, checked: boolean) => {
-        //run patch here
-        tryRunPatch(api);
-        if (callback) {
-            callback();
-        }
-     });
-}
-
-/**
- * Shows a modal dialog explaining the IPA auto-patching process.
- *
- * @param api - The extension context. Only required for translation of dialog text.
  * @param toPatch - Whether we are attempting to run (true) or revert (false) IPA patching.
  * @param patchFn - The patching function (callback) to execute when the dialog is accepted.
  * 

@@ -179,58 +179,6 @@ export class BeatModsClient {
     static getDownloads(mod: IModDetails) : string[] {
         return mod.downloads.map(m => `https://beatmods.com${m.url}`);
     }
-
-    static getDependencies(mods: IModDetails[], mod: IModDetails): {_id: string, name: string}[][] {
-        // var mod = mods.find(m => m._id == modId);
-        function flatDeep(arr, d = 1): any[] {
-            return d > 0 ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
-                         : arr.slice();
-         };
-        const resolveDeps = (modId: string): string[] => {
-            var mod = mods.find(m => m._id == modId);
-            if (!mod) {
-                // mod = mod.dependencies.find()
-            }
-            if (mod) {
-                if (mod.dependencies && mod.dependencies.length > 0) {
-                    return flatDeep(mod.dependencies.map(md => md.dependencies.map(md => resolveDeps(md))), 1);
-                } else {
-                    return []
-                }
-            } else {
-                log('debug', "couldn't match mod", {mod: modId});
-            }
-        }
-        /* var depMods = mods.filter(m => {
-            return mod.dependencies.some(d => d._id == m._id) */
-        /* var depMods = mod.dependencies.map(d => {
-            var match = mods.find(fd => d._id == fd._id);
-            log ('debug', 'found dep in mod list', { dep: match?.name, target: d?.name});
-            return match; */
-        var depModIds = flatDeep(mod.dependencies.map(dm => {
-            log('debug', 'walking dependency tree', { mod: dm.name, count: dm.dependencies.length});
-            // var ddm = flatDeep(dm.dependencies.map(dmi => dmi.dependencies), Infinity)
-            return [dm._id, ...dm.dependencies]
-        }), Infinity);
-        log('debug', 'flattened dep tree', {ids: depModIds});
-        var recursed = flatDeep(depModIds.map(di => resolveDeps(di)), Infinity);
-        log('debug', 'walked dep tree', {depth: recursed.length, keys: recursed});
-        var uniques = [...new Set<string>(depModIds)];
-        var mods = uniques.map(u => mods.find(m => m._id == u));
-        log('debug', 'matched dependency list', {count: uniques?.length, matched: mods?.length});
-        return []
-        /* return mod.dependencies.map(td => {
-            // var currentDeps = [];
-            var currentDepsTree = [...td.dependencies];
-            log('debug', 'compiled top tree deps', {deps: currentDepsTree, mods: mods.length});
-            var dependents = td.dependencies.map(cdt => {
-                var cdtMod = mods.find(cd => cd._id == cdt);
-                log('debug', 'found mod dependency', {id: cdtMod._id});
-                return cdtMod;
-            });
-            return [...dependents, td];
-        }) */
-    }
 }
 
 /**

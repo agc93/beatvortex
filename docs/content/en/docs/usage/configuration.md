@@ -27,3 +27,11 @@ To remove BeatVortex entirely, you should uninstall and remove all your installe
 If you want to take your game back to a default, unmodded state, you can use Vortex's *Purge* feature. Click the Purge Mods button from the Mods list and Vortex will undeploy all your enabled mods, leaving your game directory essentially unmodded. 
 
 > You should be prompted to revert BSIPA patching when you purge, and prompted to rerun patching when you next deploy mods.
+
+### Handling your Mods list
+
+Since everything gets installed as a mod when you're using BeatVortex, your Mods list can get quite lengthy quite fast! Here's a few tips for keeping your mods list more manageable:
+
+- One of the best options is to group your mods list by source. This will let you look at your BeatMods mods, BeatSaver maps, ModelSaber models, and BeastSaber playlists as convenient groups. Click the small list icon beside the Source column to enable grouping.
+- Remember you can easily add or remove columns from the mod list using the small cog in the top right. You can remove builtin columns (like endorsement) and even add in Beat Saber-specific columns (like artist name or map difficulties).
+- Double clicking any mod will bring up the details pane for that mod. You can use this to edit any missing information, or just to add your own notes about a particular mod or map.

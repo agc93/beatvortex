@@ -1,6 +1,4 @@
 import * as React from 'react';
-// import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
-// import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import * as Redux from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -25,27 +23,8 @@ interface IComponentState {
 
 type IProps = IConnectedProps & IActionProps;
 
-/* interface IBeatModsListState {
-    mods: IModDetails[];
-    selected?: string; //mod ID
-    gameVersion: string;
-    availableVersions: string[];
-    isLoading: boolean;
-    searchFilter: string;
-}
- */
 class GeneralSettings extends ComponentEx<IProps, {}> {
-    /* *
-     *
-     */
-    /* constructor(props: IProps) {
-        super(props);
-
-        this.initState({
-            serverUrl: ''
-        } as IComponentState)
-        
-    } */
+    
     public render(): JSX.Element {
         const { t } = this.props;
         const { enableServer, serverUrl } = (this.props as IProps).metaSettings;

@@ -8,19 +8,31 @@ const I18N_NAMESPACE = 'beatvortex';
 
 type VersionMatrix = {[extensionVersion: string]: string};
 
+// matrix of extension versions and what Vortex version they require.
 var minimumVersions: VersionMatrix = {
     '0.3.1': '1.2.13'
 };
 
+/**
+ * Gets the currently running Vortex version.
+ * 
+ * @param defaultValue The default Vortex version to use if detection fails.
+ */
 export function getVortexVersion(defaultValue?: string): string {
     var vortexVersion = app?.getVersion() ?? remote?.app?.getVersion() ?? defaultValue;
     return vortexVersion;
 }
 
+/**
+ * Determines whether the current Vortex version meets the specified minimum version.
+ * 
+ * @param version The minimum version required.
+ */
 export function meetsMinimum(version: string): boolean {
     return semver.gte(getVortexVersion(), version);
 }
 
+// Migration for 0.3.1.
 export function migrate031(api: IExtensionApi, oldVersion: string) {
     const extVersion = '0.3.1'
     var minVortexVersion = minimumVersions[extVersion];

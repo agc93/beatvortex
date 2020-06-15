@@ -7,6 +7,9 @@ import { GAME_ID } from ".";
 
 export type PlaylistRef = {fileUrl: string, fileName: string};
 
+/**
+ * Prototype client for retrieving and handling playlist/bplist files.
+ */
 export class PlaylistClient {
     _baseUrl: string;
     /**
@@ -16,6 +19,11 @@ export class PlaylistClient {
         this._baseUrl = linkBase ?? 'https://bsaber.com/PlaylistAPI/';
     }
 
+    /**
+     * Parses the given OneClick installation link for the basic playlist file details.
+     * 
+     * @param installLink - The OneClick (not HTTP!) link to parse.
+     */
     parseUrl = (installLink: string) : PlaylistRef => {
         var re = /bsplaylist:\/\/playlist\/(\w{4,5}:\/\/(.+?).bplist)/;
         if (!re.test(installLink)) return null;
@@ -29,6 +37,9 @@ export class PlaylistClient {
         };
     }
 
+    /**
+     * Retrieves the given playlist and returns its parsed content.
+     */
     getPlaylist = async (name: string): Promise<IPlaylistInfo> => {
         name = name.endsWith('.bplist') ? name : `${name}.bplist`;
         var url = `${this._baseUrl}${name}`;
@@ -46,6 +57,12 @@ export class PlaylistClient {
         return resp;
     }
 
+    /**
+     * Saves a playlist to a named folder in the staging folder.
+     * 
+     * @remarks
+     * - If the playlist info (`info`) is not provided, it will be retrieved again here.
+     */
     saveToFile = async (api: IExtensionApi, playlist: PlaylistRef, info?: IPlaylistInfo): Promise<string> => {
         if (!info) {
             info = await this.getPlaylist(playlist.fileName);
@@ -61,6 +78,12 @@ export class PlaylistClient {
 
 }
 
+/**
+ * Represents a bplist Playlist
+ * 
+ * @remarks
+ * Like its mod/map/model counterparts, this deliberately retains identical key names to the format to avoid property mapping.
+ */
 export interface IPlaylistInfo {
     playlistTitle: string;
     playlistAuthor: string;

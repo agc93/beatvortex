@@ -10,7 +10,7 @@ import { ProfileClient } from "vortex-ext-common";
 import { showPatchDialog, showTermsNotification } from "./notify";
 import { migrate031 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
-import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS } from './meta';
+import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist } from "./install";
 
 // clients
@@ -48,7 +48,8 @@ function main(context : IExtensionContext) {
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
         context.api.setStylesheet('bs-map-difficulties', path.join(__dirname, 'attributes.scss'));
-        util.installIconSet('beatvortex', path.join(__dirname, 'icons.svg'));
+        var invertIcons = util.getSafe(context.api.getState(), ['settings', 'beatvortex', 'invertIcons'], false);
+        util.installIconSet('beatvortex', invertIcons ? path.join(__dirname, 'icons.svg') : path.join(__dirname, 'icons-inverted.svg'));
         addTranslations(context.api, 'beatvortex');
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
@@ -238,48 +239,36 @@ async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : 
     });
 }
 
+/**
+ * Registers the extra mod list attributes for Beat Saber mods
+ * 
+ * @remarks
+ * - The actual metadata used for table attributes is mostly stored in `meta.tableAttributes` and registered here
+ */
 async function addTableAttributes(context: IExtensionContext) {
     
     context.registerTableAttribute(
         'mods', 
         {
-            id: 'bs-song-artist',
-            placement: 'both',
+            ...tableAttributes.artist,
             calc: (mod: IMod) => util.getSafe(mod.attributes, ['songAuthor'], ''),
-            edit: {},
-            isToggleable: true,
-            isSortable: true,
             condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID,
-            name: 'Artist',
-            help: 'Artist name for this map. Only available on BeatSaver maps!',
-            isGroupable: true
         }
     );
     context.registerTableAttribute(
         'mods',
         {
-            edit: {},
-            id: 'bs-song-difficulties',
-            name: 'Difficulties',
-            placement: 'table',
+            ...tableAttributes.difficulties,
             calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'difficulties'], []).map(toTitleCase),
-            customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod),
-            icon: 'inspect',
-            isGroupable: false,
-            isSortable: false,
-            isDefaultVisible: false,
-            isToggleable: true
+            customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod)
         }
     );
     context.registerTableAttribute(
         'mods',
         {
-            edit: {},
-            id:'bs-song-bpm',
-            name: 'BPM',
-            placement: 'detail',
+            ...tableAttributes.bpm,
             calc: (mod: IMod) => util.getSafe(mod.attributes, ['bpm'], []),
-            help: 'Beats per minute average for this map. Only available on BeatSaver maps!'
+            
         }
     );
 }
@@ -320,6 +309,17 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
     });
 }
 
+/**
+ * The wrapper function responsible for installing bs-map mods using the installers from `./install`
+ * 
+ * @remarks
+ * - This method also enables the additional metadata specific to BeatSaver archives.
+ * 
+ * @param files The list of files being installed
+ * @param destinationPath The target/destination path (also used to determine mod name)
+ * @param gameId The game ID for the current install. Should only ever be GAME_ID
+ * @param progressDelegate Unused delegate for reporting progress
+ */
 async function installMapContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate) : Promise<IInstallResult> {
     var modName = getModName(destinationPath);
     log('info', `installing ${modName} as custom song level`);
@@ -329,6 +329,17 @@ async function installMapContent(files: string[], destinationPath: string, gameI
     return Promise.resolve({instructions});
 }
 
+/**
+ * The wrapper function responsible for installing bs-model mods using the installers from `./install`
+ * 
+ * @remarks
+ * - This method also enables the additional metadata specific to ModelSaber files.
+ * 
+ * @param files The list of files being installed (generally only one file long)
+ * @param destinationPath The target/destination path (also used to determine mod name)
+ * @param gameId The game ID for the current install. Should only ever be GAME_ID
+ * @param progressDelegate Unused delegate for reporting progress
+ */
 async function installModelContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate) : Promise<IInstallResult> {
     var modName = getModName(destinationPath);
     log('info', 'installing mod as custom model', {file: files[0], name: modName});
@@ -387,6 +398,18 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
     };
 }
 
+/**
+ * Wrapper method to run a callback/handler on deployment events.
+ * 
+ * @remarks
+ * - This method will ensure that a) Beat Saber is the current game and b) the current profile is available
+ * - Also does some basic logging
+ * 
+ * @param api - The extension API.
+ * @param profileId The *ID* of the current profile
+ * @param deployment - The current deployment object.
+ * @param handler - The callback/event handler to invoke when a deployment event is caught.
+ */
 async function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, handler: DeploymentEventHandler) : Promise<void> {
     log('debug', 'deployment event caught!', {profileId, mods: deployment['bs-mod']?.length ?? '?', songs: deployment['bs-map']?.length ?? '?'});
     var ev = getProfile(api, profileId);
@@ -395,12 +418,22 @@ async function handleDeploymentEvent(api: IExtensionApi, profileId: string, depl
     }
 }
 
+/**
+ * Wrapper method to handle and subscribe to a given settings
+ * 
+ * @remarks
+ * - The callback provided to this method will also be invoked once on API load.
+ * 
+ * @param api - The extension API.
+ * @param key - The settings key (no `beatvortex` prefix) to handle.
+ * @param stateFunc The callback to invoke when the setting is changed.
+ */
 async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (api: IExtensionApi, stateValue: T) => void) {
     var state = api.getState();
     var currentState = util.getSafe(state, ['settings', 'beatvortex', key], undefined) as T;
     stateFunc?.(api, currentState);
     api.onStateChange(['settings', 'beatvortex', key], (previous : T, current: T) => {
-        log('debug', 'got settings change', {current});
+        traceLog('got settings change', {current});
         stateFunc?.(api, current);
     });
 }
@@ -571,6 +604,19 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
     }
 }
 
+/**
+ * Handler for immediately installing a mod *after* the download has been completed.
+ *
+ * @remarks
+ * - This does not notify the user, but instead immediately installs the mod
+ * - This is equivalent to `handleDownloadInstall`, but without the user interaction.
+ * 
+ * @param api - The extension API.
+ * @param details - Basic details for the download (only used for logging).
+ * @param err - The error (if any) from the failed download
+ * @param id - The ID of the completed download
+ * @param callback - A callback to be executed immediatley before the download is queued for installation.
+ */
 export function directDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
     if (!err) {
         callback(api);
@@ -585,6 +631,16 @@ export function directDownloadInstall(api: IExtensionApi, details: {name: string
 
 //#region Event Handlers
 
+/**
+ * A simple event handler to detect and notify the user when a deployment includes BSIPA.
+ * 
+ * @remarks
+ * - This method will run on every deployment, but only take action if a deployment contains BSIPA, and it hasn't already been run.
+ * 
+ * @param api - The extension API.
+ * @param profile - The current profile.
+ * @param deployment - The current deployment object.
+ */
 export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }) : Promise<void> {
     var didIncludeBSIPA = deployment['bs-mod'].some(f => f.source.toLowerCase().indexOf("bsipa") !== -1);
     var alreadyPatched = isIPAReady(api);
@@ -612,6 +668,16 @@ export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfil
     }
 }
 
+
+/**
+ * A simple event handler to detect and optionally revert BSIPA patching on purge.
+ * 
+ * @remarks
+ * - This method will prompt the user whether to attempt "unpatching" with BSIPA.
+ * 
+ * @param api The extension API.
+ * @param profile - The current profile
+ */
 export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile) : Promise<boolean> {
     var alreadyPatched = isIPAReady(api);
         log('debug', 'BSIPA purge check completed', {alreadyPatched});
@@ -621,6 +687,12 @@ export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile) : 
         }
 }
 
+/**
+ * An event handler to register/deregister protocols for OneClick installation based on user settings.
+ * 
+ * @param api - The extension API.
+ * @param enableLinks - The link handling settings to apply.
+ */
 export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling) {
     if (enableLinks != undefined) {
         log('debug', 'beatvortex: initialising oneclick', { enableLinks });
@@ -645,6 +717,12 @@ export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling
     }
 }
 
+/**
+ * An event handler to register/deregister the inbuilt metaserver based on user settings.
+ * 
+ * @param api - The extension API.
+ * @param metaSettings - The metaserver settings to apply.
+ */
 function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSettings) {
     if (metaSettings != undefined) {
         log('debug', 'beatvortex: initialising metaserver', { metaSettings });
@@ -656,6 +734,16 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
     }
 }
 
+/**
+ * A (currently unused) event handler to execute when the preview settings are changed.
+ * 
+ * @remarks
+ * - This method was originally responsible for registering the actual preview components, 
+ *     but this has been moved into the components themselves as enable conditions.
+ * 
+ * @param context The extension context.
+ * @param previewSettings - The preview settings to apply
+ */
 function registerPreviewSettings(context: IExtensionContext, previewSettings: IPreviewSettings) {
     /* if (previewSettings != undefined) {
         log('debug', 'beatvortex: initialising metaserver', { previewSettings });
@@ -665,6 +753,12 @@ function registerPreviewSettings(context: IExtensionContext, previewSettings: IP
     } */
 }
 
+/**
+ * Debug function to log the currently configured metaservers.
+ * 
+ * @param api The extension API.
+ * @param metaSettings The current (new) metaserver settings
+ */
 function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url: string; priority: number; } }) {
     var servers = Object.keys(metaSettings).map(k => {
         return { id: k, url: metaSettings[k].url}

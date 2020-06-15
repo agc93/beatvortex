@@ -13,20 +13,6 @@ import { models, toTitleCase } from './util';
  * @returns - A relative path to the destination folder for installation. Does not include the file path.
  */
 export function getCustomFolder(type: ModelType) {
-    /* if (typeof type === 'string') {
-        type = ModelType[type as keyof typeof ModelType]
-    }
-    switch (+type) {
-        case ModelType.avatar:
-        case ModelType.platform:
-        case ModelType.saber:
-            return `Custom${type}s`;
-        case ModelType.bloq:
-            return `CustomNotes`;
-        default:
-            return null;
-    } */
-    // type = type.replace('.', '') as ModelType;
     log('debug', `building install path for ${type}`, {modelType: type});
     switch (type) {
         case 'avatar':
@@ -136,17 +122,6 @@ export class ModelSaberClient {
         var url = `https://modelsaber.com/api/v2/get.php?filter=name:${path.basename(fileName, path.extname(fileName))}&sort=desc&type=${this.getType(fileName)}`;
         var details = await this.getApiResponse(url, (data) => data[0] as IModelDetails);
         return details;
-        /* var resp = await axios.request({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse) => {
-            const { data } = resp;
-            return data[0] as IModelDetails; //we just have to assume first here since we don't know what the ID is anymore.
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
-        return resp; */
     }
 
     /**

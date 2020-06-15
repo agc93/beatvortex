@@ -26,15 +26,6 @@ interface IBaseProps {
 
 type IProps = IBaseProps & IConnectedProps & IActionProps;
 
-/* interface IBeatModsListState {
-    mods: IModDetails[];
-    selected?: string; //mod ID
-    gameVersion: string;
-    availableVersions: string[];
-    isLoading: boolean;
-    searchFilter: string;
-}
- */
 class OneClickSettings extends ComponentEx<IProps, {}> {
     public render() : JSX.Element {
         const { t } = this.props;
@@ -105,7 +96,6 @@ function mapStateToProps(state: IState): IConnectedProps {
   }
   
   function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>, ownProps: IBaseProps): IActionProps {
-    // log('debug', 'mapping beatvortex dispatch to props', {ownProps});
     return {
         onSetOneClick: (enable: boolean, scheme: string) => {
             return dispatch(
@@ -118,7 +108,6 @@ function mapStateToProps(state: IState): IConnectedProps {
                                 ? {enablePlaylists: enable} 
                                 : null)
                 )
-            // dispatch(registerOneClickInstall({enableMaps: enable}));
     }
   }
 }

@@ -1,128 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg">
     <symbol id="icon-easy" viewBox="0 0 32 32">
         <g class="nc-icon-wrapper">
-            <text
-       id="text395"
-       y="25.953125"
-       x="7.4003906"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28px;font-family:'Roboto Mono';-inkscape-font-specification:'Roboto Mono Medium'"
-         y="25.953125"
-         x="7.4003906"
-         id="tspan393"
-         sodipodi:role="line">E</tspan></text>
-            <rect
-       ry="2"
-       y="2"
-       x="2"
-       height="28"
-       width="28"
-       id="rect399"
-       style="fill:none;filter:url(#filter1236)" />
+            <path d="M21.766,17.172L12.406,17.172L12.406,24.313L23.359,24.313L23.359,27.375L8.641,27.375L8.641,4.625L23.25,4.625L23.25,7.719L12.406,7.719L12.406,14.141L21.766,14.141L21.766,17.172Z" style="fill-rule:nonzero;"/>
+    <path d="M29.998,6.202C29.998,3.884 28.116,2.002 25.798,2.002L6.202,2.002C3.884,2.002 2.002,3.884 2.002,6.202L2.002,25.798C2.002,28.116 3.884,29.998 6.202,29.998L25.798,29.998C28.116,29.998 29.998,28.116 29.998,25.798L29.998,6.202Z" style="fill:none;stroke:currentColor;stroke-width:1.22px;"/>
         </g>
     </symbol>
     <symbol id="icon-normal" viewBox="0 0 32 32">
         <g class="nc-icon-wrapper">
-            <text
-       id="text395"
-       y="25.953125"
-       x="7.4003906"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28px;font-family:'Roboto Mono';-inkscape-font-specification:'Roboto Mono Medium'"
-         y="25.953125"
-         x="7.4003906"
-         id="tspan393"
-         sodipodi:role="line">N</tspan></text>
-            <rect
-       ry="2"
-       y="2"
-       x="2"
-       height="28"
-       width="28"
-       id="rect399"
-       style="fill:none;filter:url(#filter1236)" />
+            <path d="M23.156,27.375L19.375,27.375L11.969,11.719L11.953,27.375L8.156,27.375L8.156,4.625L11.953,4.625L19.328,20.234L19.359,4.625L23.156,4.625L23.156,27.375Z" style="fill-rule:nonzero;"/>
+    <path d="M29.998,6.202C29.998,3.884 28.116,2.002 25.798,2.002L6.202,2.002C3.884,2.002 2.002,3.884 2.002,6.202L2.002,25.798C2.002,28.116 3.884,29.998 6.202,29.998L25.798,29.998C28.116,29.998 29.998,28.116 29.998,25.798L29.998,6.202Z" style="fill:none;stroke:currentColor;stroke-width:1.22px;"/>
         </g>
     </symbol>
     <symbol id="icon-hard" viewBox="0 0 32 32">
         <g class="nc-icon-wrapper">
-            <text
-       id="text395"
-       y="25.953125"
-       x="7.4003906"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28px;font-family:'Roboto Mono';-inkscape-font-specification:'Roboto Mono Medium'"
-         y="25.953125"
-         x="7.4003906"
-         id="tspan393"
-         sodipodi:role="line">H</tspan></text>
-            <rect
-       ry="2"
-       y="2"
-       x="2"
-       height="28"
-       width="28"
-       id="rect399"
-       style="fill:none;filter:url(#filter1236)" />
+            <path d="M23.172,27.375L19.516,27.375L19.516,17.219L11.781,17.219L11.781,27.375L8.141,27.375L8.141,4.625L11.781,4.625L11.781,14.141L19.516,14.141L19.516,4.625L23.172,4.625L23.172,27.375Z" style="fill-rule:nonzero;"/>
+			<path d="M29.998,6.202C29.998,3.884 28.116,2.002 25.798,2.002L6.202,2.002C3.884,2.002 2.002,3.884 2.002,6.202L2.002,25.798C2.002,28.116 3.884,29.998 6.202,29.998L25.798,29.998C28.116,29.998 29.998,28.116 29.998,25.798L29.998,6.202Z" style="fill:none;stroke:currentColor;stroke-width:1.22px;"/>
         </g>
     </symbol>
     <symbol id="icon-expert" viewBox="0 0 32 32">
         <g class="nc-icon-wrapper">
-            <text
-       id="text395"
-       y="26.016258"
-       x="2.3072896"
-       style="font-style:normal;font-weight:normal;font-size:22px;line-height:1.25;font-family:sans-serif"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22px;font-family:'Roboto Mono';-inkscape-font-specification:'Roboto Mono Medium'"
-         y="26.016258"
-         x="2.3072896"
-         id="tspan393"
-         sodipodi:role="line">Ex</tspan></text>
-    <rect
-       ry="2"
-       y="2"
-       x="2"
-       height="28"
-       width="28"
-       id="rect399"
-       style="fill:none;filter:url(#filter1236)" />
+            <path d="M13.256,18.723L7.289,18.723L7.289,24.078L14.272,24.078L14.272,26.375L4.889,26.375L4.889,9.313L14.202,9.313L14.202,11.633L7.289,11.633L7.289,16.449L13.256,16.449L13.256,18.723Z" style="fill-rule:nonzero;"/>
+			<path d="M21.772,17.984L24.342,13.695L26.992,13.695L23.187,19.941L27.111,26.375L24.472,26.375L21.802,21.934L19.143,26.375L16.483,26.375L20.408,19.941L16.603,13.695L19.242,13.695L21.772,17.984Z" style="fill-rule:nonzero;"/>
+			<path d="M29.998,6.202C29.998,3.884 28.116,2.002 25.798,2.002L6.202,2.002C3.884,2.002 2.002,3.884 2.002,6.202L2.002,25.798C2.002,28.116 3.884,29.998 6.202,29.998L25.798,29.998C28.116,29.998 29.998,28.116 29.998,25.798L29.998,6.202Z" style="fill:none;stroke:currentColor;stroke-width:1.22px;"/>
         </g>
     </symbol>
-    <symbol id="icon-expertplus" viewBox="0 0 32 32">
+    <symbol id="icon-expertPlus" viewBox="0 0 32 32">
         <g class="nc-icon-wrapper">
-            <text
-       id="text395"
-       y="26.016258"
-       x="2.3072896"
-       style="font-style:normal;font-weight:normal;font-size:22px;line-height:1.25;font-family:sans-serif"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22px;font-family:'Roboto Mono';-inkscape-font-specification:'Roboto Mono Medium'"
-         y="26.016258"
-         x="2.3072896"
-         id="tspan393"
-         sodipodi:role="line">Ex</tspan></text>
-    <rect
-       ry="2"
-       y="2"
-       x="2"
-       height="28"
-       width="28"
-       id="rect399"
-       style="fill:none;filter:url(#filter1236)" />
-    <text
-       id="text2464"
-       y="13.589286"
-       x="15.678572"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif"
-       xml:space="preserve"><tspan
-         style="font-size:16px"
-         y="13.589286"
-         x="15.678572"
-         id="tspan2462"
-         sodipodi:role="line">+</tspan></text>
+            <path d="M13.256,18.723L7.289,18.723L7.289,24.078L14.272,24.078L14.272,26.375L4.889,26.375L4.889,9.313L14.202,9.313L14.202,11.633L7.289,11.633L7.289,16.449L13.256,16.449L13.256,18.723Z" style="fill-rule:nonzero;"/>
+			<path d="M21.772,17.984L24.342,13.695L26.992,13.695L23.187,19.941L27.111,26.375L24.472,26.375L21.802,21.934L19.143,26.375L16.483,26.375L20.408,19.941L16.603,13.695L19.242,13.695L21.772,17.984Z" style="fill-rule:nonzero;"/>
+			<path d="M25.118,7.083L28.103,7.083L28.103,8.84L25.118,8.84L25.118,12.192L23.298,12.192L23.298,8.84L20.306,8.84L20.306,7.083L23.298,7.083L23.298,3.911L25.118,3.911L25.118,7.083Z" style="fill-rule:nonzero;"/>
+			<path d="M29.998,6.202C29.998,3.884 28.116,2.002 25.798,2.002L6.202,2.002C3.884,2.002 2.002,3.884 2.002,6.202L2.002,25.798C2.002,28.116 3.884,29.998 6.202,29.998L25.798,29.998C28.116,29.998 29.998,28.116 29.998,25.798L29.998,6.202Z" style="fill:none;stroke:currentColor;stroke-width:1.22px;"/>
         </g>
     </symbol>
 </svg>

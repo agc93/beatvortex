@@ -49,10 +49,5 @@ export default MapDifficulties;
 
 export function difficultiesRenderer(api: IExtensionApi, mod: IMod) {
     const state = api.store.getState();
-    /* if ((mod.state === 'installed')
-        && (util.getSafe(mod, ['attributes', 'content'], undefined) === undefined)
-        && (mod.installationPath !== undefined)) {
-        setTimeout(() => updateContent(state, mod), 0);
-    } */
     return <MapDifficulties mod={mod} />;
 }

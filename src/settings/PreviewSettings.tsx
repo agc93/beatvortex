@@ -1,6 +1,4 @@
 import * as React from 'react';
-// import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
-// import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import * as Redux from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -17,10 +15,6 @@ interface IConnectedProps {
 interface IActionProps {
     onEnablePlaylists: (enable: boolean) => void;
 }
-
-/* interface IComponentState {
-    enablePlaylists: boolean;
-} */
 
 type IProps = IConnectedProps & IActionProps;
 

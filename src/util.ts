@@ -110,6 +110,7 @@ export function isModelModInstructions(instructions: IInstruction[]) : boolean {
     return isModelMod(files);
 }
 
+// WARNING: I'm honestly not sure this is working, and I have no idea why not. I think the type checking might not be right?
 export function isActiveGame(api: IExtensionApi): boolean;
 export function isActiveGame(context: IExtensionContext): boolean;
 export function isActiveGame(store: ThunkStore<any>): boolean;

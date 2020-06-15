@@ -1,18 +1,9 @@
-import { MainPage, log, FlexLayout, Icon, actions, Spinner, ComponentEx } from 'vortex-api';
-import path = require('path');
-const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonGroup, FormControl, FormGroup, ControlLabel } = require('react-bootstrap');
+import { log, FlexLayout, Icon, Spinner, ComponentEx } from 'vortex-api';
+const { ListGroup, ListGroupItem } = require('react-bootstrap');
 import React, { Component } from 'react';
-import * as Redux from 'redux';
-import { connect } from 'react-redux';
 import { IExtensionApi, IModTable, IMod, IState } from 'vortex-api/lib/types/api';
 
-import { getGameVersion, traceLog } from '../util';
-import { util } from "vortex-api";
-import { handleDownloadInstall, setDownloadModInfo, GAME_ID, directDownloadInstall } from '..';
-import { rsort } from "semver";
-import { withTranslation } from 'react-i18next';
-import { ThunkDispatch } from 'redux-thunk';
-import { PlaylistManager } from './playlistManager';
+import { GAME_ID } from '..';
 import { BeatSaverClient, IMapDetails } from '../beatSaverClient';
 import { ILocalPlaylist, IPlaylistEntry } from './types';
 
@@ -34,9 +25,6 @@ type IProps = IBaseProps & IConnectedProps;
 
 class PlaylistMapList extends ComponentEx<IProps, {}> {
 
-    header: React.Component<{}, any, any> = null;
-    mainPage: React.Component<{}, any, any> = null;
-
     playlists: ILocalPlaylist[];
     state: IPlaylistMapListState = {
         selected: '',
@@ -56,7 +44,6 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
 
     public render() {
         const { isLoading, details, selected } = this.state;
-        const { t } = this.props;
         var currentMap = (selected == undefined || !selected || details.length == 0)
             ? null
             : details.find(iter => iter.key == selected);
@@ -96,20 +83,6 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         );
     }
 
-    /* private isInstalled = (song: IMapDetails): boolean => {
-        var { installed } = (this.props as IProps);
-        var keys = Object.values(installed);
-        var isInstalled = Object.values(installed).filter(m => m.type == 'bs-map').some(m => m.id == song.key);
-        return isInstalled;
-    } */
-
-    /* private selectListEntry = (evt: React.MouseEvent<any>, modId: string) => {
-        const modIdStr = modId ?? evt.currentTarget.getAttribute('data-title');
-        log('debug', 'new mod selected', { mod: modIdStr });
-        // const modId = modIdStr !== null ? parseInt(modIdStr, 10) : undefined;
-        this.setState({ selected: modIdStr });
-    } */
-
     private renderPlaylistMap = (detail: IMapDetails) => {
         // log('debug', 'attempting render of mod', {mod: mod.name});
         const { selected } = this.state;
@@ -135,8 +108,6 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
 
     private selectListEntry = (evt: React.MouseEvent<any>, mapKey: string) => {
         const modIdStr = mapKey ?? evt.currentTarget.getAttribute('key');
-        // log('debug', 'new mod selected', { mod: modIdStr });
-        // const modId = modIdStr !== null ? parseInt(modIdStr, 10) : undefined;
         this.setState({ selected: modIdStr });
     }
 
@@ -188,24 +159,5 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         );
     }
 }
-
-function mapStateToProps(state: IState): IConnectedProps {
-    // log('debug', 'mapping beatvortex state to props');
-    return {
-        installed: state.persistent.mods[GAME_ID]
-    };
-}
-
-/* function mapStateToProps(state: IState): IConnectedProps {
-    // log('debug', 'mapping beatvortex state to props');
-    return {
-        gamePath: state.settings.gameMode.discovered[GAME_ID].path,
-        installed: state.persistent.mods[GAME_ID]
-    };
-}
-
-function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>, ownProps: IBaseProps): IActionProps {
-    return {}
-} */
 
 export default PlaylistMapList;

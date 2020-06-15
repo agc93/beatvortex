@@ -9,12 +9,7 @@ import { BeatSaverClient } from './beatSaverClient';
 import { getCustomFolder, ModelType, ModelSaberClient } from './modelSaberClient';
 import { PlaylistClient } from "./playlistClient";
 import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName } from './util';
-// import { exportDifficulties } from "./maps";
 import { installMaps, IPlaylistEntry } from './playlists';
-
-// export interface FileInstaller {
-//     (api: IExtensionApi, files: string[], rootPath: string, enrich: MetadataSource): IInstruction[];
-// }
 
 export interface ModInstaller {
     (api: IExtensionApi, files: string[], archiveRoot: string, modName: string, enrich: MetadataSource) : Promise<IInstruction>;
@@ -30,22 +25,47 @@ export interface ModHandler {
     installer(files: string[], archiveRoot: string, modName: string, enrich: MetadataSource) : Promise<IInstruction[]>;
 };
 
+/**
+ * Tests a given file list for installation as a Beat Saber map.
+ * 
+ * @param files - The file list for installation
+ * @param gameId - The current game ID.
+ */
 export async function testMapContent(files: string[], gameId: string): Promise<ISupportedResult> {
     var supported = isSongMod(files) && gameId == GAME_ID;
     return {supported, requiredFiles: []}
 }
 
+/**
+ * Tests a given file list for installation as a Beat Saber custom model.
+ * 
+ * @param files - The file list for installation
+ * @param gameId - The current game ID.
+ */
 export async function testModelContent(files: string[], gameId: string): Promise<ISupportedResult> {
     var supported = gameId == GAME_ID && isModelMod(files);
     return {supported, requiredFiles: []};
 }
 
+/**
+ * Tests a given file list for installation as a Beat Saber plugin mod.
+ * 
+ * @param files - The file list for installation
+ * @param gameId - The current game ID.
+ */
 export async function testPluginContent(files: string[], gameId: string): Promise<ISupportedResult> {
     var supported = gameId == GAME_ID && isGameMod(files);
     return {supported, requiredFiles: []};
 }
 
-
+/**
+ * Basic installer that mirrors the default installation behaviour: installs files to the exact same relative paths.
+ * 
+ * @param files - The file list for installation.
+ * @param rootPath - The (detected) root path of the file list.
+ * @param modName - Name of the mod being installed
+ * @param enrich - Optional source of attribute metadata
+ */
 export async function basicInstaller(files: string[], rootPath: string, modName: string, enrich?: MetadataSource) : Promise<IInstruction[]> {
     rootPath = rootPath ?? '';
     var instructions = files.map((file: string): IInstruction => {
@@ -59,6 +79,14 @@ export async function basicInstaller(files: string[], rootPath: string, modName:
     return instructions;
 }
 
+/**
+ * Basic installer for custom model content (platforms, sabers, notes): installs files prefixed with the correct `Custom` folder name.
+ * 
+ * @param files - The file list for installation.
+ * @param rootPath - The (detected) root path of the file list.
+ * @param modName - Name of the mod being installed
+ * @param enrich - Optional source of attribute metadata
+ */
 export async function modelInstaller(files: string[], rootPath: string, modName: string, enrich: MetadataSource) : Promise<IInstruction[]> {
     var file = files[0];
     var instructions: IInstruction[] = [
@@ -72,7 +100,17 @@ export async function modelInstaller(files: string[], rootPath: string, modName:
     return instructions;
 }
 
-
+/**
+ * Installer that handles "rerooting"/filtering mod files to only plugin files, with destination paths set relative to that "root".
+ * 
+ * @remarks
+ * - This method does not do the *detection* of the archive root, only the path manipulation.
+ * 
+ * @param files - The file list for installation.
+ * @param rootPath - The (detected) root path of the file list.
+ * @param modName - Name of the mod being installed
+ * @param enrich - Optional source of attribute metadata
+ */
 export async function archiveInstaller(files: string[], rootPath: string, modName: string, enrich: MetadataSource) : Promise<IInstruction[]> {
     let firstType = path.dirname(rootPath);
     let root = path.dirname(firstType);
@@ -95,6 +133,15 @@ export async function archiveInstaller(files: string[], rootPath: string, modNam
     return instructions;
 }
 
+/**
+ * Attribute metadata source for BeatMods archives.
+ * 
+ * @remarks
+ * - See implementation for a note on why gameVersion isn't included.
+ * - This currently invokes 1 API request per mod.
+ * 
+ * @param modName - Name of the mod being installed
+ */
 export async function installBeatModsArchive(modName: string) : Promise<IInstruction[]> {
     var client = new BeatModsClient();
     var details = await client.getModByFileName(modName);
@@ -109,7 +156,7 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
         logicalFileName: details.name,
         source: "beatmods",
         version: details.version,
-        gameVersion: details.gameVersion,
+        // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
         uploadedTimestamp: details.uploadDate
         };
     var instructions = toInstructions(modAtrributes);
@@ -128,9 +175,23 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
     log('debug', 'building dependency instructions', depInstructions);
     instructions.push(...depInstructions);
     return instructions;
-    // api.store.dispatch(actions.setModAttributes(GAME_ID, modName, modAtrributes));
+    /**
+     * The game version problem is caused by https://github.com/bsmg/BeatMods-Website/issues/41.
+     * We can't store this game version since BeatMods gives us the wrong version. We *could* find
+     * out what the latest version is first, and sepcify a version when we ask for the mod, but 
+     * that would *double* the BeatMods requests on *every* install, including the nasty >1MB
+     * all versions request.
+     */
 }
 
+/**
+ * Attribute metadata source for BeatSaver archives.
+ * 
+ * @remarks
+ * - This almost certainly doesn't work for Web UI downloads, only OneClick links
+ * 
+ * @param modName - Name of the mod being installed
+ */
 export async function installBeatSaverArchive(modName: string) : Promise<IInstruction[]> {
     let instructions : IInstruction[] = [];
     if (BeatSaverClient.isArchiveName(modName, true)) { //beatsaver.com zip download
@@ -169,6 +230,11 @@ export async function installBeatSaverArchive(modName: string) : Promise<IInstru
     // destination: `Beat Saber_Data/CustomLevels/${targetName}/${file}` // this should be handled by the modtype now.
 }
 
+/**
+ * Attribute metadata source for ModelSaber archives/files.
+ *
+ * @param modName - Name of the mod being installed
+ */
 export async function installModelSaberFile(modName: string) : Promise<IInstruction[]> {
     let instructions : IInstruction[] = [];
     var modelClient = new ModelSaberClient();
@@ -194,6 +260,16 @@ export async function installModelSaberFile(modName: string) : Promise<IInstruct
     return instructions;
 }
 
+/**
+ * Installs the given playlist as a mod.
+ * 
+ * @remarks
+ * - Unlike mods/maps/models, this actually bypasses the built-in Vortex installation logic.
+ * - This directly installs the file into the staging folder, then "manually" adds the mod to Vortex.
+ * 
+ * @param api The extension API.
+ * @param installUrl The playlist URL to install
+ */
 export async function installPlaylist(api: IExtensionApi, installUrl: string) {
     var client = new PlaylistClient()
     var ref = client.parseUrl(installUrl);
@@ -239,6 +315,15 @@ export async function installPlaylist(api: IExtensionApi, installUrl: string) {
       });
 }
 
+/**
+ * Installs all maps from the given list of maps, unless they're already installed.
+ * 
+ * @remarks
+ * - As well as installing the maps (using the Vortex flow), this also force-enables each downloaded map.
+ * 
+ * @param api - The extension API.
+ * @param maps - The set of maps from the installed playlist.
+ */
 export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[]) {
     var installed = api.getState().persistent.mods[GAME_ID];
     var toInstall = maps.filter(plm => !Object.values(installed).some(i => (i.id == plm.key) || (i?.attributes['mapHash'] == plm.hash)));
@@ -256,5 +341,5 @@ export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEnt
         }
         api.events.emit('mods-enabled', modIds, true, GAME_ID);
     });
-    // we should probably be auto-enabling these maps too
+    // lol jks we are auto-enabling these now.
 }

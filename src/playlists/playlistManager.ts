@@ -6,6 +6,14 @@ import { BeatSaverClient } from "../beatSaverClient";
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
 
+/**
+ * This class was intended as a utility class encompassing local-only playlist 
+ * operations, but has largely ended up a wrapper for retrieving local playlists.
+ * 
+ * @remarks
+ * In future, the `installMaps` and `installPlaylist` functions should probably be refactored
+ * into this client.
+ */
 export class PlaylistManager {
     private installPath: string;
     private _client: BeatSaverClient;
@@ -18,6 +26,13 @@ export class PlaylistManager {
         
     }
     
+    /**
+     * Retrieves all locally installed *and deployed* playlists. This method reads directly 
+     * from the install directory, so won't find installed but undeployed playlists.
+     * 
+     * @remarks
+     * At this time, the method does not return the image, since that could be lots of things.
+     */
     getInstalledPlaylists = async (): Promise<ILocalPlaylist[]> => {
         var playlistFiles: string[] = (await fs.readdirAsync(path.join(this.installPath, 'Playlists'))).filter((f: string) => f.endsWith('.bplist'));
         var localPlaylists = Promise.all(playlistFiles.map(async (file: string): Promise<ILocalPlaylist> => {
@@ -37,6 +52,13 @@ export class PlaylistManager {
     }
 }
 
+/**
+ * Immediately installs the given maps.
+ * 
+ * @param api - Extension API.
+ * @param mapIdents - List of map identifiers to be installed.
+ * @param callbackFn Optional callback to invoke after all the maps have been installed.
+ */
 export const installMaps = async (api: IExtensionApi, mapIdents: string[], callbackFn?: (api: IExtensionApi, modIds: string[]) => void) => {
     var client = new BeatSaverClient();
     var details = await Promise.all(mapIdents.map(async (id: string) => {
@@ -66,18 +88,4 @@ export const installMaps = async (api: IExtensionApi, mapIdents: string[], callb
     } else {
         api.showErrorNotification(`Could not fetch details for ${mapIdents}!`, `We couldn't get details from BeatSaver for that song. It may have been removed or currently unavailable.`, {allowReport: false});
     }
-}
-
-export const installPlaylist = async (api: IExtensionApi, playlist: ILocalPlaylist) =>{
-    var installed = api.getState().persistent.mods[GAME_ID]
-    var toInstall = playlist.maps.filter(plm => !Object.values(installed).some(i => (i.id == plm.key) || (i?.attributes['mapHash'] == plm.hash)));
-    await installMaps(api, toInstall.map(i => i.hash ?? i.key), () => {
-        api.sendNotification({
-            type: 'info',
-            title: "Now installing playlist",
-            message: `Installing ${toInstall.length} maps from BeatSaver`,
-            noDismiss: true,
-            displayMS: 4000
-        });
-    });
 }

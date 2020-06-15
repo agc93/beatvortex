@@ -28,6 +28,14 @@ They probably already are! If you want to maximise support and avoid some issues
 
 Nexus Mods doesn’t support Beat Saber mods (and most likely never will), so you will not be able to download mods from the Nexus website. You can, however, download from BeatMods or BeatSaver and install in Vortex.
 
+### What's the deal with game versions? Why do I have to choose my version?
+
+Now that's a saga of a question. There's two reasons we have to do this: compatibility and BeatMods being BeatMods.
+
+The first (and major) point is that BeatVortex can't tell which versions are forward compatible. That is, *we* know that mods for 1.8.0 work in 1.9.0, but BeatVortex doesn't have any easy way to tell that. So if there's not an exact match to your installed version, we ask you to choose.
+
+The other (unfixable from our end) problem is that the BeatMods API has a very [weird bug/behaviour](https://github.com/bsmg/BeatMods-Website/issues/41) that means we somehow have to know what game version the mod uses in order to find out what game version the mod uses. This is also why we don't display what game version an installed mod uses: the BeatMods API tells us the completely wrong version.
+
 ### Why aren't dependencies fully supported?
 
 This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.
