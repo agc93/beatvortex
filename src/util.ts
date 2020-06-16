@@ -16,6 +16,15 @@ export function getModName(destinationPath: string) : string {
     return modName;
 }
 
+export async function getAllFiles(dir) {
+  const dirents = await nfs.promises.readdir(dir, { withFileTypes: true });
+  const files = await Promise.all(dirents.map((dirent) => {
+    const res = path.join(dir, dirent.name);
+    return dirent.isDirectory() ? getAllFiles(res) : res;
+  }));
+  return Array.prototype.concat(...files);
+}
+
 /**
  * Determines if the given string is a BeatSaver song hash, or optionally a key.
  *

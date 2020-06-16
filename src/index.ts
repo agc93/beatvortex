@@ -12,6 +12,7 @@ import { migrate031 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist } from "./install";
+import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 
 // clients
 import { BeatSaverClient, IMapDetails } from './beatSaverClient';
@@ -52,7 +53,7 @@ function main(context : IExtensionContext) {
         addTranslations(context.api, 'beatvortex');
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
-        handleSettings(context.api, 'preview', (api, settings) => registerPreviewSettings(context, settings));
+        handleSettings(context.api, 'preview', registerPreviewSettings);
         if (useTrace) {
             context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
                 log('debug', 'got settings change', {current});
@@ -149,7 +150,6 @@ function main(context : IExtensionContext) {
         props: () => ({ api: context.api }),
     });
 
-      // ↘ affected by https://github.com/Nexus-Mods/Vortex/issues/6315
       context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
       context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
       context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
@@ -435,13 +435,13 @@ async function handleDeploymentEvent(api: IExtensionApi, profileId: string, depl
  * @param key - The settings key (no `beatvortex` prefix) to handle.
  * @param stateFunc The callback to invoke when the setting is changed.
  */
-async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (api: IExtensionApi, stateValue: T) => void) {
+async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (api: IExtensionApi, stateValue: T, oldValue?: T) => void) {
     var state = api.getState();
     var currentState = util.getSafe(state, ['settings', 'beatvortex', key], undefined) as T;
     stateFunc?.(api, currentState);
     api.onStateChange(['settings', 'beatvortex', key], (previous : T, current: T) => {
         traceLog('got settings change', {current});
-        stateFunc?.(api, current);
+        stateFunc?.(api, current, previous);
     });
 }
 
@@ -751,13 +751,31 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
  * @param context The extension context.
  * @param previewSettings - The preview settings to apply
  */
-function registerPreviewSettings(context: IExtensionContext, previewSettings: IPreviewSettings) {
-    /* if (previewSettings != undefined) {
-        log('debug', 'beatvortex: initialising metaserver', { previewSettings });
-        if (previewSettings.enablePlaylists) {
-            
+function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSettings, oldSettings?: IPreviewSettings) {
+    if (previewSettings != undefined) {
+        log('debug', 'beatvortex: initialising preview settings', { previewSettings });
+        const checkForUpdates = async (gameId, mods: { [id: string]: IMod }) => {
+            traceLog('attempting beatvortex update check', {modCount: Object.keys(mods).length, game: gameId});
+            await checkForBeatModsUpdates(api, gameId, mods);
+            return Promise.resolve();
+        };
+        const installUpdates = async (gameId: string, modId: string) => {
+            traceLog('attempting beatvortex mod update', {modId});
+            await installBeatModsUpdate(api, gameId, modId);
+            return Promise.resolve();
+        };
+        if (previewSettings.enableUpdates) {
+            api.onAsync('check-mods-version', checkForUpdates);
+            api.onAsync('mod-update', installUpdates);
+        } else if (previewSettings.enableUpdates === false && oldSettings?.enableUpdates === true) {
+            api.sendNotification({
+                id: `bs-preview-restart`,
+                type: 'warning',
+                title: 'Vortex Restart Required',
+                message: 'Disabling BeatMods updates requires a Vortex restart to take effect!'
+              });
         }
-    } */
+    }
 }
 
 /**

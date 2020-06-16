@@ -1,7 +1,7 @@
 import { fs, log } from "vortex-api";
 import path = require('path');
 import { ILocalPlaylist, IPlaylistEntry } from ".";
-import { traceLog } from "../util";
+import { getAllFiles } from "../util";
 import { BeatSaverClient } from "../beatSaverClient";
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
@@ -34,12 +34,14 @@ export class PlaylistManager {
      * At this time, the method does not return the image, since that could be lots of things.
      */
     getInstalledPlaylists = async (): Promise<ILocalPlaylist[]> => {
-        var playlistFiles: string[] = (await fs.readdirAsync(path.join(this.installPath, 'Playlists'))).filter((f: string) => f.endsWith('.bplist'));
+        // var playlistFiles: string[] = (await fs.readdirAsync(path.join(this.installPath, 'Playlists'))).filter((f: string) => f.endsWith('.bplist'));
+        var playlistPath = path.join(this.installPath, 'Playlists');
+        var playlistFiles: string[] = (await getAllFiles(playlistPath)).filter((f: string) => f.endsWith('.bplist'));
         var localPlaylists = Promise.all(playlistFiles.map(async (file: string): Promise<ILocalPlaylist> => {
-            var playlistContent = await fs.readFileAsync(path.join(this.installPath, 'Playlists', file), { encoding: 'utf-8' });
+            var playlistContent = await fs.readFileAsync(file, { encoding: 'utf-8' });
             var content = JSON.parse(playlistContent);
             var pl = {
-                filePath: path.basename(file),
+                filePath: path.relative(playlistPath, file),
                 title: content.playlistTitle?.replace('\n', ' ') ?? path.basename(file, '.bplist'),
                 authorName: content.playlistAuthor ?? '',
                 // image: content.image,

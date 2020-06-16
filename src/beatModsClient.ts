@@ -115,21 +115,22 @@ export class BeatModsClient {
      * @returns A subset of the available metadata from BeatMods. Returns null on error/not found
      */
     async getModByFileName(fileName: string, gameVersion?: string) : Promise<IModDetails> | null {
-        var [modName, version] = path.basename(fileName, path.extname(fileName)).split('-', 2);
+        var [modName, version] = path.basename(fileName, fileName.endsWith('zip') ? path.extname(fileName) : '').split('-', 2);
         log('debug', 'beatvortex: retrieving details from beatmods', {modName, version});
         // &gameVersion=${gameVersion ?? '1.8.0'}
         var url = `https://beatmods.com/api/v1/mod?search=${modName}&version=${version}&status=approved&sort=updatedDate&sortDirection=1`;
-        var resp = await axios.request<IModDetails[]>({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse<IModDetails[]>) => {
-            const { data } = resp;
-            return data[0];
-        }).catch(err => {
-            log('error', err);
-            return null;
+        var mod = await this.getApiResponse<IModDetails>(url, (data) => data[0])
+        return mod;
+    }
+
+    async getModVersionsByName(modName: string) : Promise<IModDetails[]> | null {
+        log('debug', 'beatvortex: retrieving all versions from beatmods', {modName});
+        var url = `https://beatmods.com/api/v1/mod?search=${modName}&status=approved&sort=updatedDate&sortDirection=1`;
+        var allMods = await this.getApiResponse<IModDetails[]>(url, (data) => {
+            var matches = data.filter(m => m.name == modName);
+            return (matches && matches.length) ? matches : null;
         });
-        return resp;
+        return allMods;
     }
 
     /**

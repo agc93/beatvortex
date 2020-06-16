@@ -1,9 +1,13 @@
-.pv-playlistlist {
+%vertical-list {
   max-width: 40%;
   min-width: 20%;
   margin-right: 4px;
   border-right: $border-width solid $border-color;
   overflow: auto;
+}
+
+.pv-playlistlist {
+  @extend %vertical-list;
 
   .list-group {
     overflow-y: auto;
@@ -115,6 +119,10 @@
     border-bottom: $border-width solid $border-color;
     font-style: italic;
   }
+}
+
+.pv-maps-list {
+  @extend %vertical-list;
 }
 
 .pv-map-description {

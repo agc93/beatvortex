@@ -31,6 +31,8 @@ interface IBeatModsListState {
     selected?: string; //playlist fileName
     isLoading: boolean;
     searchFilter: string;
+    currentPlaylist: ILocalPlaylist;
+    maps: IPlaylistEntry[];
 }
 
 type IProps = IConnectedProps & IBaseProps;
@@ -44,8 +46,10 @@ class PlaylistView extends ComponentEx<IProps, {}> {
     state: IBeatModsListState = {
         playlists: [],
         selected: '', //title
+        currentPlaylist: null,
         isLoading: true,
-        searchFilter: ''
+        searchFilter: '',
+        maps: []
     };
 
     async refreshPlaylists(version?: string) {
@@ -57,23 +61,20 @@ class PlaylistView extends ComponentEx<IProps, {}> {
         this.setState({ playlists: playlists });
     }
 
-    selectPlaylist = (playlistName: string) => {
+    /* selectPlaylist = (playlistName: string) => {
         //need to handle this being an id
         var { playlists } = this.state;
         var mod = playlists.find(m => m.title == playlistName || playlistName.startsWith(path.basename(m.filePath, '.bplist')));
-        this.setState({ selected: mod.title });
-    }
+        this.setState({ selected: mod.title, currentPlaylist: mod } as IBeatModsListState);
+    } */
 
     public render() {
-        const { selected, playlists, isLoading, searchFilter } = this.state;
+        const { selected, playlists, currentPlaylist, isLoading, searchFilter } = this.state;
         const { t } = this.props;
         traceLog('rendering playlist list', { searchFilter: searchFilter ?? 'none' });
-        const mod: ILocalPlaylist = (selected == undefined || !selected || playlists.length == 0)
-            ? null
-            : playlists.find(iter => iter.title == selected);
-        if (mod) {
+        /* if (mod) {
             traceLog('matched mod from list entry selection', { name: mod?.title, path: mod?.filePath });
-        }
+        } */
         return (
             <MainPage ref={(mainPage) => { this.mainPage = mainPage; }}>
                 <MainPage.Header ref={(header) => { this.header = header; }}>
@@ -109,7 +110,7 @@ class PlaylistView extends ComponentEx<IProps, {}> {
                                         </FlexLayout>
                                     </FlexLayout.Fixed>
                                     <FlexLayout.Flex fill={true}>
-                                        {((selected == undefined || !selected) || (mod == undefined || !mod)) ? null : this.renderDescription(mod)}
+                                        {((selected == undefined || !selected) || (currentPlaylist == undefined || !currentPlaylist)) ? null : this.renderDescription(currentPlaylist)}
                                     </FlexLayout.Flex>
                                 </FlexLayout>
                             </Panel.Body>
@@ -121,10 +122,12 @@ class PlaylistView extends ComponentEx<IProps, {}> {
     }
 
     private selectListEntry = (evt: React.MouseEvent<any>, modId: string) => {
+        var { playlists } = this.state;
         const modIdStr = modId ?? evt.currentTarget.getAttribute('data-title');
-        traceLog('new mod selected', { mod: modIdStr });
-        // const modId = modIdStr !== null ? parseInt(modIdStr, 10) : undefined;
-        this.setState({ selected: modIdStr });
+        traceLog('new playlist selected', { mod: modIdStr });
+        var mod = playlists.find(m => m.title == modIdStr || modIdStr.startsWith(path.basename(m.filePath, '.bplist')));
+        this.setState({ selected: mod.title, currentPlaylist: mod, maps: mod.maps } as IBeatModsListState);
+        // this.setState({ selected: modIdStr });
     }
 
     private handleSearchFilter = (evt: React.ChangeEvent<any>) => {
@@ -202,7 +205,7 @@ class PlaylistView extends ComponentEx<IProps, {}> {
                                     <span className='pv-detail-author'>{' by '}{playlist.authorName}</span>
                                 </div>
                                 <div className='pv-detail-source'>
-                                    <>from {playlist.filePath}</>
+                                    <>from {path.basename(playlist.filePath)} (in {path.dirname(playlist.filePath) == "." ? "Default" : path.dirname(playlist.filePath)} group)</>
                                 </div>
                             </FlexLayout>
                         </FlexLayout.Flex>
@@ -222,7 +225,7 @@ class PlaylistView extends ComponentEx<IProps, {}> {
                 </FlexLayout.Fixed>
                 <FlexLayout.Flex>
                     <div className="pv-detail-base">
-                        <PlaylistMapList installed={installed} playlist={playlist.maps}></PlaylistMapList>
+                        <PlaylistMapList installed={installed} playlist={this.state.maps}></PlaylistMapList>
                     </div>
                 </FlexLayout.Flex>
                 <FlexLayout.Fixed className="pv-detail-footer">
