@@ -101,7 +101,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     startInstall = (mod: IModDetails) => {
         var { api } = this.props as IProps;
         var downloadLinks = BeatModsClient.getDownloads(mod);
-        log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});        
+        log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});
         api.events.emit('start-download', 
             downloadLinks, 
             {
@@ -132,7 +132,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             <MainPage ref={(mainPage) => { this.mainPage = mainPage; }}>
                 <MainPage.Header ref={(header) => { this.header = header; }}>
                     <FlexLayout type="column">
-                        <>Vortex doesn't install dependencies automatically! If a mod has dependencies, make sure you install them.</>
+                        {/* <>Vortex doesn't install dependencies automatically! If a mod has dependencies, make sure you install them.</> */}
                         <FlexLayout type="row">
                         {this.renderVersionSwitcher(gameVersion, availableVersions)}
                         {this.renderSearchBox()}

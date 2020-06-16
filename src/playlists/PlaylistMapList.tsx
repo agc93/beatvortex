@@ -19,6 +19,7 @@ interface IPlaylistMapListState {
     isLoading: boolean;
     details: IMapDetails[];
     selected: string; //key
+    currentMap: IMapDetails;
 }
 
 type IProps = IBaseProps & IConnectedProps;
@@ -29,7 +30,8 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
     state: IPlaylistMapListState = {
         selected: '',
         isLoading: true,
-        details: []
+        details: [],
+        currentMap: null
     };
 
     async refreshMaps() {
@@ -39,14 +41,11 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
             var mapDetails = await client.getMapDetails(pl.hash ?? pl.key);
             return mapDetails
         }));
-        this.setState({ details: details });
+        this.setState({ details: details, isLoading: false });
     }
 
     public render() {
-        const { isLoading, details, selected } = this.state;
-        var currentMap = (selected == undefined || !selected || details.length == 0)
-            ? null
-            : details.find(iter => iter.key == selected);
+        const { isLoading, details, selected, currentMap } = this.state;
         return (
             <div className='pv-detail-base'>
                 {isLoading
@@ -107,14 +106,25 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
     }
 
     private selectListEntry = (evt: React.MouseEvent<any>, mapKey: string) => {
-        const modIdStr = mapKey ?? evt.currentTarget.getAttribute('key');
-        this.setState({ selected: modIdStr });
+        var { details } = this.state;
+        const selected = mapKey ?? evt.currentTarget.getAttribute('key');
+        var currentMap = (selected == undefined || !selected || details.length == 0)
+            ? null
+            : details.find(iter => iter.key == selected);
+        this.setState({ selected, currentMap } as IPlaylistMapListState);
     }
 
     async componentDidMount() {
         log('debug', 'mod list component mounted');
         await this.refreshMaps();
         this.setState({ isLoading: false });
+    }
+
+    async componentDidUpdate(prevProps: IProps) {
+        if (prevProps.playlist != this.props.playlist) {
+            this.setState({isLoading: true});
+            await this.refreshMaps();
+        }
     }
 
     private renderDescription = (detail: IMapDetails) => {
