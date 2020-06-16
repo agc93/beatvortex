@@ -1,8 +1,7 @@
 ---
 title: "Alpha 3.2 Release"
 linkTitle: "Release 0.3.2"
-draft: false
-date: 2020-06-02
+date: 2020-06-16
 aliases:
   - /updates/germanium
   - /updates/v0.3.2
