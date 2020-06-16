@@ -21,7 +21,7 @@ import { ModelSaberClient } from './modelSaberClient';
 // components etc
 import BeatModsList from "./BeatModsList";
 import { PlaylistView } from "./playlists";
-import { difficultiesRenderer } from './attributes'
+import { difficultiesRenderer, modesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings } from "./settings";
 
 export const GAME_ID = 'beatsaber'
@@ -47,9 +47,8 @@ function main(context : IExtensionContext) {
         if (isActiveGame(context)) {}
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
-        context.api.setStylesheet('bs-map-difficulties', path.join(__dirname, 'attributes.scss'));
-        var invertIcons = util.getSafe(context.api.getState(), ['settings', 'beatvortex', 'invertIcons'], false);
-        util.installIconSet('beatvortex', invertIcons ? path.join(__dirname, 'icons.svg') : path.join(__dirname, 'icons-inverted.svg'));
+        context.api.setStylesheet('bs-map-attributes', path.join(__dirname, 'attributes.scss'));
+        util.installIconSet('beatvortex', path.join(__dirname, 'icons.svg'));
         addTranslations(context.api, 'beatvortex');
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
@@ -261,6 +260,14 @@ async function addTableAttributes(context: IExtensionContext) {
             ...tableAttributes.difficulties,
             calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'difficulties'], []).map(toTitleCase),
             customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod)
+        }
+    );
+    context.registerTableAttribute(
+        'mods',
+        {
+            ...tableAttributes.modes,
+            calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'variants'], []).map(toTitleCase),
+            customRenderer: (mod: IMod) => modesRenderer(context.api, mod)
         }
     );
     context.registerTableAttribute(
@@ -500,7 +507,7 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
                 name: details.name
             }, 
             details.name, 
-            (err: Error, id?: string) => handleDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber', id: details.key})), 
+            (err: Error, id?: string) => directDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber', id: details.key})), 
             true);
     } else {
         var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);

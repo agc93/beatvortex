@@ -85,6 +85,7 @@ export class BeatSaverClient {
  */
 export interface IMapDetails {
     metadata : {
+        characteristics: { name: string}[],
         difficulties: {
             easy: boolean;
             normal: boolean;

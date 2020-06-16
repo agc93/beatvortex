@@ -1,6 +1,12 @@
-.bs-difficulties-icons {
+.bs-attribute-icons {
     white-space: nowrap;
-    > a {
-      margin-right: 0.2em;
+
+    >a {
+        margin-right: 0.1em;
     }
-  }
+
+    svg.icon {
+        height: 1.4em;
+        width: 1.4em;
+    }
+}

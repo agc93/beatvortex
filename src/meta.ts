@@ -50,6 +50,13 @@ export const PROFILE_SETTINGS = {
     AllowUnknown: 'bs_allow_unknown'
 };
 
+const extraAttribute = {
+    isGroupable: false,
+    isSortable: false,
+    isDefaultVisible: false,
+    isToggleable: true
+}
+
 /**
  * Basic metadata for the Beat Saber-specific mod attributes
  */
@@ -60,10 +67,7 @@ export const tableAttributes: {[name: string]: ITableAttribute} = {
         name: 'Difficulties',
         placement: 'table',
         icon: 'inspect',
-        isGroupable: false,
-        isSortable: false,
-        isDefaultVisible: false,
-        isToggleable: true
+        ...extraAttribute,
     },
     artist: {
         id: 'bs-song-artist',
@@ -81,5 +85,14 @@ export const tableAttributes: {[name: string]: ITableAttribute} = {
         name: 'BPM',
         placement: 'detail',
         help: 'Beats per minute average for this map. Only available on BeatSaver maps!'
+    },
+    modes: {
+        edit: {},
+        id: 'bs-song-variants',
+        name: 'Map Modes',
+        placement: 'both',
+        icon: 'inspect',
+        help: 'Available modes for this map, such as 360° or Single Saber. Only available on BeatSaver maps!',
+        ...extraAttribute
     }
 }

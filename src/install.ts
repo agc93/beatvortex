@@ -219,10 +219,12 @@ export async function installBeatSaverArchive(modName: string) : Promise<IInstru
                 difficulties: Object.keys(mapDetails.metadata.difficulties).filter(d => mapDetails.metadata.difficulties[d] == true),
                 bpm: mapDetails.metadata.bpm,
                 duration: mapDetails.metadata.duration,
-                songAuthor: mapDetails.metadata.songAuthorName
+                songAuthor: mapDetails.metadata.songAuthorName,
+                variants: mapDetails.metadata.characteristics.map(c => c.name)
               };
             instructions.push(...toInstructions(mapAtrributes));
         } catch (error) {
+            log('warn', 'error during map installation', {error});
             // ignored
         }
     }
