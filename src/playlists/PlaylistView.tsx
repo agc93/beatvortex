@@ -190,8 +190,8 @@ class PlaylistView extends ComponentEx<IProps, {}> {
 
     private renderDescription = (playlist: ILocalPlaylist) => {
         // traceLog('attempting render of mod details', { name: mod.name, author: mod.author.username, category: mod.category, description: mod.description });
-        const { t, installed } = this.props;
-        var client = new BeatSaverClient();
+        const { t, installed, api } = this.props;
+        var client = new BeatSaverClient(api);
         var isInstalled = playlist.maps.every(e => Object.keys(installed).some(id => id == e.key) || Object.values(installed).some(m => m.attributes["mapHash"] == e.hash));
         var isPartiallyInstalled = playlist.maps.some(e => Object.keys(installed).some(id => id == e.key) || Object.values(installed).some(m => m.attributes["mapHash"] == e.hash));
         return (
@@ -225,7 +225,7 @@ class PlaylistView extends ComponentEx<IProps, {}> {
                 </FlexLayout.Fixed>
                 <FlexLayout.Flex>
                     <div className="pv-detail-base">
-                        <PlaylistMapList installed={installed} playlist={this.state.maps}></PlaylistMapList>
+                        <PlaylistMapList api={this.props.api} playlist={this.state.maps}></PlaylistMapList>
                     </div>
                 </FlexLayout.Flex>
                 <FlexLayout.Fixed className="pv-detail-footer">

@@ -3,17 +3,19 @@ const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonG
 import React, { Component } from 'react';
 import * as Redux from 'redux';
 import { connect } from 'react-redux';
-import { IExtensionApi, IModTable, IMod, IState } from 'vortex-api/lib/types/api';
+import { IExtensionApi, IMod, IState } from 'vortex-api/lib/types/api';
 import { IModDetails, BeatModsClient } from './beatModsClient';
 import { getGameVersion, traceLog } from './util';
 import { util } from "vortex-api";
-import { handleDownloadInstall, setDownloadModInfo, GAME_ID, directDownloadInstall } from '.';
+import { setDownloadModInfo, GAME_ID, directDownloadInstall } from '.';
 import { rsort } from "semver";
 import { withTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
 
 interface IConnectedProps {
     installed: { [modId: string]: IMod; };
+    mods: { [modName: string]: IModDetails; };
+    availableVersions: string[]
 }
 
 interface IActionProps {
@@ -22,14 +24,11 @@ interface IActionProps {
 
 interface IBaseProps {
     api: IExtensionApi;
-    mods: IModDetails[];
 }
 
 interface IBeatModsListState {
-    mods: IModDetails[];
     selected?: string; //mod ID
     gameVersion: string;
-    availableVersions: string[];
     isLoading: boolean;
     searchFilter: string;
 }
@@ -41,17 +40,19 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     // there is a pretty brutal bug in the BeatMods API that's led to some very convoluted logic in this component.
     // Essentially, BeatMods reports completely different values for `gameVersion` based on the query.
     // If you *don't* specify a game version in the query, it reports a much older value.
-    // so as it stands, we do an extra round trip to get all the available versions, then we can use the more specific query to get compatible mods
+    // so as it stands, we do an extra round trip to get all the available versions, then we can use the more specific query to get compatible mods.
+
+    // from v0.3.3 onwards, this turns into even more of a mess.
+    // since the introduction of session state, it *should* be possible to cache BeatMods API requests for specific versions.
+    // the problem is that the only way of getting the actually correct values is by asking for a version, not the global request.
 
     header: React.Component<{}, any, any> = null;
     mainPage: React.Component<{}, any, any> = null;
 
     mods: IModDetails[];
     state: IBeatModsListState = {
-        mods: [],
         selected: '',
         gameVersion: '',
-        availableVersions: [],
         isLoading: true,
         searchFilter: ''
     };
@@ -73,33 +74,28 @@ class BeatModsList extends ComponentEx<IProps, {}> {
         var {api} = this.props as IProps;
         var version = getGameVersion(api)
         var client = new BeatModsClient(api);
-        var allMods = await client.getAllMods();
-        var availableVersions = [...new Set(allMods.map(m => m.gameVersion))];
-        this.setState({availableVersions, gameVersion: version});
+        await client.getAllMods();
+        this.setState({gameVersion: version});
     }
 
     async refreshMods(version?: string) {
         var {api} = this.props as IProps;
         var client = new BeatModsClient(api);
         version = version ?? this.state.gameVersion;
-        /* var sessionMods = util.getSafe(api.getState().session, ['beatvortex', 'mods'], {});
-        traceLog(`${Object.keys(sessionMods).length} session mods`);
-        var versions = util.getSafe(api.getState().session, ['beatvortex', 'gameVersions'], []);
-        traceLog(`${versions.length} session versions`); */
         var mods = await client.getAllMods(version);
-        this.setState({ mods: mods, selected: '', gameVersion: version});
+        this.setState({selected: '', gameVersion: version});
         return mods;
     }
 
-    forceGameVersion = (version: string) => {
-        this.refreshMods(version);
+    forceGameVersion = async (version: string) => {
+        await this.refreshMods(version);
         this.setState({gameVersion: version});
     }
 
-    selectMod = (modName: string) => {
-        //need to handle this being an id
-        var { mods } = this.state;
-        var mod = mods.find(m => m.name == modName);
+    selectMod = (modId: string) => {
+        var { mods } = this.props;
+        // var mod = mods.find(m => m.name == modName);
+        var mod = mods[modId];
         this.setState({selected: mod._id});
     }
 
@@ -124,12 +120,12 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     }
 
     public render() {
-        const { selected, mods, gameVersion, availableVersions, isLoading, searchFilter } = this.state;
-        const { t } = this.props;
+        const { selected, gameVersion, isLoading, searchFilter } = this.state;
+        const { t, mods, availableVersions } = this.props;
         // traceLog('rendering mod list', {searchFilter: searchFilter ?? 'none'});
-        const mod: IModDetails = (selected == undefined || !selected || mods.length == 0)
+        const mod: IModDetails = (selected == undefined || !selected || Object.keys(mods).length == 0)
             ? null
-            : mods.find(iter => iter._id == selected);
+            : Object.values(mods).find(iter => iter._id == selected);
         if (mod) {
             traceLog('matched mod from list entry selection', { name: mod?.name, category: mod?.category });
         }
@@ -137,7 +133,6 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             <MainPage ref={(mainPage) => { this.mainPage = mainPage; }}>
                 <MainPage.Header ref={(header) => { this.header = header; }}>
                     <FlexLayout type="column">
-                        {/* <>Vortex doesn't install dependencies automatically! If a mod has dependencies, make sure you install them.</> */}
                         <FlexLayout type="row">
                         {this.renderVersionSwitcher(gameVersion, availableVersions)}
                         {this.renderSearchBox()}
@@ -150,34 +145,28 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                     :
                     <Panel id="beatmods-browse">
                         <Panel.Body>
-                            {gameVersion 
+                            {gameVersion && this.props.mods != null
                             ?
                             <FlexLayout type="row">
-                                {/* <FlexLayout.Flex> */}
                                 <FlexLayout.Fixed className="beatmods-modlist" style={{maxWidth: '40%'}}>
-                                    {/* <FlexLayout type='column' style={{maxWidth: '40%'}}> */}
                                     <FlexLayout type='column'>
-                                        {/* <div style={{ maxHeight: '100%', overflow: 'scroll' }}> */}
-                                            {this.state.mods.length > 0
+                                            {Object.keys(this.props.mods).length > 0
                                                 ? <ListGroup>
-                                                    {this.state.mods
-                                                        // .filter(m => gameVersion ? gameVersion == "*" ? true : m.gameVersion == gameVersion : true)
+                                                    {Object.values(this.props.mods)
+                                                        .filter(m => gameVersion ? gameVersion == "*" ? true : m.gameVersion == gameVersion : true)
                                                         .filter(s => searchFilter ? s.name.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 : true)
                                                         .map(this.renderListEntry)} {/* only returns ListGroupEntry */}
                                                 </ListGroup>
                                                 : t("bs:BeatModsList:ChooseVersionHelp")
                                             }
-                                        {/* </div> */}
                                         <div className='beatmods-list-status'>
-                                            {`Loaded ${mods.length} mods for ${gameVersion ? `Beat Saber v${gameVersion}` : 'unknown version'}.`}
+                                            {`Loaded ${Object.keys(mods).length} mods for ${gameVersion ? `Beat Saber v${gameVersion}` : 'unknown version'}.`}
                                             <Button icon='refresh' tooltip={'Refresh'} onClick={() => this.refreshMods()}>Refresh</Button>
                                         </div>
                                     </FlexLayout>
                                 </FlexLayout.Fixed>
                                 <FlexLayout.Flex fill={true}>
-                                    {/* <div> */}
                                         {((selected == undefined || !selected) || (mod == undefined || !mod)) ? null : this.renderDescription(mod)}
-                                    {/* </div> */}
                                 </FlexLayout.Flex>
                             </FlexLayout>
                             : <>{t("bs:BeatModsList:ChooseVersionUnknown")}</>
@@ -192,10 +181,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
 
     private isInstalled = (mod: IModDetails): boolean => {
         var {installed} = (this.props as IProps);
-        // var installedMods = Object.keys(installed);
         var keys = Object.keys(installed);
-        // var installedMods = ((Object.values(installed) as any) as IMod[]).filter(im => im.type == 'bs-mod').map(m => m.attributes);
-        // var isInstalled = Object.keys(installed).some(mi => mi == `${mod.name}-${mod.version}`);
         var isInstalled = Object.keys(installed).filter(BeatModsClient.isBeatModsArchive).some(m => m == `${mod.name}-${mod.version}`);
         log('debug', 'pulled installed mod list', {match: isInstalled ?? 'unknown', count: keys.length, keys});
         return isInstalled;
@@ -209,7 +195,6 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     private selectListEntry = (evt: React.MouseEvent<any>, modId: string) => {
         const modIdStr = modId ?? evt.currentTarget.getAttribute('data-modid');
         log('debug', 'new mod selected', { mod: modIdStr });
-        // const modId = modIdStr !== null ? parseInt(modIdStr, 10) : undefined;
         this.setState({ selected: modIdStr });
     }
 
@@ -217,14 +202,13 @@ class BeatModsList extends ComponentEx<IProps, {}> {
         var link = evt.currentTarget.getAttribute('data-infolink');
         if (!link) {
             let modIdStr = evt.currentTarget.getAttribute('data-modid');
-            const { mods } = this.state;
-            link = mods.find(m => m._id == modIdStr)?.link;
+            const { mods } = this.props;
+            link = mods[modIdStr]?.link;
         }
         log('debug', 'opening more info link', { link });
         if (link) {
             util.opn(link);
         }
-        // opn(link);
     }
 
     private handleSearchFilter = (evt: React.ChangeEvent<any>) => {
@@ -311,7 +295,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             compatible: this.isCompatible(mod),
             installed: this.isInstalled(mod),
         };
-        let mods = this.state.mods;
+        let mods = Object.values(this.props.mods);
         const { t } = this.props;
         var installedVersion = getGameVersion((this.props as IProps).api);
         // ready.installReady = ready.compatible && !ready.installed
@@ -319,8 +303,6 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             <FlexLayout type='column'>
                 <FlexLayout.Fixed>
                     <FlexLayout type='row' className='description-header' fill={false}>
-                        {/* <FlexLayout.Fixed>
-                        </FlexLayout.Fixed> */}
                         <FlexLayout.Flex>
                             <FlexLayout type='column' className='description-header-content'>
                                 <div className='description-title'>
@@ -360,7 +342,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                     <Breadcrumb>
                                         <Breadcrumb.Item active>{t("bs:BeatModsList:Dependencies")}</Breadcrumb.Item>
                                         {mod.dependencies.map(d => {
-                                            return <Breadcrumb.Item onClick={() => this.selectMod(d.name)}>{d.name}</Breadcrumb.Item>
+                                            return <Breadcrumb.Item onClick={() => this.selectMod(d._id)}>{d.name}</Breadcrumb.Item>
                                         })}
                                     </Breadcrumb>
                                 }
@@ -394,10 +376,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     async componentDidMount() {
         log('debug', 'mod list component mounted');
         await this.getVersions();
-        var response = await this.refreshMods();
-        traceLog(`setting state with ${response?.length} mods`, { currentCount: this.state.mods?.length ?? '0' });
-        // (this.props as Props).mods = new BeatModsClient()
-        // log('debug', 'set new state', { count: this.state.mods.length });
+        var response = await this.refreshMods(); // we still need to do this, since this call is what populates the session store
         this.setState({isLoading: false});
         
     }
@@ -406,7 +385,9 @@ class BeatModsList extends ComponentEx<IProps, {}> {
 function mapStateToProps(state: IState): IConnectedProps {
     // log('debug', 'mapping beatvortex state to props');
     return {
-        installed : state.persistent.mods[GAME_ID]
+        installed : state.persistent.mods[GAME_ID],
+        mods: state.session['beatvortex']['mods'],
+        availableVersions: state.session['beatvortex']['gameVersions']
     };
   }
   

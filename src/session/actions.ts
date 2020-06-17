@@ -11,7 +11,7 @@ export const updateBeatModsCache =
 export const updateBeatModsVersions =
   createAction('BS_CACHE_VERSIONS', (mods: IModDetails[]) => mods);
 
-export const updateBeatSaverMapCache =
+export const cacheBeatSaverMap =
   createAction('BS_CACHE_MAP', (key: string, details: IMapDetails) => ({key, details}));
 
 /**
@@ -20,13 +20,14 @@ export const updateBeatSaverMapCache =
 export const sessionReducer: IReducerSpec = {
     reducers: {
       [updateBeatModsCache as any]: (state, payload: IModDetails[]) => {
-        return util.merge(state, ['mods'], arrayToObject(payload, m => m.name));
+        return util.merge(state, ['mods'], arrayToObject(payload, m => m._id));
       },
       [updateBeatModsVersions as any]: (state, payload: IModDetails[]) => {
         var versions = [...new Set(payload.map(m => m.gameVersion))];
         return util.setSafe(state, ['gameVersions'], versions);
       },
-      [updateBeatSaverMapCache as any]: (state, payload: {key: string, details: IMapDetails}) => {
+      [cacheBeatSaverMap as any]: (state, payload: {key: string, details: IMapDetails}) => {
+        // util.merge(state, ['maps', payload.details.hash], payload.details);
         return util.merge(state, ['maps', payload.key], payload.details);
       }
     },

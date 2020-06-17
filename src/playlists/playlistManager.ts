@@ -62,7 +62,7 @@ export class PlaylistManager {
  * @param callbackFn Optional callback to invoke after all the maps have been installed.
  */
 export const installMaps = async (api: IExtensionApi, mapIdents: string[], callbackFn?: (api: IExtensionApi, modIds: string[]) => void) => {
-    var client = new BeatSaverClient();
+    var client = new BeatSaverClient(api);
     var details = await Promise.all(mapIdents.map(async (id: string) => {
         return client.getMapDetails(id);
     }));

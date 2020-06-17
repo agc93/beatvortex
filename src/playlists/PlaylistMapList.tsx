@@ -1,6 +1,7 @@
 import { log, FlexLayout, Icon, Spinner, ComponentEx } from 'vortex-api';
 const { ListGroup, ListGroupItem } = require('react-bootstrap');
 import React, { Component } from 'react';
+import { connect } from "react-redux";
 import { IExtensionApi, IModTable, IMod, IState } from 'vortex-api/lib/types/api';
 
 import { GAME_ID } from '..';
@@ -13,6 +14,7 @@ interface IConnectedProps {
 
 interface IBaseProps {
     playlist: IPlaylistEntry[];
+    api: IExtensionApi;
 }
 
 interface IPlaylistMapListState {
@@ -35,8 +37,8 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
     };
 
     async refreshMaps() {
-        var { playlist } = this.props
-        var client = new BeatSaverClient();
+        var { playlist, api } = this.props
+        var client = new BeatSaverClient(api);
         var details = await Promise.all(playlist.map(async pl => {
             var mapDetails = await client.getMapDetails(pl.hash ?? pl.key);
             return mapDetails
@@ -170,4 +172,12 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
     }
 }
 
-export default PlaylistMapList;
+function mapStateToProps(state: IState): IConnectedProps {
+    // log('debug', 'mapping beatvortex state to props');
+    return {
+        installed: state.persistent.mods[GAME_ID]
+    };
+}
+
+// export default PlaylistMapList;
+export default (connect(mapStateToProps)(PlaylistMapList));

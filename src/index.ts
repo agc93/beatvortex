@@ -486,7 +486,7 @@ export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: 
  */
 async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
     log('info', `handling link launch from ${url} (install: ${install})`);
-    var client = new BeatSaverClient();
+    var client = new BeatSaverClient(api);
     var re = /\w+:\/\/([a-f0-9]{4}).*/;
     var match = re.exec(url);
     if (!match || match.length != 2) {

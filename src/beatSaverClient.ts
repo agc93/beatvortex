@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { log } from 'vortex-api';
+import { log, util } from 'vortex-api';
+import { IExtensionApi } from 'vortex-api/lib/types/api';
+import { traceLog } from './util';
+import { cacheBeatSaverMap } from './session';
 
 /**
  * A simple client class to encapsulate the majority of beatsaver.com-specific logic, including metadata retrieval.
@@ -9,23 +12,17 @@ import { log } from 'vortex-api';
  */
 export class BeatSaverClient {
 
+    private _api: IExtensionApi;
+    /**
+     *
+     */
+    constructor(api?: IExtensionApi) {
+        this._api = api;
+    }
+
     static isArchiveName(str: string, requireExtension?: boolean): boolean {
         let re = /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}\s\(/;
         return re.test(str) && requireExtension ? str.endsWith('.zip') : true;
-    }
-
-    /**
-     * Retrieves the friendly name of a map, given its ID
-     * @remarks
-     * This method actually performs a full API call, but only returns the name. Use wisely.
-     *
-     * @param modName: The BeatSaver key or hash of the mod to retrieve.
-     */
-    async getMapName(modName: any) : Promise<string> {
-        var details = await this.getMapDetails(modName);
-        return details?.name 
-            ? `${details.name} [${details.key}]`
-            : modName;
     }
 
     /**
@@ -36,8 +33,15 @@ export class BeatSaverClient {
      * @param modId - The BeatSaver key or hash for the map.
      * @returns A subset of the available metadata from BeatSaver. Returns null on error/not found
      */
-    async getMapDetails(mapKey: string): Promise<IMapDetails> | null {
+    getMapDetails = async (mapKey: string): Promise<IMapDetails> | null => {
         var url = mapKey.length === 4 ? `https://beatsaver.com/api/maps/detail/${mapKey}` : `https://beatsaver.com/api/maps/by-hash/${mapKey}`;
+        if (this._api) {
+            var map = util.getSafeCI<IMapDetails>(this._api.getState().session, ['beatvortex', 'maps', mapKey], undefined);
+            if (map != undefined) {
+                traceLog('pulled map from cache!', {map: mapKey});
+                return map;
+            }
+        }
         var resp = await axios.request<IMapDetails>({
             url: url,
             headers: {'User-Agent': 'BeatVortex/0.1.0' }
@@ -49,6 +53,10 @@ export class BeatSaverClient {
             log('error', err);
             return null;
         });
+        if (this._api && resp != null) {
+            traceLog('adding map to cache', {ident: mapKey, key: resp.key});
+            this._api.store.dispatch(cacheBeatSaverMap(resp.hash, resp));
+        }
         return resp;
     }
 
