@@ -1,7 +1,7 @@
 ---
 title: "Metadata and Meta Servers"
 linkTitle: "Vortex Metadata"
-weight: 50
+weight: 97
 description: >
   How BeatVortex handles mod metadata and some extra features.
 ---
@@ -20,7 +20,7 @@ The API for metaservers is part of the [Nexus-Mods/modmeta-db](https://github.co
 
 #### Example: Dependencies
 
-When you install a mod with BeatVortex (let's use ScoreSaber as an example), the extension will read information from BeatMods to determine its dependencies. Our extension (and therefore Vortex) now know that ScoreSaber needs a certain version of SongCore and BeatSaberMarkupLanguage.  What it doesn't know is **where to find them**. Vortex then calls its configured meta servers to find our more information about "SongCore" and "BeatSaberMarkupLanguage", and our server responds with all the information it can pull from BeatMods including the most important part: where to get those files.
+When you install a mod with BeatVortex (let's use ScoreSaber as an example), the extension will read information from BeatMods to determine its dependencies. Our extension (and therefore Vortex) now know that ScoreSaber needs a certain version of SongCore and BeatSaberMarkupLanguage.  What it doesn't know is **where to find them**. Vortex then calls its configured meta servers to find out more information about "SongCore" and "BeatSaberMarkupLanguage", and our server responds with all the information it can pull from BeatMods including the most important part: where to get those files.
 
 ## BeatVortex Metaserver
 

@@ -30,7 +30,7 @@ The BeatMods API, for reasons likely lost to time, returns dependencies from the
 
 The backing `modmeta-db` supports looking up mod files by a couple of different "keys": MD5 hash (see above), logical file name, and custom file expressions. At present, since Nexus uses MD5 hashes, Vortex mostly just uses the MD5 hash for installation. In earlier versions of Vortex, that meant we could specify dependency rules, but Vortex wouldn't know where to *find* those dependencies.
 
-Vortex releases from 1.12.2 added support for looking up mod dependencies using a logical file name, meaning we can now use a metaserver (essentially an implementation of `modmeta-db` over REST) to return information on dependencies, including where to find them (i.e BeatMods). Finally, Vortex releases from 1.12.3 onwards improved dependency resolution so that BeatMods extensions installed from archives or the browser should automatically install all the required dependencies.
+Vortex releases from 1.2.12 added support for looking up mod dependencies using a logical file name, meaning we can now use a metaserver (essentially an implementation of `modmeta-db` over REST) to return information on dependencies, including where to find them (i.e BeatMods). Finally, Vortex releases from 1.12.3 onwards improved dependency resolution so that BeatMods extensions installed from archives or the browser should automatically install all the required dependencies.
 
 > A huge thanks to the Nexus/Vortex team, who have been very helpful in expanding and explaining Vortex's dependency support. Thanks Tannin!
 

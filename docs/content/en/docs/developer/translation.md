@@ -26,7 +26,7 @@ More specifically, Vortex will **usually** look for a `beatvortex.json` file ins
 
 ### Existing Translations
 
-If you are working on, or maintaining, an existing Vortex translation, you can add BeatVortex support by adding a `beatvortex.json` file to your translation package for the BeatVortex-specific strings. A loose example file that should over most elements is available at [beatvortex.dev/beatvortex_en.json](https://beatvortex.dev/beatvortex_en.json) that translators can use for a good starting point.
+If you are working on, or maintaining, an existing Vortex translation, you can add BeatVortex support by adding a `beatvortex.json` file to your translation package for the BeatVortex-specific strings. A loose example file that should cover most elements is available at [beatvortex.dev/beatvortex_en.json](https://beatvortex.dev/beatvortex_en.json) that translators can use for a good starting point.
 
 ### Translation
 

@@ -11,9 +11,21 @@
     "bs:Settings:EnableOCIHelp": "These settings will register (or deregister) Vortex to handle OneClick links on BeatSaver, BeastSaber and ModelSaber.\nThis will conflict with Mod Assistant if you also have it configured for OneClick. Enable OneClick in whichever app you want to use, and disable it in any others.\n",
     "bs:Settings:EnableOCIMaps": "Enable OneClick links for maps",
     "bs:Settings:EnableOCIModels": "Enable OneClick links for custom models",
+    "bs:Settings:EnableOCIPlaylists": "Enable OneClick links for playlists",
     "bs:Settings:EnableOCIMapsHelp": "Enabling this option will register Vortex to handle the 'beatsaver' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n",
     "bs:Settings:EnableOCIModelsHelp": "Enabling this option will register Vortex to handle the 'modelsaber' URLs used by OneClick links on ModelSaber.\nThis option includes custom notes, walls and avatars.",
+    "bs:Settings:EnableOCIPlaylistsHelp": "Enabling this option will register Vortex to handle the 'bsplaylist' URLs used by OneClick links on BeatSaver and BeastSaber.\n\n",
     "bs:Settings:EnableMetaserverTitle": "Enable BeatVortex Metaserver Integration",
     "bs:Settings:EnableMetaserver": "Enable the metaserver",
-    "bs:Settings:EnableMetaserverHelp": "These settings will control how BeatVortex automatically registers a metaserver to handle some advanced Beat Saber-specific installation functionality, such as dependencies and playlist management.\n Only turn this off if you really know what you are doing!"
+    "bs:Settings:EnableMetaserverHelp": "These settings will control how BeatVortex automatically registers a metaserver to handle some advanced Beat Saber-specific installation functionality, such as dependencies and playlist management.\n Only turn this off if you really know what you are doing!",
+    "bs:Settings:PreviewFeatures": "BeatVortex Preview Features",
+    "bs:Settings:PreviewFeaturesHelp": "These settings will enable certain preview features for BeatVortex that might not be fully ready for primetime. You can enable these features below to get early access, but be warned that you might see bugs and problems.",
+    "bs:Settings:EnablePreviewPlaylists": "Enable Playlists Management",
+    "bs:Settings:EnablePreviewPlaylistsHelp": "Enabling this will activate the (in preview) new Playlists interface where you can check and manage your installed custom playlists.",
+    "bs:Settings:EnablePreviewUpdates": "Enable BeatMods Update Support",
+    "bs:Settings:EnablePreviewUpdatesHelp": "Enabling this will activate the (in preview) support for automatically detecting and installing updates for your installed BeatMods mods.",
+    "bs:VortexVersionWarningTitle": "Vortex v1.12.3 or higher required!",
+    "bs:VortexVersionWarningBody": "A number of the extra features added in v0.3.1 of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!",
+    "bs:PlaylistView:NoPlaylists": "No playlists were found in your Beat Saber installation directory!",
+    "bs:PlaylistView:NoMaps": "This playlist doesn't seem to contain any maps!"
 }
