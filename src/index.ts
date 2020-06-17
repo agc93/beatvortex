@@ -24,6 +24,7 @@ import BeatModsList from "./BeatModsList";
 import { PlaylistView } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings } from "./settings";
+import { sessionReducer } from './session';
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
@@ -154,6 +155,7 @@ function main(context : IExtensionContext) {
       context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
       context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
       context.registerReducer(['settings', 'beatvortex'], settingsReducer);
+      context.registerReducer(['session', 'beatvortex'], sessionReducer);
 
 
     /*

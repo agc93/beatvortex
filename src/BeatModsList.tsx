@@ -70,17 +70,22 @@ class BeatModsList extends ComponentEx<IProps, {}> {
       }
 
     async getVersions() {
-        var version = getGameVersion((this.props as IProps).api)
-        var client = new BeatModsClient();
+        var {api} = this.props as IProps;
+        var version = getGameVersion(api)
+        var client = new BeatModsClient(api);
         var allMods = await client.getAllMods();
         var availableVersions = [...new Set(allMods.map(m => m.gameVersion))];
         this.setState({availableVersions, gameVersion: version});
     }
 
     async refreshMods(version?: string) {
-        var client = new BeatModsClient();
+        var {api} = this.props as IProps;
+        var client = new BeatModsClient(api);
         version = version ?? this.state.gameVersion;
-        // var availableVersions = [version];
+        /* var sessionMods = util.getSafe(api.getState().session, ['beatvortex', 'mods'], {});
+        traceLog(`${Object.keys(sessionMods).length} session mods`);
+        var versions = util.getSafe(api.getState().session, ['beatvortex', 'gameVersions'], []);
+        traceLog(`${versions.length} session versions`); */
         var mods = await client.getAllMods(version);
         this.setState({ mods: mods, selected: '', gameVersion: version});
         return mods;
@@ -121,7 +126,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     public render() {
         const { selected, mods, gameVersion, availableVersions, isLoading, searchFilter } = this.state;
         const { t } = this.props;
-        traceLog('rendering mod list', {searchFilter: searchFilter ?? 'none'});
+        // traceLog('rendering mod list', {searchFilter: searchFilter ?? 'none'});
         const mod: IModDetails = (selected == undefined || !selected || mods.length == 0)
             ? null
             : mods.find(iter => iter._id == selected);

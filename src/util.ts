@@ -25,6 +25,13 @@ export async function getAllFiles(dir) {
   return Array.prototype.concat(...files);
 }
 
+export const arrayToObject = <T>(array: T[], keyFunc: (obj: T) => string) =>
+   array.reduce((obj, item) => {
+       obj[(keyFunc(item))] = item;
+    //  obj[item[keyField]] = item
+     return obj
+}, {})
+
 /**
  * Determines if the given string is a BeatSaver song hash, or optionally a key.
  *

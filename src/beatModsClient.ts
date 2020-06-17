@@ -1,7 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { log } from 'vortex-api';
+import { log, actions, util } from 'vortex-api';
 import path = require('path');
 import { getGameVersion } from './util';
+import { IExtensionApi } from 'vortex-api/lib/types/api';
+import { updateBeatModsCache, updateBeatModsVersions } from "./session";
 
 /**
  * A simple client class to encapsulate the majority of beatmods.com-specific logic, including metadata retrieval.
@@ -10,6 +12,14 @@ import { getGameVersion } from './util';
  * This client uses *only* unauthenticated endpoints, no auth has been implemented.
  */
 export class BeatModsClient {
+
+    private _api: IExtensionApi;
+    /**
+     *
+     */
+    constructor(api?: IExtensionApi) {
+        this._api = api;
+    }
 
     /**
      * Retrieves the friendly name of a mod, given its ID
@@ -87,7 +97,7 @@ export class BeatModsClient {
      * @param modId - The BeatMods ID of the mod to retrieve.
      * @returns A subset of the available metadata from BeatMods. Returns null on error/not found
      */
-    async getModDetails(modId: string): Promise<IModDetails> | null {
+    getModDetails = async (modId: string): Promise<IModDetails> | null => {
         if (modId.length != 24) {
             return null;
         }
@@ -102,6 +112,9 @@ export class BeatModsClient {
             log('error', err);
             return null;
         });
+        if (this._api && resp != null) {
+            this._api.store.dispatch(updateBeatModsCache([resp]));
+        }
         return resp;
     }
 
@@ -142,13 +155,17 @@ export class BeatModsClient {
      * @param gameVersion - Strongly recommended! Without this filter, the response will be *megabytes* of data!
      * @returns A subset of the available metadata from BeatMods. Returns null on error/not found.
      */
-    async getAllMods(gameVersion?: string) : Promise<IModDetails[]> {
+    getAllMods = async (gameVersion?: string) : Promise<IModDetails[]> => {
         log('debug', 'beatvortex: retrieving all available mods from BeatMods');
         var url = gameVersion
             ? `https://beatmods.com/api/v1/mod?status=approved&gameVersion=${gameVersion}`
             : `https://beatmods.com/api/v1/mod?status=approved`;
         var allMods = await this.getApiResponse<IModDetails[]>(url, (data) => data)
         log('debug', `retrieved ${allMods?.length} mods from BeatMods`);
+        if (this._api && allMods != null) {
+            log('debug', 'populating session cache with mods', {count: allMods.length, withVersion: gameVersion ?? 'none'});
+            this._api.store.dispatch(gameVersion ? updateBeatModsCache(allMods) : updateBeatModsVersions(allMods));
+        }
         return allMods;
     }
 
