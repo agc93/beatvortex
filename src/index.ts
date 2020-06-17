@@ -145,7 +145,7 @@ function main(context : IExtensionContext) {
         group: 'per-game',
         visible: () => {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
-                && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enablePlaylists)
+                && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enablePlaylistManager)
             },
         props: () => ({ api: context.api }),
     });

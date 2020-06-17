@@ -22,8 +22,8 @@ type IProps = IConnectedProps & IActionProps;
 class PreviewSettings extends ComponentEx<IProps, {}> {
     
     public render(): JSX.Element {
-        const { t } = this.props;
-        const { enablePlaylists, enableUpdates } = (this.props as IProps).previewSettings;
+        const { t, previewSettings, onEnablePlaylists, onEnableUpdates } = this.props;
+        const { enablePlaylistManager: enablePlaylists, enableUpdates } = previewSettings;
         return (
             <form>
                 <FormGroup>
@@ -33,7 +33,7 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
                     </HelpBlock>
                     <Toggle
                         checked={enablePlaylists}
-                        onToggle={this.toggleServer}
+                        onToggle={onEnablePlaylists}
                     >
                         {t("bs:Settings:EnablePreviewPlaylists")}
                         <More id='more-oci-maps' name='Playlist Management Preview'>
@@ -42,7 +42,7 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
                     </Toggle>
                     <Toggle
                         checked={enableUpdates}
-                        onToggle={this.toggleUpdates}
+                        onToggle={onEnableUpdates}
                     >
                         {t("bs:Settings:EnablePreviewUpdates")}
                         <More id='more-preview-updates' name='Mod Updates Preview'>
@@ -53,18 +53,6 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
             </form>
         );
     }
-
-    private toggleServer = (enable: boolean) => {
-        const { onEnablePlaylists, previewSettings } = this.props as IProps;
-        onEnablePlaylists(enable ?? previewSettings.enablePlaylists);
-    }
-
-    private toggleUpdates = (enable: boolean) => {
-        const { onEnableUpdates, previewSettings } = this.props as IProps;
-        onEnableUpdates(enable ?? previewSettings.enableUpdates);
-    }
-
-
 }
 
 
@@ -79,8 +67,8 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
     // log('debug', 'mapping beatvortex dispatch to props', {ownProps});
     return {
         onEnablePlaylists: (enable: boolean) => {
-            log('debug', 'beatvortex: enabling preview playlists view');
-            return dispatch(enablePreviewFeatures({enablePlaylists: enable}));
+            log('warn', 'beatvortex: enabling preview playlists view');
+            return dispatch(enablePreviewFeatures({enablePlaylistManager: enable}));
         },
         onEnableUpdates: (enable: boolean) => {
             log('warn', 'beatvortex: enabling preview updates support!');

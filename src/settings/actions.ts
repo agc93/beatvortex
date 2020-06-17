@@ -36,7 +36,7 @@ export const settingsReducer: IReducerSpec = {
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
       metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev/'} as IMetaserverSettings,
-      preview: { enablePlaylists: false, enableUpdates: false } as IPreviewSettings
+      preview: { enablePlaylistManager: false, enableUpdates: false } as IPreviewSettings
     },
   };
 
@@ -53,6 +53,6 @@ export interface IMetaserverSettings {
 }
 
 export interface IPreviewSettings {
-  enablePlaylists?: boolean;
+  enablePlaylistManager?: boolean;
   enableUpdates?: boolean;
 }
