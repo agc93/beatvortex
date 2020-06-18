@@ -15,6 +15,7 @@ interface IConnectedProps {
 interface IActionProps {
     onEnablePlaylists: (enable: boolean) => void;
     onEnableUpdates: (enable: boolean) => void;
+    onEnableCategories: (enable: boolean) => void;
 }
 
 type IProps = IConnectedProps & IActionProps;
@@ -22,8 +23,8 @@ type IProps = IConnectedProps & IActionProps;
 class PreviewSettings extends ComponentEx<IProps, {}> {
     
     public render(): JSX.Element {
-        const { t, previewSettings, onEnablePlaylists, onEnableUpdates } = this.props;
-        const { enablePlaylistManager: enablePlaylists, enableUpdates } = previewSettings;
+        const { t, previewSettings, onEnablePlaylists, onEnableUpdates, onEnableCategories } = this.props;
+        const { enablePlaylistManager: enablePlaylists, enableUpdates, enableCategories } = previewSettings;
         return (
             <form>
                 <FormGroup>
@@ -47,6 +48,15 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
                         {t("bs:Settings:EnablePreviewUpdates")}
                         <More id='more-preview-updates' name='Mod Updates Preview'>
                             {t('bs:Settings:EnablePreviewUpdatesHelp')}
+                        </More>
+                    </Toggle>
+                    <Toggle
+                        checked={enableCategories}
+                        onToggle={onEnableCategories}
+                    >
+                        {t("bs:Settings:EnablePreviewCategories")}
+                        <More id='more-preview-categories' name='Mod Categories Preview'>
+                            {t('bs:Settings:EnablePreviewCategoriesHelp')}
                         </More>
                     </Toggle>
                 </FormGroup>
@@ -73,6 +83,10 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
         onEnableUpdates: (enable: boolean) => {
             log('warn', 'beatvortex: enabling preview updates support!');
             return dispatch(enablePreviewFeatures({enableUpdates: enable}));
+        },
+        onEnableCategories: (enable: boolean) => {
+            log('warn', 'beatvortex: enabling preview categories support!');
+            return dispatch(enablePreviewFeatures({enableCategories: enable}));
         }
     }
 }

@@ -1,9 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import { log, actions, util } from 'vortex-api';
 import path = require('path');
-import { getGameVersion } from './util';
+import { getGameVersion, traceLog } from './util';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { updateBeatModsCache, updateBeatModsVersions } from "./session";
+
+export interface ModList { [modName: string]: IModDetails; };
 
 /**
  * A simple client class to encapsulate the majority of beatmods.com-specific logic, including metadata retrieval.
@@ -116,6 +118,21 @@ export class BeatModsClient {
             this._api.store.dispatch(updateBeatModsCache([resp]));
         }
         return resp;
+    }
+
+    getCategories = async (): Promise<string[]> | null => {
+        var allMods: IModDetails[] = [];
+        if (this._api) {
+            var mods = util.getSafeCI<ModList>(this._api.getState().session, ['beatvortex', 'mods'], undefined);
+            if (mods != undefined) {
+                traceLog('pulling categories from cached mods!', {mods: Object.keys(mods).length});
+                allMods = Object.values(mods);
+            }
+        }
+        if (!this._api || allMods.length == 0) {
+            allMods = await this.getAllMods();
+        }
+        return [...new Set(allMods.map(m => m.category))];
     }
 
     /**

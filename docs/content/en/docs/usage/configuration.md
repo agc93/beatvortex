@@ -28,6 +28,12 @@ If you want to take your game back to a default, unmodded state, you can use Vor
 
 > You should be prompted to revert BSIPA patching when you purge, and prompted to rerun patching when you next deploy mods.
 
+### Preview Features
+
+We sometimes include early previews of new features for BeatVortex that might not be fully ready for primetime. These features are usually functional, but are also usually still in active development and not necessarily as polished as you might expect. You can enable any of these features to get early access to new functionality, but be warned that you will probably see bugs and problems.
+
+To check and enable preview features, open the Interface tab of your Settings page and scroll down to find the "BeatVortex Preview Features" section. 
+
 ### Handling your Mods list
 
 Since everything gets installed as a mod when you're using BeatVortex, your Mods list can get quite lengthy quite fast! Here's a few tips for keeping your mods list more manageable:

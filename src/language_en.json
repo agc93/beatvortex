@@ -24,6 +24,8 @@
     "bs:Settings:EnablePreviewPlaylistsHelp": "Enabling this will activate the (in preview) new Playlists interface where you can check and manage your installed custom playlists.",
     "bs:Settings:EnablePreviewUpdates": "Enable BeatMods Update Support",
     "bs:Settings:EnablePreviewUpdatesHelp": "Enabling this will activate the (in preview) support for automatically detecting and installing updates for your installed BeatMods mods.",
+    "bs:Settings:EnablePreviewCategories": "Enable BeatMods Category Support",
+    "bs:Settings:EnablePreviewCategoriesHelp": "Enabling this will activate the experimental support for integrating BeatMods categories with the Vortex category system. This should not be enabled unless you know what you are doing!",
     "bs:VortexVersionWarningTitle": "Vortex v1.12.3 or higher required!",
     "bs:VortexVersionWarningBody": "A number of the extra features added in v0.3.1 of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!",
     "bs:PlaylistView:NoPlaylists": "No playlists were found in your Beat Saber installation directory!",

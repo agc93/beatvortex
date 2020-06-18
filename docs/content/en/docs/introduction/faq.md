@@ -20,7 +20,7 @@ In fact, generally speaking, you should be able to use BeatVortex alongside thos
 
 ### I’m a mod/pack author, how do I make mods compatible with Vortex?
 
-They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory (for mods, not maps), and that’s basically it.
+They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory (for mods, not maps), and that’s basically it. There's a little more detail in [the developer docs](/docs/developer/authoring) as well.
 
 > A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those mod lists neat. The directory in the install folder will have a terrible name, though.
 
@@ -36,13 +36,13 @@ The first (and major) point is that BeatVortex can't tell which versions are for
 
 The other (unfixable from our end) problem is that the BeatMods API has a very [weird bug/behaviour](https://github.com/bsmg/BeatMods-Website/issues/41) that means we somehow have to know what game version the mod uses in order to find out what game version the mod uses. This is also why we don't display what game version an installed mod uses: the BeatMods API tells us the completely wrong version.
 
-### Why aren't dependencies fully supported?
+### Are mod dependencies supported/installed?
 
-This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.
+Dependencies is a tricky area for a few reasons, and driven by two different problems: Vortex support and the BeatMods API.
 
 > If you want the full technical breakdown, check out the full [developer docs on dependencies](/docs/developer/dependencies/).
 
-Dependencies are *shown* in the Mods list and BeatMods browser, and we will *try* and automatically install them when you install any mod from BeatMods, but this hasn't been fully tested and might still have some quirks or errors.
+As of v0.3.1, dependencies support is available and enabled by default: dependencies are shown in the Mods list and BeatMods browser, and we will attempt to automatically download and install them when you install any mod from BeatMods. However, this hasn't been fully tested and might still have some quirks or errors.
 
 ### Why aren't updates supported?
 

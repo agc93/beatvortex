@@ -157,7 +157,8 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
         source: "beatmods",
         version: details.version,
         // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
-        uploadedTimestamp: details.uploadDate
+        uploadedTimestamp: details.uploadDate,
+        category: details.category
         };
     var instructions = toInstructions(modAtrributes);
     var depInstructions : IInstruction[] = details.dependencies.map(d => {

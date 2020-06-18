@@ -13,6 +13,7 @@ import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist } from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
+import { updateCategories } from "./categories";
 
 // clients
 import { BeatSaverClient, IMapDetails } from './beatSaverClient';
@@ -30,11 +31,11 @@ export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
 
 export interface DeploymentEventHandler {
-    (api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }) : Promise<void>|Promise<boolean>;
+    (api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> | Promise<boolean>;
 }
 
 //This is the main function Vortex will run when detecting the game extension. 
-function main(context : IExtensionContext) {
+function main(context: IExtensionContext) {
     const getMapPath = (game: IGame): string => {
         return getGamePath(context.api, game, true);
     };
@@ -46,7 +47,7 @@ function main(context : IExtensionContext) {
     }
     context.once(() => {
         enableTrace();
-        if (isActiveGame(context)) {}
+        if (isActiveGame(context)) { }
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
         context.api.setStylesheet('bs-map-attributes', path.join(__dirname, 'attributes.scss'));
@@ -57,7 +58,7 @@ function main(context : IExtensionContext) {
         handleSettings(context.api, 'preview', registerPreviewSettings);
         if (useTrace) {
             context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
-                log('debug', 'got settings change', {current});
+                log('debug', 'got settings change', { current });
                 logMetaservers(context.api, current);
             });
             context.api.events.on('profile-did-change', (profileId: string) => {
@@ -70,13 +71,13 @@ function main(context : IExtensionContext) {
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
         });
-        context.api.onAsync('will-purge', async (profileId: string, deployment: {[modType: string]: IDeployedFile[]}) => {
-            traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment)});
+        context.api.onAsync('will-purge', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
+            traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment) });
             await handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAPurge)
             Promise.resolve();
-          });
+        });
         context.api.onAsync('install-playlist', async (installUrl: string) => {
-            traceLog('attempting install of playlist', {playlist: installUrl});
+            traceLog('attempting install of playlist', { playlist: installUrl });
             await installPlaylist(context.api, installUrl);
             return Promise.resolve();
         });
@@ -91,13 +92,17 @@ function main(context : IExtensionContext) {
                     });
                 }
             },
-            "terms of use notification");
+                "terms of use notification");
         });
+        /* context.api.events.on('retrieve-category-list', (isUpdate: boolean) => {
+            updateCategories(context.api, isUpdate);
+        }); */
+        // ↗ do not enable this! https://github.com/Nexus-Mods/Vortex/issues/6594
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
     context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });
-    context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true, name: 'Custom Model'});
-    context.registerModType('bs-playlist', 100, gameId => gameId === GAME_ID, getPlaylistPath, (inst) => Promise.resolve(isPlaylistMod(inst)), {mergeMods: true, name: 'Playlist'});
+    context.registerModType('bs-model', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isModelModInstructions(inst)), { mergeMods: true, name: 'Custom Model' });
+    context.registerModType('bs-playlist', 100, gameId => gameId === GAME_ID, getPlaylistPath, (inst) => Promise.resolve(isPlaylistMod(inst)), { mergeMods: true, name: 'Playlist' });
     context.registerGame({
         ...gameMetadata,
         id: GAME_ID,
@@ -113,16 +118,28 @@ function main(context : IExtensionContext) {
     });
     context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
     addTableAttributes(context);
+    context.registerAction(
+        'categories-icons', 
+        101, 
+        'download', 
+        {}, 
+        'Get BeatMods Categories', 
+        () => updateCategories(context.api, true), 
+        () => {
+            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
+                && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableCategories)
+        }
+    );
 
-    addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods'});
-    addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs'});
-    addModSource(context, { id: 'beatsaver', name: 'BeatSaver', 'url': 'https://beatsaver.com/browse/hot'});
-    addModSource(context, { id: 'modelsaber', name: 'ModelSaber', 'url': 'https://modelsaber.com/?pc'});
-    
+    addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods' });
+    addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs' });
+    addModSource(context, { id: 'beatsaver', name: 'BeatSaver', 'url': 'https://beatsaver.com/browse/hot' });
+    addModSource(context, { id: 'modelsaber', name: 'ModelSaber', 'url': 'https://modelsaber.com/?pc' });
+
     context.registerInstaller(
-        'bs-content', 
-        90, 
-        testPluginContent, 
+        'bs-content',
+        90,
+        testPluginContent,
         (files, destinationPath, gameId, progress) => installContent(context.api, files, destinationPath, gameId, progress)
     );
     context.registerInstaller(
@@ -140,22 +157,22 @@ function main(context : IExtensionContext) {
     context.registerMainPage('search', 'BeatMods', BeatModsList, {
         group: 'per-game',
         visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
-        props: () => ({ api: context.api, mods: []}),
-      });
-      context.registerMainPage('layout-list', 'Playlists', PlaylistView, {
+        props: () => ({ api: context.api, mods: [] }),
+    });
+    context.registerMainPage('layout-list', 'Playlists', PlaylistView, {
         group: 'per-game',
         visible: () => {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
                 && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enablePlaylistManager)
-            },
+        },
         props: () => ({ api: context.api }),
     });
 
-      context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
-      context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
-      context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
-      context.registerReducer(['settings', 'beatvortex'], settingsReducer);
-      context.registerReducer(['session', 'beatvortex'], sessionReducer);
+    context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
+    context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
+    context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
+    context.registerReducer(['settings', 'beatvortex'], settingsReducer);
+    context.registerReducer(['session', 'beatvortex'], sessionReducer);
 
 
     /*
@@ -177,15 +194,15 @@ function main(context : IExtensionContext) {
  * @param details - The details of the mod source to add to Vortex.
  *
  */
-function addModSource(context: IExtensionContext, details: {id: string, name: string, url: string}) {
+function addModSource(context: IExtensionContext, details: { id: string, name: string, url: string }) {
     context.registerModSource(details.id, details.name, () => {
         context.api.store.dispatch(actions.showURL(details.url));
-      }, 
+    },
         {
-          condition: () => (selectors.activeGameId(context.api.store.getState()) === GAME_ID),
-          icon: 'idea'
+            condition: () => (selectors.activeGameId(context.api.store.getState()) === GAME_ID),
+            icon: 'idea'
         }
-      );
+    );
 }
 
 /**
@@ -203,11 +220,11 @@ function addModSource(context: IExtensionContext, details: {id: string, name: st
  */
 function addProfileFeatures(context: IExtensionContext) {
     context.registerProfileFeature(
-        PROFILE_SETTINGS.SkipTerms, 
-        'boolean', 
-        'savegame', 
-        'Skip Terms of Use', 
-        "Skips the notification regarding BeatVortex's terms of use", 
+        PROFILE_SETTINGS.SkipTerms,
+        'boolean',
+        'savegame',
+        'Skip Terms of Use',
+        "Skips the notification regarding BeatVortex's terms of use",
         () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
     context.registerProfileFeature(
         PROFILE_SETTINGS.AllowUnknown,
@@ -229,12 +246,12 @@ function addProfileFeatures(context: IExtensionContext) {
  * @param api The extension API
  * @param ns The namespace to load translations for
  */
-async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : Promise<void> {
+async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex'): Promise<void> {
     var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
     var langFiles = (await fs.readdirAsync(__dirname)).filter((f: string) => re.test(f));
     langFiles.forEach(async (lang: string) => {
         var match = re.exec(lang);
-        log('debug', 'beatvortex loading translation file', {lang, match});
+        log('debug', 'beatvortex loading translation file', { lang, match });
         var langContent = await fs.readFileAsync(path.join(__dirname, lang), { encoding: 'utf-8' });
         api.getI18n().addResources(match[1], ns, JSON.parse(langContent));
     });
@@ -247,9 +264,9 @@ async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex') : 
  * - The actual metadata used for table attributes is mostly stored in `meta.tableAttributes` and registered here
  */
 async function addTableAttributes(context: IExtensionContext) {
-    
+
     context.registerTableAttribute(
-        'mods', 
+        'mods',
         {
             ...tableAttributes.artist,
             calc: (mod: IMod) => util.getSafe(mod.attributes, ['songAuthor'], ''),
@@ -277,7 +294,7 @@ async function addTableAttributes(context: IExtensionContext) {
         {
             ...tableAttributes.bpm,
             calc: (mod: IMod) => util.getSafe(mod.attributes, ['bpm'], []),
-            
+
         }
     );
 }
@@ -289,7 +306,7 @@ async function addTableAttributes(context: IExtensionContext) {
  *
  * @param discovery - The details for the discovered game.
  */
-function prepareForModding(discovery : IDiscoveryResult) {
+function prepareForModding(discovery: IDiscoveryResult) {
     // showTermsDialog();
     GAME_PATH = discovery.path;
     let mapsPath = path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels');
@@ -329,13 +346,13 @@ function testSupportedContent(files: string[], gameId: string): Promise<ISupport
  * @param gameId The game ID for the current install. Should only ever be GAME_ID
  * @param progressDelegate Unused delegate for reporting progress
  */
-async function installMapContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate) : Promise<IInstallResult> {
+async function installMapContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate): Promise<IInstallResult> {
     var modName = getModName(destinationPath);
     log('info', `installing ${modName} as custom song level`);
     //install song
-    let instructions : IInstruction[];
+    let instructions: IInstruction[];
     instructions = await basicInstaller(files, null, modName, installBeatSaverArchive);
-    return Promise.resolve({instructions});
+    return Promise.resolve({ instructions });
 }
 
 /**
@@ -349,12 +366,12 @@ async function installMapContent(files: string[], destinationPath: string, gameI
  * @param gameId The game ID for the current install. Should only ever be GAME_ID
  * @param progressDelegate Unused delegate for reporting progress
  */
-async function installModelContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate) : Promise<IInstallResult> {
+async function installModelContent(files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate): Promise<IInstallResult> {
     var modName = getModName(destinationPath);
-    log('info', 'installing mod as custom model', {file: files[0], name: modName});
+    log('info', 'installing mod as custom model', { file: files[0], name: modName });
     //model saber "mod"
     var instructions = await modelInstaller(files, '.', modName, installModelSaberFile);
-    return Promise.resolve({instructions});
+    return Promise.resolve({ instructions });
 }
 
 /**
@@ -372,7 +389,7 @@ async function installModelContent(files: string[], destinationPath: string, gam
  * @returns Install instructions for mapping mod files to output location.
  */
 async function installContent(api: IExtensionApi, files: string[], destinationPath: string, gameId: string, progressDelegate: ProgressDelegate): Promise<IInstallResult> {
-    log('debug', `running beatvortex installer. [${gameId}]`, {files, destinationPath});
+    log('debug', `running beatvortex installer. [${gameId}]`, { files, destinationPath });
     var modName = getModName(destinationPath);
     var firstPrim = files.find(f => types.some(t => path.dirname(f).toLowerCase().indexOf(t) !== -1));
     var isValid = firstPrim !== undefined
@@ -380,10 +397,10 @@ async function installContent(api: IExtensionApi, files: string[], destinationPa
         log('info', `${modName} detected as mod archive!`);
         var bmInstructions = await archiveInstaller(files, firstPrim, modName, BeatModsClient.isBeatModsArchive(destinationPath) ? installBeatModsArchive : null);
         // var bmInstructions = await installBeatModsArchive(api, files, firstPrim, modName, archiveInstaller);
-        return Promise.resolve({instructions: bmInstructions});
+        return Promise.resolve({ instructions: bmInstructions });
     } else {
         log('warn', "Couldn't find primitive root in file list. Falling back to basic installation!");
-        return Promise.resolve({instructions: await basicInstaller(files, null, modName)});
+        return Promise.resolve({ instructions: await basicInstaller(files, null, modName) });
     }
 }
 
@@ -419,8 +436,8 @@ function handleProfileChange(api: IExtensionApi, profileId: string, callback: (p
  * @param deployment - The current deployment object.
  * @param handler - The callback/event handler to invoke when a deployment event is caught.
  */
-async function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, handler: DeploymentEventHandler) : Promise<void> {
-    log('debug', 'deployment event caught!', {profileId, mods: deployment['bs-mod']?.length ?? '?', songs: deployment['bs-map']?.length ?? '?'});
+async function handleDeploymentEvent(api: IExtensionApi, profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, handler: DeploymentEventHandler): Promise<void> {
+    log('debug', 'deployment event caught!', { profileId, mods: deployment['bs-mod']?.length ?? '?', songs: deployment['bs-map']?.length ?? '?' });
     var ev = getProfile(api, profileId);
     if (ev.isBeatSaber) {
         await handler(api, ev.profile, deployment);
@@ -441,8 +458,8 @@ async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (a
     var state = api.getState();
     var currentState = util.getSafe(state, ['settings', 'beatvortex', key], undefined) as T;
     stateFunc?.(api, currentState);
-    api.onStateChange(['settings', 'beatvortex', key], (previous : T, current: T) => {
-        traceLog('got settings change', {current});
+    api.onStateChange(['settings', 'beatvortex', key], (previous: T, current: T) => {
+        traceLog('got settings change', { current });
         stateFunc?.(api, current, previous);
     });
 }
@@ -458,7 +475,7 @@ async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (a
  * @param id - ID of the *download* being enriched. Not the modId!
  * @param details - The basic metadata to add to the download.
  */
-export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: {name: string, source: string, id?: string}) {
+export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: { name: string, source: string, id?: string }) {
     // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
     // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
@@ -502,14 +519,14 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
         log('info', `downloading ${details.name}`);
         var mapLink = client.buildDownloadLink(details);
         // log('debug', `attempting proxy: ${map}`);
-        api.events.emit('start-download', 
-            [mapLink], 
+        api.events.emit('start-download',
+            [mapLink],
             {
                 game: 'beatsaber',
                 name: details.name
-            }, 
-            details.name, 
-            (err: Error, id?: string) => directDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, {...details, source: 'beatsaber', id: details.key})), 
+            },
+            details.name,
+            (err: Error, id?: string) => directDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, { ...details, source: 'beatsaber', id: details.key })),
             true);
     } else {
         var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
@@ -520,7 +537,7 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
             })
             //TODO: handle this
         } else {
-            api.showErrorNotification(`Could not fetch details for ${mapKey}!`, `We couldn't get details from BeatSaver for that song. It may have been removed or currently unavailable.`, {allowReport: false});
+            api.showErrorNotification(`Could not fetch details for ${mapKey}!`, `We couldn't get details from BeatSaver for that song. It may have been removed or currently unavailable.`, { allowReport: false });
         }
     }
 }
@@ -548,14 +565,14 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
         log('info', `downloading ${modelDetails.name}`);
         var modelLink = client.buildDownloadLink(modelDetails);
         // log('debug', `attempting proxy: ${map}`);
-        api.events.emit('start-download', 
-            [modelLink], 
+        api.events.emit('start-download',
+            [modelLink],
             {
                 game: 'beatsaber',
                 name: modelDetails.name
-            }, 
-            modelDetails.name, 
-            (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, {...modelDetails, source: 'modelsaber', id: modelDetails.id.toString()})), 
+            },
+            modelDetails.name,
+            (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, { ...modelDetails, source: 'modelsaber', id: modelDetails.id.toString() })),
             true);
     } else {
         var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
@@ -566,13 +583,13 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
             })
             //TODO: handle this
         } else {
-            api.showErrorNotification(`Could not fetch details for ${modelDetails.name}!`, `We couldn't get details from ModelSaber for that link. It may have been removed or currently unavailable.`, {allowReport: false});
+            api.showErrorNotification(`Could not fetch details for ${modelDetails.name}!`, `We couldn't get details from ModelSaber for that link. It may have been removed or currently unavailable.`, { allowReport: false });
         }
     }
 }
 
 async function handlePlaylistLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
-    log('info', 'handling playlist oneclick install', {url});
+    log('info', 'handling playlist oneclick install', { url });
     await api.emitAndAwait('install-playlist', url);
 }
 
@@ -588,7 +605,7 @@ async function handlePlaylistLinkLaunch(api: IExtensionApi, url: string, install
  * @param id - The ID of the completed download
  * @param callback - A callback to be executed after the download has been completed before the user is notified.
  */
-export function handleDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
+export function handleDownloadInstall(api: IExtensionApi, details: { name: string }, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
     log('debug', `downloaded ${id} (or was it ${err})`);
     if (!err) {
         callback(api);
@@ -599,17 +616,17 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
             group: 'download-finished',
             message: details.name,
             actions: [
-              {
-                title: 'Install All', action: dismiss => {
-                  api.events.emit('start-install-download', id, true);
-                  dismiss();
+                {
+                    title: 'Install All', action: dismiss => {
+                        api.events.emit('start-install-download', id, true);
+                        dismiss();
+                    },
                 },
-              },
             ],
-          });
+        });
     } else {
         //TODO: need to actually handle this, obviously
-        api.showErrorNotification(`Failed to download ${details.name}!`, `Error encountered during download and install: ${err.name}\n${err.message}`, {allowReport: false});
+        api.showErrorNotification(`Failed to download ${details.name}!`, `Error encountered during download and install: ${err.name}\n${err.message}`, { allowReport: false });
     }
 }
 
@@ -626,13 +643,13 @@ export function handleDownloadInstall(api: IExtensionApi, details: {name: string
  * @param id - The ID of the completed download
  * @param callback - A callback to be executed immediatley before the download is queued for installation.
  */
-export function directDownloadInstall(api: IExtensionApi, details: {name: string}, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
+export function directDownloadInstall(api: IExtensionApi, details: { name: string }, err: Error, id?: string, callback?: (api: IExtensionApi) => void) {
     if (!err) {
         callback(api);
         api.events.emit('start-install-download', id, true);
     } else {
         //TODO: need to actually handle this, obviously
-        api.showErrorNotification(`Failed to download ${details.name}!`, `Error encountered during download and install: ${err.name}\n${err.message}`, {allowReport: false});
+        api.showErrorNotification(`Failed to download ${details.name}!`, `Error encountered during download and install: ${err.name}\n${err.message}`, { allowReport: false });
     }
 }
 
@@ -650,10 +667,10 @@ export function directDownloadInstall(api: IExtensionApi, details: {name: string
  * @param profile - The current profile.
  * @param deployment - The current deployment object.
  */
-export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }) : Promise<void> {
+export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
     var didIncludeBSIPA = deployment['bs-mod'].some(f => f.source.toLowerCase().indexOf("bsipa") !== -1);
     var alreadyPatched = isIPAReady(api);
-    log('debug', 'BSIPA check completed', {didIncludeBSIPA, alreadyPatched});
+    log('debug', 'BSIPA check completed', { didIncludeBSIPA, alreadyPatched });
     if (didIncludeBSIPA && !alreadyPatched) {
         api.sendNotification({
             type: 'warning',
@@ -687,13 +704,13 @@ export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfil
  * @param api The extension API.
  * @param profile - The current profile
  */
-export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile) : Promise<boolean> {
+export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile): Promise<boolean> {
     var alreadyPatched = isIPAReady(api);
-        log('debug', 'BSIPA purge check completed', {alreadyPatched});
-        if (alreadyPatched) {
-            var result = await showPatchDialog(api, false, tryUndoPatch);
-            return result;
-        }
+    log('debug', 'BSIPA purge check completed', { alreadyPatched });
+    if (alreadyPatched) {
+        var result = await showPatchDialog(api, false, tryUndoPatch);
+        return result;
+    }
 }
 
 /**
@@ -706,7 +723,7 @@ export function registerProtocols(api: IExtensionApi, enableLinks: ILinkHandling
     if (enableLinks != undefined) {
         log('debug', 'beatvortex: initialising oneclick', { enableLinks });
         if (enableLinks?.enableMaps) {
-            api.registerProtocol('beatsaver', true, (url: string, install:boolean) => handleMapLinkLaunch(api, url, install));
+            api.registerProtocol('beatsaver', true, (url: string, install: boolean) => handleMapLinkLaunch(api, url, install));
         }
         else if (enableLinks?.enableMaps === false) {
             api.deregisterProtocol('beatsaver');
@@ -736,7 +753,7 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
     if (metaSettings != undefined) {
         log('debug', 'beatvortex: initialising metaserver', { metaSettings });
         if (metaSettings.enableServer && metaSettings.serverUrl) {
-            api.addMetaServer('bs-metaserver', { url: metaSettings.serverUrl});
+            api.addMetaServer('bs-metaserver', { url: metaSettings.serverUrl });
         } else if (metaSettings.enableServer === false) {
             api.addMetaServer('bs-metaserver', undefined);
         }
@@ -757,12 +774,12 @@ function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSe
     if (previewSettings != undefined) {
         log('debug', 'beatvortex: initialising preview settings', { previewSettings });
         const checkForUpdates = async (gameId, mods: { [id: string]: IMod }) => {
-            traceLog('attempting beatvortex update check', {modCount: Object.keys(mods).length, game: gameId});
+            traceLog('attempting beatvortex update check', { modCount: Object.keys(mods).length, game: gameId });
             await checkForBeatModsUpdates(api, gameId, mods);
             return Promise.resolve();
         };
         const installUpdates = async (gameId: string, modId: string) => {
-            traceLog('attempting beatvortex mod update', {modId});
+            traceLog('attempting beatvortex mod update', { modId });
             await installBeatModsUpdate(api, gameId, modId);
             return Promise.resolve();
         };
@@ -775,7 +792,7 @@ function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSe
                 type: 'warning',
                 title: 'Vortex Restart Required',
                 message: 'Disabling BeatMods updates requires a Vortex restart to take effect!'
-              });
+            });
         }
     }
 }
@@ -788,9 +805,9 @@ function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSe
  */
 function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url: string; priority: number; } }) {
     var servers = Object.keys(metaSettings).map(k => {
-        return { id: k, url: metaSettings[k].url}
+        return { id: k, url: metaSettings[k].url }
     });
-    log('debug', 'got metaserver state', {count: servers.length, servers: servers});
+    log('debug', 'got metaserver state', { count: servers.length, servers: servers });
 }
 
 //#endregion
