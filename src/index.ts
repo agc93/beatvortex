@@ -2,7 +2,7 @@ import path = require('path');
 
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
-import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod } from 'vortex-api/lib/types/api';
+import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod, IDialogResult } from 'vortex-api/lib/types/api';
 import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase } from './util';
 import { ProfileClient } from "vortex-ext-common";
 
@@ -11,7 +11,7 @@ import { showPatchDialog, showTermsNotification, showLooseDllNotification } from
 import { migrate031 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
-import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist, looseInstaller } from "./install";
+import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 import { updateCategories } from "./categories";
 
@@ -22,7 +22,7 @@ import { ModelSaberClient } from './modelSaberClient';
 
 // components etc
 import BeatModsList from "./BeatModsList";
-import { PlaylistView } from "./playlists";
+import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings } from "./settings";
 import { sessionReducer } from './session';
@@ -78,7 +78,7 @@ function main(context: IExtensionContext) {
         });
         context.api.onAsync('install-playlist', async (installUrl: string) => {
             traceLog('attempting install of playlist', { playlist: installUrl });
-            await installPlaylist(context.api, installUrl);
+            await installRemotePlaylist(context.api, installUrl);
             return Promise.resolve();
         });
         context.api.events.on('start-install', (archivePath: string, callback: (err: Error) => void) => {
@@ -137,6 +137,10 @@ function main(context: IExtensionContext) {
                 && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableCategories)
         }
     );
+    context.registerAction(
+        'mods-multirow-actions', 300, 'layout-list', {}, 'Create Playlist', modIds => {
+            createPlaylist(context.api, modIds);
+        });
 
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods' });
     addModSource(context, { id: 'bsaber', name: 'BeastSaber', 'url': 'https://bsaber.com/songs' });
@@ -821,6 +825,78 @@ function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url:
         return { id: k, url: metaSettings[k].url }
     });
     log('debug', 'got metaserver state', { count: servers.length, servers: servers });
+}
+
+//#endregion
+
+//#region Actions 
+
+export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
+    var mods = api.getState().persistent.mods[GAME_ID];
+    var compatibleMods = modIds
+        .map(mid => mods[mid])
+        .filter(m => util.getSafe(m.attributes, ['source'], undefined) == 'beatsaver');
+    if (compatibleMods.length == 0) {
+        api.sendNotification({
+            title: 'Playlist Creation Failed',
+            message: 'None of the selected mods are BeatSaver maps!',
+            type: 'error'
+        });
+    } else {
+        var mgr = new PlaylistManager(api);
+        var result: IDialogResult = await api.showDialog(
+            'question',
+            'Create Playlist',
+            {
+                text: 'Enter a name for your new playlist',
+                input: [
+                    {
+                        id: 'title',
+                        value: '',
+                        label: 'Title'
+                    },
+                    {
+                        id: 'image',
+                        value: '',
+                        label: 'Optional image URL'
+                    }
+                ]
+            },
+            [
+                {label: 'Cancel'},
+                {label: 'Create'}
+            ]);
+        if (result.action == 'Cancel') {
+            return;
+        }
+        if (result.action == 'Create') {
+            var content = mgr.createPlaylistContent(result.input.title, compatibleMods.map(m => m.id), null, result.input.image);
+            api.sendNotification({
+                id: `playlist-creation`,
+                type: 'success',
+                title: 'Playlist created',
+                message: `Created new playlist with ${compatibleMods.length} maps`,
+                actions: [
+                  {
+                    title: 'Save to file', action: async () => {
+                      const playlistsPath = path.join(util.getVortexPath('temp'), 'BeatSaberPlaylists');
+                      await fs.ensureDirWritableAsync(playlistsPath, () => Promise.resolve());
+                      const tmpPath = path.join(playlistsPath, util.deriveInstallName(result.input.title, undefined) + ".bplist");
+                      const formatted = JSON.stringify(content, null, '\t');
+                      await fs.writeFileAsync(tmpPath, formatted);
+                      util.opn(playlistsPath).catch(() => null);
+                    },
+                  },
+                  {
+                      title: 'Install', action: async (dismiss) => {
+                          await installLocalPlaylist(api, content)
+                          dismiss();
+                      }
+                  }
+                ],
+              });
+        }
+    }
 }
 
 //#endregion

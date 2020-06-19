@@ -7,7 +7,7 @@ import { log, actions, selectors } from 'vortex-api';
 import { InstructionType } from 'vortex-api/lib/extensions/mod_management/types/IInstallResult';
 import { BeatSaverClient } from './beatSaverClient';
 import { getCustomFolder, ModelType, ModelSaberClient } from './modelSaberClient';
-import { PlaylistClient } from "./playlistClient";
+import { PlaylistClient, IPlaylistInfo, PlaylistRef } from "./playlistClient";
 import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName, traceLog } from './util';
 import { installMaps, IPlaylistEntry } from './playlists';
 
@@ -280,6 +280,22 @@ export async function installModelSaberFile(modName: string) : Promise<IInstruct
     return instructions;
 }
 
+export async function installRemotePlaylist(api: IExtensionApi, installUrl: string) {
+    var client = new PlaylistClient()
+    var ref = client.parseUrl(installUrl);
+    var info = await client.getPlaylist(ref.fileName);
+    installPlaylist(api, ref, info);
+}
+
+export async function installLocalPlaylist(api: IExtensionApi, info: IPlaylistInfo) {
+    var ref: PlaylistRef = {
+        fileName: `${info.playlistTitle}.bplist`,
+        fileUrl: undefined,
+        source: 'Local'
+    }
+    installPlaylist(api, ref, info);
+}
+
 /**
  * Installs the given playlist as a mod.
  * 
@@ -290,14 +306,10 @@ export async function installModelSaberFile(modName: string) : Promise<IInstruct
  * @param api The extension API.
  * @param installUrl The playlist URL to install
  */
-export async function installPlaylist(api: IExtensionApi, installUrl: string) {
-    var client = new PlaylistClient()
-    var ref = client.parseUrl(installUrl);
-    var u = new URL(ref.fileUrl);
-    var info = await client.getPlaylist(ref.fileName);
-    var targetPath = await client.saveToFile(api, ref);
+async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlaylistInfo) {
+    var client = new PlaylistClient();
+    var targetPath = await client.saveToFile(api, ref, info);
     var installPath = path.basename(path.dirname(targetPath));
-    var sourceName = getModName(u.host); //i.e. `beatsaver` or `bsaber`
     const vortexMod: IMod = {
         id: installPath,
         state: 'installed',
@@ -309,8 +321,8 @@ export async function installPlaylist(api: IExtensionApi, installUrl: string) {
             pictureUrl: info.image,
             installTime: new Date(),
             // version: '1.0.0',
-            notes: `Installed from ${ref.fileUrl}`,
-            source: sourceName,
+            notes: `Installed from ${ref.fileUrl ?? ref.fileName}`,
+            source: ref.source,
             playlistFile: ref.fileName
         },
     };
@@ -318,12 +330,12 @@ export async function installPlaylist(api: IExtensionApi, installUrl: string) {
     const profileId = api.getState().settings.profiles.lastActiveProfile[GAME_ID];
     api.store.dispatch(actions.setModEnabled(profileId, installPath, true));
     api.events.emit('mods-enabled', [ installPath ], true, GAME_ID);
-    
+    var sourceName = ref.fileUrl ? new URL(ref.fileUrl).host : path.basename(ref.fileName) ?? 'local file';
     api.sendNotification({
         id: `ready-to-install-${installPath}`,
         type: 'success',
         title: api.translate('Playlist installed'),
-        message: `Installed ${installPath} playlist from ${u.host}.`,
+        message: `Installed ${installPath} playlist from ${sourceName}.`,
         actions: [
           {
             title: 'Install Maps', action: dismiss => {

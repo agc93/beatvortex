@@ -1,10 +1,11 @@
-import { fs, log } from "vortex-api";
+import { fs, log, util } from "vortex-api";
 import path = require('path');
 import { ILocalPlaylist, IPlaylistEntry } from ".";
 import { getAllFiles } from "../util";
 import { BeatSaverClient } from "../beatSaverClient";
-import { IExtensionApi } from "vortex-api/lib/types/api";
+import { IExtensionApi, IMod } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
+import { IPlaylistInfo } from "../playlistClient";
 
 /**
  * This class was intended as a utility class encompassing local-only playlist 
@@ -16,14 +17,20 @@ import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
  */
 export class PlaylistManager {
     private installPath: string;
-    private _client: BeatSaverClient;
+    private _api: IExtensionApi;
     /**
      *
      */
-    constructor(installPath: string) {
-        this.installPath = installPath;
-        this._client = new BeatSaverClient();
-        
+    constructor(api: IExtensionApi);
+    constructor(installPath: string);
+    constructor(init: string|IExtensionApi) {
+        if (typeof init === 'string') {
+            this.installPath = init;
+        } else {
+            this._api = init;
+            this.installPath = this._api.getState().settings.gameMode.discovered[GAME_ID].path
+        }
+        // this._client = new BeatSaverClient();
     }
     
     /**
@@ -51,6 +58,49 @@ export class PlaylistManager {
         }))
         var localData = await localPlaylists;
         return localData;
+    }
+
+    static createPlaylistContent(name: string, maps: string[], author: string, image?: string) {
+        var playlist: IPlaylistInfo = 
+        {
+            playlistTitle: name,
+            playlistAuthor: author,
+            image: image,
+            songs: maps.map((m): IPlaylistEntry => {
+                return m.length === 4 ? {key: m, hash: undefined} : {hash: m, key: undefined};
+            })
+        };
+        return playlist;
+    }
+
+    createPlaylistContent = (name: string, mapIdents: string[], author?: string, image?: string) => {
+        if (!this._api) {
+            return PlaylistManager.createPlaylistContent(name, mapIdents, author, image);
+        } else {
+            var playlist: IPlaylistInfo = {
+                playlistTitle: name,
+                playlistAuthor: author ?? util.getSafe(this._api.getState().persistent, ['nexus', 'userInfo', 'name'], undefined),
+                songs: []
+            };
+            var mods = this._api.getState().persistent.mods[GAME_ID];
+            var maps = mapIdents.map((mi): IPlaylistEntry => {
+                var mod: IMod;
+                if (mi.length == 4) {
+                    mod = mods[mi];
+                } else {
+                    mod = Object.values(mods).find(m => util.getSafe(mod.attributes, ['mapHash'], '') == mi);
+                }
+                if (mod) {
+                    return {
+                        hash: util.getSafe(mod.attributes, ['mapHash'], undefined),
+                        key: mod.id,
+                        songName: util.getSafe(mod.attributes, ['modName'], undefined),
+                    }
+                }
+            });
+            playlist.songs = maps;
+            return playlist;
+        }
     }
 }
 

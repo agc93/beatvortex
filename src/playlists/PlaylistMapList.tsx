@@ -88,7 +88,8 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         // log('debug', 'attempting render of mod', {mod: mod.name});
         const { selected } = this.state;
         const { installed } = this.props
-        return (
+        return detail?.key 
+            ? (
             <ListGroupItem
                 key={detail.key}
                 className={"pv-playlist-map"}
@@ -104,7 +105,7 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
                     <span className='pv-maplist-title'>{detail.name}</span>
                 </div>
             </ListGroupItem>
-        )
+        ) : (<></>)
     }
 
     private selectListEntry = (evt: React.MouseEvent<any>, mapKey: string) => {
@@ -112,7 +113,7 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         const selected = mapKey ?? evt.currentTarget.getAttribute('key');
         var currentMap = (selected == undefined || !selected || details.length == 0)
             ? null
-            : details.find(iter => iter.key == selected);
+            : details.filter(d => d?.key).find(iter => iter.key == selected);
         this.setState({ selected, currentMap } as IPlaylistMapListState);
     }
 
@@ -124,7 +125,7 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
 
     async componentDidUpdate(prevProps: IProps) {
         if (prevProps.playlist != this.props.playlist) {
-            this.setState({isLoading: true});
+            this.setState({isLoading: true, currentMap: undefined});
             await this.refreshMaps();
         }
     }

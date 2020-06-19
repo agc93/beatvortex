@@ -7,8 +7,8 @@ export interface ILocalPlaylist {
 }
 
 export interface IPlaylistEntry {
-    songName: string;
-    name: string;
+    songName?: string;
+    name?: string;
     hash: string;
     key: string;
 }
@@ -25,4 +25,3 @@ export interface IPlaylistEntry {
 export function getSongName(map: IPlaylistEntry) {
     return map.songName ?? map.name ?? map.key ?? map.hash;
 }
-

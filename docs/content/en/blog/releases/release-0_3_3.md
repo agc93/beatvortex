@@ -21,6 +21,8 @@ This release adds some new features and fixes to the [previous alpha release](/u
   - Enable them from the Settings page then click *Check for Updates* in your Mods list to check for updates from BeatMods
 - Session caching: we've started integrating caching support for BeatMods and BeatSaver.
   - This should pretty dramatically cut down the load on those services by caching requests for the current session.
+- Create your own playlists: You can now select any number of BeatSaver-installed maps from your Mods list and create a playlist from them
+  - You can save your playlist file locally, or immediately install it into your game (or both!)
 - Playlist Management improvements
   - There's been a lot of behind-the-scenes updates to the Playlists manager that should make it snappier and stabler.
   - We've also fixed the pretty huge bug where the map list would be for the wrong playlist.

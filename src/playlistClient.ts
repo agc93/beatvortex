@@ -4,8 +4,9 @@ import path = require('path');
 import { log, selectors, fs } from "vortex-api";
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
+import { getModName } from "./util";
 
-export type PlaylistRef = {fileUrl: string, fileName: string};
+export type PlaylistRef = {source: string, fileUrl: string, fileName: string};
 
 /**
  * Prototype client for retrieving and handling playlist/bplist files.
@@ -30,8 +31,10 @@ export class PlaylistClient {
         var md = re.exec(installLink);
         var fileUrl = md[1];
         var u = new URL(fileUrl);
+        var sourceName = getModName(u.host);
         var fileName = path.basename(u.pathname);
         return {
+            source: sourceName,
             fileUrl: fileUrl,
             fileName: fileName
         };
@@ -87,6 +90,6 @@ export class PlaylistClient {
 export interface IPlaylistInfo {
     playlistTitle: string;
     playlistAuthor: string;
-    image: string;
+    image?: string;
     songs: IPlaylistEntry[];
 }
