@@ -259,4 +259,4 @@ function mapStateToProps(state: IState): IConnectedProps {
     };
 }
 
-export default withTranslation(['beatvortex', 'common'])(connect(mapStateToProps)(PlaylistView));
+export default withTranslation(['beatvortex', 'game-beatsaber', 'common'])(connect(mapStateToProps)(PlaylistView));

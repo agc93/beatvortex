@@ -113,4 +113,4 @@ function mapStateToProps(state: IState): IConnectedProps {
 }
   
   export default
-    withTranslation(['beatvortex', 'common'])(connect(mapStateToProps, mapDispatchToProps)(OneClickSettings));
+    withTranslation(['beatvortex', 'game-beatsaber', 'common'])(connect(mapStateToProps, mapDispatchToProps)(OneClickSettings));

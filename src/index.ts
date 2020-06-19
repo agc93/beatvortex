@@ -7,11 +7,11 @@ import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, fin
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
-import { showPatchDialog, showTermsNotification } from "./notify";
+import { showPatchDialog, showTermsNotification, showLooseDllNotification } from "./notify";
 import { migrate031 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
-import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist } from "./install";
+import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installPlaylist, looseInstaller } from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 import { updateCategories } from "./categories";
 
@@ -80,6 +80,13 @@ function main(context: IExtensionContext) {
             traceLog('attempting install of playlist', { playlist: installUrl });
             await installPlaylist(context.api, installUrl);
             return Promise.resolve();
+        });
+        context.api.events.on('start-install', (archivePath: string, callback: (err: Error) => void) => {
+            var isBeatSaber = selectors.activeGameId(context.api.store.getState()) === GAME_ID;
+            var isLoosePlugin = path.extname(archivePath).toLowerCase() == '.dll';
+            if (isBeatSaber && isLoosePlugin) {
+                showLooseDllNotification(context.api, path.basename(archivePath));
+            }
         });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
@@ -398,6 +405,12 @@ async function installContent(api: IExtensionApi, files: string[], destinationPa
         var bmInstructions = await archiveInstaller(files, firstPrim, modName, BeatModsClient.isBeatModsArchive(destinationPath) ? installBeatModsArchive : null);
         // var bmInstructions = await installBeatModsArchive(api, files, firstPrim, modName, archiveInstaller);
         return Promise.resolve({ instructions: bmInstructions });
+    } else if (files.every(f => path.extname(f) == '.dll')) {
+        //it's a loose mod, aka something someone just grabbed off #pc-mods or some shit
+        log('info', `installing ${modName} as a loose plugin`);
+        var looseInstructions = await looseInstaller(files, null, modName);
+        return Promise.resolve({ instructions: looseInstructions });
+
     } else {
         log('warn', "Couldn't find primitive root in file list. Falling back to basic installation!");
         return Promise.resolve({ instructions: await basicInstaller(files, null, modName) });

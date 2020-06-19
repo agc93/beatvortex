@@ -395,4 +395,4 @@ function mapStateToProps(state: IState): IConnectedProps {
     return {}
   }
 
-export default withTranslation(['beatvortex', 'common'])(connect(mapStateToProps)(BeatModsList));
+export default withTranslation(['beatvortex', 'game-beatsaber', 'common'])(connect(mapStateToProps)(BeatModsList));

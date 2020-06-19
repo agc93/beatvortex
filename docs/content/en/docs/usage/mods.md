@@ -68,11 +68,11 @@ You can browse mods using the built-in browser that appears and if you download 
 
 ## Install from archives
 
-You can also download mod/map archives directly from BeastSaber, BeatSaver, BeatMods or anywhere else you like and install them with Vortex. Simply use the *Install From File* button in the toolbar or drop them onto the drop zone at the bottom of the Vortex window.
+You can also download mod/map archives directly from BeastSaber, BeatSaver, BeatMods, #pc-mods or anywhere else you like and install them with Vortex. Simply use the *Install From File* button in the toolbar or drop them onto the drop zone at the bottom of the Vortex window.
 
 > Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.
 
-Please note that "raw" mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will probably not work properly. Only archives are fully supported at this time.
+Please note that "raw" mods that aren't packaged in an archive (for example, plain `dll` files provided by some GitHub projects or #pc-mods posts) will *not* work! Vortex only supports installing from archives so just add the file to a ZIP and install that.
 
 ## Updating Mods
 

@@ -4,9 +4,9 @@ import { remote, dialog } from "electron";
 
 import { tryRunPatch, PatchFunction } from "./ipa";
 
-export function showTermsNotification(api: IExtensionApi, autoDismiss: boolean) : void;
-export function showTermsNotification(api: IExtensionApi, callback?: (dismiss: NotificationDismiss)=> void) : void;
-export function showTermsNotification(api: IExtensionApi, dismissCallback : ((dismiss: NotificationDismiss)=> void) | boolean) : void {
+export function showTermsNotification(api: IExtensionApi, autoDismiss: boolean): void;
+export function showTermsNotification(api: IExtensionApi, callback?: (dismiss: NotificationDismiss) => void): void;
+export function showTermsNotification(api: IExtensionApi, dismissCallback: ((dismiss: NotificationDismiss) => void) | boolean): void {
     api.sendNotification({
         type: 'info',
         message: 'By using BeatVortex, you are accepting some basic terms',
@@ -15,9 +15,9 @@ export function showTermsNotification(api: IExtensionApi, dismissCallback : ((di
             {
                 title: 'See More',
                 action: (dismiss: NotificationDismiss) => {
-                    showTermsDialog(api, typeof dismissCallback === 'boolean' 
-                        ? (dismissCallback ? () => dismiss() : null) 
-                        : dismissCallback ? () => {dismissCallback(dismiss)} : null)
+                    showTermsDialog(api, typeof dismissCallback === 'boolean'
+                        ? (dismissCallback ? () => dismiss() : null)
+                        : dismissCallback ? () => { dismissCallback(dismiss) } : null)
                 }
             }
         ]
@@ -34,22 +34,22 @@ export function showTermsNotification(api: IExtensionApi, dismissCallback : ((di
  * @returns 
  */
 export async function showPatchDialog(api: IExtensionApi, toPatch: boolean, patchFn: PatchFunction, callback?: () => void): Promise<boolean> {
-    var msg = toPatch 
+    var msg = toPatch
         ? 'BeatVortex can attempt to auto-patch your Beat Saber install'
         : 'BeatVortex can attempt to revert BSIPA patching before purging mods';
     var detail = toPatch
         ? "It looks like you've deployed BSIPA, but it hasn't been run for this install.\n\nBeatVortex can attempt to automatically run IPA's first-time setup and patch your installation for you, but this isn't guaranteed to work. You should only need to do this once!"
         : "If you're purging mods to take Beat Saber back to fully stock, you may want to revert BSIPA patching. \n\nBeatVortex can attempt to automatically run IPA's revert to unpatch your installation, but this isn't guaranteed to work.";
-    var diag : IDialogResult = await api.showDialog(
-        'question', 
+    var diag: IDialogResult = await api.showDialog(
+        'question',
         "BSIPA Patching",
         {
             text: msg + '\n\n' + detail
         },
         [
-            {label: 'Skip'},
+            { label: 'Skip' },
             {
-                label: toPatch ? 'Run Patch'  : 'Revert Patch',
+                label: toPatch ? 'Run Patch' : 'Revert Patch',
                 action: () => patchFn(api, callback)
             },
         ]);
@@ -70,7 +70,7 @@ export async function showPatchDialog(api: IExtensionApi, toPatch: boolean, patc
  * @param context - The extension context. Only required for translation of dialog text.
  * @param callback - A callback to execute when the dialog is dismissed.
  */
-export function showNativeTermsDialog(context?: IExtensionContext, callback?: ()=> void) {
+export function showNativeTermsDialog(context?: IExtensionContext, callback?: () => void) {
     var msg = 'By proceeding you are agreeing to the following terms:';
     var detail = "You may experience problems that don't exist in the vanilla game. 99.9% of bugs, crashes, and lag are due to mods. \nMods are subject to being broken by updates and that's normal - be patient and respectful when this happens, as modders are volunteers with real lives. \nBeat Games aren't purposefully trying to break mods. They wish to work on the codebase and sometimes this breaks mods, but they are not out to kill mods. \nDo not attack the devs for issues related to mods, and vice versa - modders and devs are two separate groups.";
     remote.dialog.showMessageBox(vtx.getVisibleWindow(), {
@@ -87,11 +87,44 @@ export function showTermsDialog(api: IExtensionApi, callback?: () => void) {
         "You may experience problems that don't exist in the vanilla game. 99.9% of bugs, crashes, and lag are due to mods. \nMods are subject to being broken by updates and that's normal - be patient and respectful when this happens, as modders are volunteers with real lives. \nBeat Games aren't purposefully trying to break mods. They wish to work on the codebase and sometimes this breaks mods, but they are not out to kill mods. \nDo not attack the devs for issues related to mods, and vice versa - modders and devs are two separate groups.";
     api.showDialog('info', 'Terms of Use', {
         text: msg,
-    },[
-        {label: 'I Accept'}
+    }, [
+        { label: 'I Accept' }
     ]).then((result: IDialogResult) => {
         if (callback) {
             callback();
         }
+    });
+}
+
+export function showLooseDllNotification(api: IExtensionApi, fileName: string) {
+    return api.sendNotification({
+        type: 'warning',
+        message: "It looks like you might be trying to install a loose plugin. This probably won't work.",
+        title: 'Loose Plugin Detected',
+        noDismiss: true,
+        actions: [
+            {
+                title: 'More info',
+                action: dismiss => {
+                    showLooseDllDialog(api, fileName, dismiss);
+                }
+            }
+        ]
+    });
+}
+
+export function showLooseDllDialog(api: IExtensionApi, fileName: string, callback?: () => void) {
+
+    var msg = "It looks like the mod you're currently installing is a loose DLL file.\n\nIf you are trying to install a BSIPA plugin that you downloaded from GitHub or Discord, this will almost certainly not work how you think!\n" +
+        "To install it properly, remove the 'mod' you just installed, add the DLL file to a ZIP file (or any other archive format) and install that with Vortex instead. The installer will then deploy your plugin to the right location.\nSee beatvortex.dev/docs/faq for more information.";
+    api.showDialog(
+        'info',
+        'Installing Loose Plugins',
+        {
+            text: msg,
+        }, 
+        [ { label: 'Continue' } ]
+    ).then((result: IDialogResult) => {
+        callback?.();
     });
 }

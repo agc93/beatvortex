@@ -36,6 +36,12 @@ The first (and major) point is that BeatVortex can't tell which versions are for
 
 The other (unfixable from our end) problem is that the BeatMods API has a very [weird bug/behaviour](https://github.com/bsmg/BeatMods-Website/issues/41) that means we somehow have to know what game version the mod uses in order to find out what game version the mod uses. This is also why we don't display what game version an installed mod uses: the BeatMods API tells us the completely wrong version.
 
+### I installed a `dll` file I downloaded and it's not working!?
+
+Vortex's whole design is built around mods being part of an archive file. As such, when you try and install a `dll` file on its own, Vortex won't know what to do and will usually try and *extract* the DLL looking for the mod inside.
+
+To install `dll` files you get from GitHub, Discord, or anywhere else, add them to a ZIP file first (right-click -> *Send to* -> *Compressed (zipped) folder* on Windows), then install the ZIP file. Vortex will take care of the rest, including placing the plugin file in the correct place when you deploy.
+
 ### Are mod dependencies supported/installed?
 
 Dependencies is a tricky area for a few reasons, and driven by two different problems: Vortex support and the BeatMods API.

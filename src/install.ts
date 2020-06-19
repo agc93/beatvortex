@@ -8,11 +8,11 @@ import { InstructionType } from 'vortex-api/lib/extensions/mod_management/types/
 import { BeatSaverClient } from './beatSaverClient';
 import { getCustomFolder, ModelType, ModelSaberClient } from './modelSaberClient';
 import { PlaylistClient } from "./playlistClient";
-import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName } from './util';
+import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName, traceLog } from './util';
 import { installMaps, IPlaylistEntry } from './playlists';
 
 export interface ModInstaller {
-    (api: IExtensionApi, files: string[], archiveRoot: string, modName: string, enrich: MetadataSource) : Promise<IInstruction>;
+    (api: IExtensionApi, files: string[], archiveRoot: string, modName: string, enrich: MetadataSource) : Promise<IInstruction[]>;
 }
 
 export interface MetadataSource {
@@ -76,6 +76,23 @@ export async function basicInstaller(files: string[], rootPath: string, modName:
         };
     });
     instructions.push(...await enrich?.(modName));
+    return instructions;
+}
+
+export async function looseInstaller(files: string[], rootPath: string, modName: string, enrich?: MetadataSource) : Promise<IInstruction[]> {
+    rootPath = rootPath ?? '';
+    var instructions = files
+        .filter(f => path.extname(f).toLowerCase() == '.dll')
+        .map((d): IInstruction => {
+            return {
+                type: 'copy',
+                source: d,
+                destination: `Plugins/${d}`
+            }
+        });
+    traceLog('mapped loose instructions', {instructions, isArray: Array.isArray(instructions), count: instructions?.length});
+    var meta = await enrich?.(modName) ?? [];
+    instructions.push(...meta);
     return instructions;
 }
 

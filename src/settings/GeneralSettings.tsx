@@ -88,4 +88,4 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
 }
 
 export default
-    withTranslation(['beatvortex', 'common'])(connect(mapStateToProps, mapDispatchToProps)(GeneralSettings));
+    withTranslation(['beatvortex', 'game-beatsaber', 'common'])(connect(mapStateToProps, mapDispatchToProps)(GeneralSettings));
