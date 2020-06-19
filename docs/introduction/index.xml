@@ -7,7 +7,7 @@
 &lt;p>See above ⬆. Use what you prefer! Prefer the familiarity of Vortex? Use BeatVortex. Prefer the extra features of Mod Assistant? Use that. Got your own set of tools? Use those.&lt;/p>
 &lt;p>In fact, generally speaking, you should be able to use BeatVortex alongside those other tools without any major problems.&lt;/p>
 &lt;h3 id="im-a-modpack-author-how-do-i-make-mods-compatible-with-vortex">I’m a mod/pack author, how do I make mods compatible with Vortex?&lt;/h3>
-&lt;p>They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory (for mods, not maps), and that’s basically it.&lt;/p>
+&lt;p>They probably already are! If you want to maximise support and avoid some issues, pack your mod archive in such a way that the root of the archive should end up at the root of the install directory (for mods, not maps), and that’s basically it. There's a little more detail in &lt;a href="../../docs/developer/authoring">the developer docs&lt;/a> as well.&lt;/p>
 &lt;blockquote>
 &lt;p>A special note for BeatSaver maps: if users download a map from BeatSaver and install it with BeatVortex, it will actually hit BeatSaver's API to get the proper name to keep those mod lists neat. The directory in the install folder will have a terrible name, though.&lt;/p>
 &lt;/blockquote>
@@ -17,15 +17,18 @@
 &lt;p>Now that's a saga of a question. There's two reasons we have to do this: compatibility and BeatMods being BeatMods.&lt;/p>
 &lt;p>The first (and major) point is that BeatVortex can't tell which versions are forward compatible. That is, &lt;em>we&lt;/em> know that mods for 1.8.0 work in 1.9.0, but BeatVortex doesn't have any easy way to tell that. So if there's not an exact match to your installed version, we ask you to choose.&lt;/p>
 &lt;p>The other (unfixable from our end) problem is that the BeatMods API has a very &lt;a href="https://github.com/bsmg/BeatMods-Website/issues/41">weird bug/behaviour&lt;/a> that means we somehow have to know what game version the mod uses in order to find out what game version the mod uses. This is also why we don't display what game version an installed mod uses: the BeatMods API tells us the completely wrong version.&lt;/p>
-&lt;h3 id="why-arent-dependencies-fully-supported">Why aren't dependencies fully supported?&lt;/h3>
-&lt;p>This answer is a little technical, and driven by two different problems: Vortex support and the BeatMods API.&lt;/p>
+&lt;h3 id="i-installed-a-dll-file-i-downloaded-and-its-not-working">I installed a &lt;code>dll&lt;/code> file I downloaded and it's not working!?&lt;/h3>
+&lt;p>Vortex's whole design is built around mods being part of an archive file. As such, when you try and install a &lt;code>dll&lt;/code> file on its own, Vortex won't know what to do and will usually try and &lt;em>extract&lt;/em> the DLL looking for the mod inside.&lt;/p>
+&lt;p>To install &lt;code>dll&lt;/code> files you get from GitHub, Discord, or anywhere else, add them to a ZIP file first (right-click -&amp;gt; &lt;em>Send to&lt;/em> -&amp;gt; &lt;em>Compressed (zipped) folder&lt;/em> on Windows), then install the ZIP file. Vortex will take care of the rest, including placing the plugin file in the correct place when you deploy.&lt;/p>
+&lt;h3 id="none-of-my-mods-are-installed-suddenly-where-did-they-go">None of my mods are installed suddenly? Where did they go?&lt;/h3>
+&lt;p>This can happen for a few reasons, most commonly an update for Beat Saber or if you verify/reinstall/move the game in Steam. First, &lt;em>run Beat Saber at least once&lt;/em>. After any update, you need to run Beat Saber at least once to update a few important files.&lt;/p>
+&lt;p>Next, purge your mods using the Purge button in the Mods list. Once that's complete, make sure the right mods are installed, enabled and up-to-date, and click Deploy Mods. Vortex will redeploy your enabled mods into your game's install directory.&lt;/p>
+&lt;h3 id="are-mod-dependencies-supportedinstalled">Are mod dependencies supported/installed?&lt;/h3>
+&lt;p>Dependencies is a tricky area for a few reasons, and driven by two different problems: Vortex support and the BeatMods API.&lt;/p>
 &lt;blockquote>
 &lt;p>If you want the full technical breakdown, check out the full &lt;a href="../../docs/developer/dependencies/">developer docs on dependencies&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;p>Dependencies are &lt;em>shown&lt;/em> in the Mods list and BeatMods browser, and we will &lt;em>try&lt;/em> and automatically install them when you install any mod from BeatMods, but this hasn't been fully tested and might still have some quirks or errors.&lt;/p>
-&lt;h3 id="why-arent-updates-supported">Why aren't updates supported?&lt;/h3>
-&lt;p>This has the same two problems as dependencies: Vortex and BeatMods&lt;/p>
-&lt;p>Vortex does natively support updates, but at current the only update implementation available (that I know of) is using Nexus Mods, which we obviously don't have. That means having to reverse engineer how Nexus handles triggering mod updates which is a) an absolute shitton of work and b) difficult with BeatMods.&lt;/p>
-&lt;blockquote>
-&lt;p>The Nexus integration for Vortex is over 4000 lines of code. If anyone wants to volunteer to work out how the fuck that works, I'd be happy to accept PRs!&lt;/p>
-&lt;/blockquote></description></item></channel></rss>
+&lt;p>As of v0.3.1, dependencies support is available and enabled by default: dependencies are shown in the Mods list and BeatMods browser, and we will attempt to automatically download and install them when you install any mod from BeatMods. However, this hasn't been fully tested and might still have some quirks or errors.&lt;/p>
+&lt;h3 id="are-mod-updates-supported">Are mod updates supported?&lt;/h3>
+&lt;p>Mod updates are an in-progress feature! As of v0.3.3, we have preview support for installing updates for BeatMods mods using Vortex. Check the &lt;a href="../../usage/mods">usage docs&lt;/a> for more information.&lt;/p>
+&lt;p>This is still a preview feature as non-Nexus updates is pretty new ground for Vortex, and I haven't been able to test it that thoroughly. Also, BeatMods is a wild mess of inconsistent logic which makes things a bit less simple.&lt;/p></description></item></channel></rss>

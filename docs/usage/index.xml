@@ -83,16 +83,17 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;/blockquote>
 &lt;p>You can browse mods using the built-in browser that appears and if you download the ZIP archive of any song (from BeatSaver/BeastSaber), mod (from BeatMods), or model (from ModelSaber), Vortex will attempt to install it in the background for you. Close the browser to go back to your mod list then Install and Enable your mods as usual to use them in-game.&lt;/p>
 &lt;h2 id="install-from-archives">Install from archives&lt;/h2>
-&lt;p>You can also download mod/map archives directly from BeastSaber, BeatSaver, BeatMods or anywhere else you like and install them with Vortex. Simply use the &lt;em>Install From File&lt;/em> button in the toolbar or drop them onto the drop zone at the bottom of the Vortex window.&lt;/p>
+&lt;p>You can also download mod/map archives directly from BeastSaber, BeatSaver, BeatMods, #pc-mods or anywhere else you like and install them with Vortex. Simply use the &lt;em>Install From File&lt;/em> button in the toolbar or drop them onto the drop zone at the bottom of the Vortex window.&lt;/p>
 &lt;blockquote>
 &lt;p>Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.&lt;/p>
 &lt;/blockquote>
-&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, the dll files provided by some GitHub projects) will probably not work properly. Only archives are fully supported at this time.&lt;/p>
+&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, plain &lt;code>dll&lt;/code> files provided by some GitHub projects or #pc-mods posts) will &lt;em>not&lt;/em> work! Vortex only supports installing from archives so just add the file to a ZIP and install that.&lt;/p>
 &lt;h2 id="updating-mods">Updating Mods&lt;/h2>
-&lt;p>At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA &lt;em>should&lt;/em> automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.&lt;/p>
 &lt;blockquote>
-&lt;p>If BSIPA installs an update for a mod, the version you see in-game and the version you see in Vortex might not be the same anymore. Reinstall the updated mod from Vortex if you want the numbers to match.&lt;/p>
-&lt;/blockquote></description></item><item><title>Docs: Configuration</title><link>/docs/usage/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/configuration/</guid><description>
+&lt;p>This feature is available in preview for &lt;a href="../../updates/v0.3.3">v0.3.3&lt;/a> or later&lt;/p>
+&lt;/blockquote>
+&lt;p>In the latest versions of BeatVortex, you can enable support for BeatMods updates in the Preview Settings. You can then use the normal &amp;ldquo;Check for Updates&amp;rdquo; button in the Mods list to immediately check all your installed BeatMods mods for updates and optionally update them in one-click. This will also preserve the old version in your Mods list!&lt;/p>
+&lt;p>Mod updates are a new feature that have not necessarily been fully tested, so please report any bugs or issues you find.&lt;/p></description></item><item><title>Docs: Configuration</title><link>/docs/usage/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/configuration/</guid><description>
 &lt;h3 id="customising-metadata">Customising metadata&lt;/h3>
 &lt;p>You can customise the basic metadata of any of your mods (name, author, notes etc) using Vortex's built-in sidebar. Just double-click on the name of any mod in your mod list and you'll get a small dialog where you can change the name and author, or add some notes for yourself. It's not recommended to change the source or mod type as these control how mods are handled internally.&lt;/p>
 &lt;h3 id="profiles">Profiles&lt;/h3>
@@ -108,6 +109,14 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;blockquote>
 &lt;p>You should be prompted to revert BSIPA patching when you purge, and prompted to rerun patching when you next deploy mods.&lt;/p>
 &lt;/blockquote>
+&lt;h3 id="preview-features">Preview Features&lt;/h3>
+&lt;p>We sometimes include early previews of new features for BeatVortex that might not be fully ready for primetime. These features are usually functional, but are also usually still in active development and not necessarily as polished as you might expect. You can enable any of these features to get early access to new functionality, but be warned that you will probably see bugs and problems.&lt;/p>
+&lt;p>To check and enable preview features, open the Interface tab of your Settings page and scroll down to find the &amp;ldquo;BeatVortex Preview Features&amp;rdquo; section.&lt;/p>
+&lt;h3 id="categories">Categories&lt;/h3>
+&lt;blockquote>
+&lt;p>This feature is currently in preview!&lt;/p>
+&lt;/blockquote>
+&lt;p>When you first start managing Beat Saber (or after the update to v0.3.3 for existing users), BeatVortex will pull down the current set of categories from BeatMods. The next time you start Vortex, you should be able to sort, filter and group your mods by category so you can just check your Stream Tools or hide the Tools for Modders.&lt;/p>
 &lt;h3 id="handling-your-mods-list">Handling your Mods list&lt;/h3>
 &lt;p>Since everything gets installed as a mod when you're using BeatVortex, your Mods list can get quite lengthy quite fast! Here's a few tips for keeping your mods list more manageable:&lt;/p>
 &lt;ul>
@@ -120,6 +129,11 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>If you're currently using Beatlist for playlists, see below for extra information.&lt;/p>
 &lt;/div>
 &lt;p>Playlist support in BeatVortex is very new and very experimental! The notion of playlists isn't something that easily maps into the Vortex way of handling things so there might be some rough patches.&lt;/p>
+&lt;h2 id="creating-playlists">Creating Playlists&lt;/h2>
+&lt;blockquote>
+&lt;p>This feature is available in v0.3.3 or later&lt;/p>
+&lt;/blockquote>
+&lt;p>You can now create your own playlists from the maps you already have installed! Just select multiple BeatSaver maps from your Mods list (hold Ctrl and click) and select Create Playlists from the bar at the bottom of the screen. You'll be prompted to name your playlist and optionally give it an image. BeatVortex will then create a playlist based on those maps and let you save it to a local file. You can also immediately install it so you can deploy and manage like your other playlists.&lt;/p>
 &lt;h2 id="enabling-playlist-installation">Enabling Playlist Installation&lt;/h2>
 &lt;p>To enable installing playlists with Vortex, check the &amp;ldquo;Enable OneClick links for playlists&amp;rdquo; option in the Download tab of the Settings page. When you click a OneClick link for a playlist, it should be automatically downloaded and installed into Vortex and will give you the option of immediately installing all the maps from that playlist.&lt;/p>
 &lt;blockquote>
@@ -141,7 +155,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>If you're currently using Mod Assistant to install your playlists, you should also be aware of a few things:&lt;/p>
 &lt;ul>
 &lt;li>Enabling playlist link handling in your Vortex settings will likely prevent Mod Assistant from handling those links.&lt;/li>
-&lt;li>Installing a playlist with Vortex will separately install each song in the playlist as a manageable mod in Vortex. Your mod list could get very long, very fast.&lt;/li>
+&lt;li>Installing a playlist with Vortex will separately install each song in the playlist as a manageable mod in Vortex.&lt;/li>
 &lt;/ul></description></item><item><title>Docs: BeatVortex for Mod Assistant Users</title><link>/docs/usage/mod-assistant/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/mod-assistant/</guid><description>
 &lt;p>First and foremost, the best advice for Mod Assistant users is this: if you don't want to change, &lt;strong>you don't have to!&lt;/strong>&lt;/p>
 &lt;p>BeatVortex is a completely unofficial project and is &lt;strong>not&lt;/strong> intended as a replacement to Mod Assistant, which is also a very good way of handling Beat Saber mods. If you're happy with Mod Assistant and don't have any preference for using Vortex, don't feel like you need to make the switch!&lt;/p>
@@ -159,6 +173,12 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;h3 id="oneclick-installation">OneClick Installation&lt;/h3>
 &lt;p>We have added &lt;em>preview&lt;/em> support for OneClick installation links for maps, custom models and playlists, but this is a quite new feature! They are also not enabled by default: you can enable OneClick links for any specific mod type (or all of them) from the Download tab of your Vortex settings.&lt;/p>
 &lt;p>Unlike Mod Assistant, which doesn't &amp;ldquo;track&amp;rdquo; maps or playlists installed with OneClick links, Vortex will handle OneClick links like any other installation: the map/model/mod is installed as a complete mod, manageable from your Mods list and then deployed to your install directory.&lt;/p>
+&lt;h3 id="bsipa">BSIPA&lt;/h3>
+&lt;p>Some of the features that BSIPA provides overlap a bit with Vortex and BeatVortex's feature sets, so it's worth knowing a few things first.&lt;/p>
+&lt;p>For one, Mod Assistant installs mods into a special &lt;code>IPA/Pending&lt;/code> folder and BSIPA then &amp;ldquo;installs&amp;rdquo; them into the main game directory. Vortex installs its files into the mod staging folder, then deploys them directly into the game install folder. This means that while you can install new mods or updates into your Vortex while Beat Saber is running you shouldn't deploy them.&lt;/p>
+&lt;blockquote>
+&lt;p>In fact, if you launched Beat Saber with Vortex, it will pause deployments until you close the game.&lt;/p>
+&lt;/blockquote>
 &lt;h2 id="compatibility">Compatibility&lt;/h2>
 &lt;p>While I don't recommend it, it should be possible to use BeatVortex &lt;em>alongside&lt;/em> Mod Assistant, BeatList or any other modding tools. This is not something I actively test and Vortex will likely react in funny ways to changes made by the other tools, but it shouldn't break anything major.&lt;/p>
 &lt;blockquote>
