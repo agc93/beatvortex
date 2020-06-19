@@ -1,7 +1,8 @@
 import { IExtensionApi, IDialogResult } from "vortex-api/lib/types/api";
-import { actions, selectors } from "vortex-api";
+import { actions, selectors, util } from "vortex-api";
 import { GAME_ID } from ".";
 import { BeatModsClient } from "./beatModsClient";
+import { traceLog } from "./util";
 
 interface ICategory {
     name: string;
@@ -12,6 +13,16 @@ interface ICategory {
 interface ICategoryDictionary {
     [id: string]: ICategory;
   }
+
+export function checkBeatModsCategories(api: IExtensionApi): boolean {
+    var categories: ICategoryDictionary = util.getSafe(api.getState().persistent, ['categories', GAME_ID], undefined)
+    if (categories == undefined) {
+        //Nexus hasn't even run yet, so our categories are either a) not there or b) soon to be not there.
+        return false;
+    } else {
+        return categories.hasOwnProperty("BeatMods");
+    }
+}
 
 export function updateCategories(api: IExtensionApi, isUpdate: boolean) : void {
     if (selectors.activeGameId(api.store.getState()) != GAME_ID) {
@@ -32,25 +43,34 @@ export function updateCategories(api: IExtensionApi, isUpdate: boolean) : void {
 
     askUser.then(toContinue => {
         if (toContinue) {
-            retrieveCategories(api)
+            var categories: ICategoryDictionary = util.getSafe(api.getState().persistent, ['categories', GAME_ID], undefined)
+            if (categories == undefined) {
+                //Nexus hasn't run yet, so our changes would get clobbered. returning.
+                return;
+            } else {
+                var existingCategories = Object.keys(categories);
+                traceLog('found existing categories', {count: existingCategories.length, names: existingCategories});
+                retrieveCategories(api, existingCategories.length)
                 .then(cat => {
-                    api.events.emit('update-categories', GAME_ID, cat, isUpdate);
+                    var mergedCategories = {...categories,...cat};
+                    api.events.emit('update-categories', GAME_ID, mergedCategories, isUpdate);
                 })
+            }
         } else {
             return;
         }
     });
 }
 
-export async function retrieveCategories(api: IExtensionApi): Promise<ICategoryDictionary> {
+export async function retrieveCategories(api: IExtensionApi, startingCount: number = 0): Promise<ICategoryDictionary> {
     
     var client = new BeatModsClient(api);
     var categories = await client.getCategories();
     const res: ICategoryDictionary = {};
-    let counter: number = 2;
+    let counter: number = startingCount + 2;
     res["BeatMods"] = {
         name: "BeatMods",
-        order: 1,
+        order: startingCount + 1,
         parentCategory: undefined
     };
     categories.forEach((category: string) => {

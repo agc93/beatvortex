@@ -13,7 +13,7 @@ import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
-import { updateCategories } from "./categories";
+import { updateCategories, checkBeatModsCategories } from "./categories";
 
 // clients
 import { BeatSaverClient, IMapDetails } from './beatSaverClient';
@@ -104,7 +104,21 @@ function main(context: IExtensionContext) {
         /* context.api.events.on('retrieve-category-list', (isUpdate: boolean) => {
             updateCategories(context.api, isUpdate);
         }); */
-        // ↗ do not enable this! https://github.com/Nexus-Mods/Vortex/issues/6594
+        // ↗ be very careful what you do here! https://github.com/Nexus-Mods/Vortex/issues/6594
+        context.api.events.on('gamemode-activated', (gameMode: string) => {
+            if (gameMode != undefined && gameMode == GAME_ID && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableCategories)) {
+                var isInstalled = checkBeatModsCategories(context.api);
+                if (!isInstalled) {
+                    updateCategories(context.api, false);
+                    context.api.sendNotification({
+                        type: 'info',
+                        title: 'Updating Categories',
+                        message: 'Loading current mod categories from BeatMods',
+                        displayMS: 8000
+                    });
+                }
+            }
+          });
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
     context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });
