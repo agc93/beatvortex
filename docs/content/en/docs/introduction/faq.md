@@ -42,6 +42,12 @@ Vortex's whole design is built around mods being part of an archive file. As suc
 
 To install `dll` files you get from GitHub, Discord, or anywhere else, add them to a ZIP file first (right-click -> *Send to* -> *Compressed (zipped) folder* on Windows), then install the ZIP file. Vortex will take care of the rest, including placing the plugin file in the correct place when you deploy.
 
+### None of my mods are installed suddenly? Where did they go?
+
+This can happen for a few reasons, most commonly an update for Beat Saber or if you verify/reinstall/move the game in Steam. First, *run Beat Saber at least once*. After any update, you need to run Beat Saber at least once to update a few important files.
+
+Next, purge your mods using the Purge button in the Mods list. Once that's complete, make sure the right mods are installed, enabled and up-to-date, and click Deploy Mods. Vortex will redeploy your enabled mods into your game's install directory.
+
 ### Are mod dependencies supported/installed?
 
 Dependencies is a tricky area for a few reasons, and driven by two different problems: Vortex support and the BeatMods API.
@@ -50,10 +56,8 @@ Dependencies is a tricky area for a few reasons, and driven by two different pro
 
 As of v0.3.1, dependencies support is available and enabled by default: dependencies are shown in the Mods list and BeatMods browser, and we will attempt to automatically download and install them when you install any mod from BeatMods. However, this hasn't been fully tested and might still have some quirks or errors.
 
-### Why aren't updates supported?
+### Are mod updates supported?
 
-This has the same two problems as dependencies: Vortex and BeatMods
+Mod updates are an in-progress feature! As of v0.3.3, we have preview support for installing updates for BeatMods mods using Vortex. Check the [usage docs](/usage/mods) for more information.
 
-Vortex does natively support updates, but at current the only update implementation available (that I know of) is using Nexus Mods, which we obviously don't have. That means having to reverse engineer how Nexus handles triggering mod updates which is a) an absolute shitton of work and b) difficult with BeatMods.
-
-> The Nexus integration for Vortex is over 4000 lines of code. If anyone wants to volunteer to work out how the fuck that works, I'd be happy to accept PRs!
+This is still a preview feature as non-Nexus updates is pretty new ground for Vortex, and I haven't been able to test it that thoroughly. Also, BeatMods is a wild mess of inconsistent logic which makes things a bit less simple.

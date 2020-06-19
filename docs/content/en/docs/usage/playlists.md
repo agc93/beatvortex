@@ -14,6 +14,12 @@ If you're currently using Beatlist for playlists, see below for extra informatio
 
 Playlist support in BeatVortex is very new and very experimental! The notion of playlists isn't something that easily maps into the Vortex way of handling things so there might be some rough patches.
 
+## Creating Playlists
+
+> This feature is available in v0.3.3 or later
+
+You can now create your own playlists from the maps you already have installed! Just select multiple BeatSaver maps from your Mods list (hold Ctrl and click) and select Create Playlists from the bar at the bottom of the screen. You'll be prompted to name your playlist and optionally give it an image. BeatVortex will then create a playlist based on those maps and let you save it to a local file. You can also immediately install it so you can deploy and manage like your other playlists.
+
 ## Enabling Playlist Installation
 
 To enable installing playlists with Vortex, check the "Enable OneClick links for playlists" option in the Download tab of the Settings page. When you click a OneClick link for a playlist, it should be automatically downloaded and installed into Vortex and will give you the option of immediately installing all the maps from that playlist. 
@@ -45,4 +51,4 @@ If you do want to use Vortex to manage your playlists, just be aware that enabli
 If you're currently using Mod Assistant to install your playlists, you should also be aware of a few things:
 
 - Enabling playlist link handling in your Vortex settings will likely prevent Mod Assistant from handling those links.
-- Installing a playlist with Vortex will separately install each song in the playlist as a manageable mod in Vortex. Your mod list could get very long, very fast.
+- Installing a playlist with Vortex will separately install each song in the playlist as a manageable mod in Vortex.

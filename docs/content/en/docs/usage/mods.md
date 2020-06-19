@@ -76,6 +76,8 @@ Please note that "raw" mods that aren't packaged in an archive (for example, pla
 
 ## Updating Mods
 
-At current, BeatVortex doesn't provide any update capability for Beat Saber mods. That being said, BSIPA *should* automatically keep your mods updated on launch. Pending some changes to Vortex (and potential future reworks of BeatMods), we aim to add some improved updates support in future releases.
+> This feature is available in preview for [v0.3.3](/updates/v0.3.3) or later
 
-> If BSIPA installs an update for a mod, the version you see in-game and the version you see in Vortex might not be the same anymore. Reinstall the updated mod from Vortex if you want the numbers to match.
+In the latest versions of BeatVortex, you can enable support for BeatMods updates in the Preview Settings. You can then use the normal "Check for Updates" button in the Mods list to immediately check all your installed BeatMods mods for updates and optionally update them in one-click. This will also preserve the old version in your Mods list! 
+
+Mod updates are a new feature that have not necessarily been fully tested, so please report any bugs or issues you find. 

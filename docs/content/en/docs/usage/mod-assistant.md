@@ -36,6 +36,14 @@ We have added *preview* support for OneClick installation links for maps, custom
 
 Unlike Mod Assistant, which doesn't "track" maps or playlists installed with OneClick links, Vortex will handle OneClick links like any other installation: the map/model/mod is installed as a complete mod, manageable from your Mods list and then deployed to your install directory.
 
+### BSIPA
+
+Some of the features that BSIPA provides overlap a bit with Vortex and BeatVortex's feature sets, so it's worth knowing a few things first.
+
+For one, Mod Assistant installs mods into a special `IPA/Pending` folder and BSIPA then "installs" them into the main game directory. Vortex installs its files into the mod staging folder, then deploys them directly into the game install folder. This means that while you can install new mods or updates into your Vortex while Beat Saber is running you shouldn't deploy them.
+
+> In fact, if you launched Beat Saber with Vortex, it will pause deployments until you close the game.
+
 ## Compatibility
 
 While I don't recommend it, it should be possible to use BeatVortex *alongside* Mod Assistant, BeatList or any other modding tools. This is not something I actively test and Vortex will likely react in funny ways to changes made by the other tools, but it shouldn't break anything major.
