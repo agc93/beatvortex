@@ -38,13 +38,10 @@ Unlike Mod Assistant, which doesn't "track" maps or playlists installed with One
 
 ### BSIPA
 
-Some of the features that BSIPA provides overlap a bit with Vortex and BeatVortex's feature sets, so it's worth knowing a few things first.
-
-For one, Mod Assistant installs mods into a special `IPA/Pending` folder and BSIPA then "installs" them into the main game directory. Vortex installs its files into the mod staging folder, then deploys them directly into the game install folder. This means that while you can install new mods or updates into your Vortex while Beat Saber is running you shouldn't deploy them.
+Mod Assistant installs mods into a special `IPA/Pending` folder and BSIPA then "installs" them into the main game directory. Vortex installs its files into the mod staging folder, then deploys them directly into the game install folder. This means that while you can install new mods or updates into your Vortex while Beat Saber is running you shouldn't deploy them.
 
 > In fact, if you launched Beat Saber with Vortex, it will pause deployments until you close the game.
 
-Also, by default, BSIPA will auto-update your mods when you launch the game. While this won't bother Mod Assistant, this means that the mods in your install directory won't be the same ones Vortex put there. This means a) your in-game mods might not be the same versions you have installed with Vortex and b) Vortex might ask you to save/revert changes made by BSIPA when you next deploy.
 
 ## Compatibility
 

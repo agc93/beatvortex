@@ -23,6 +23,11 @@ This release adds some new features and fixes to the [previous alpha release](/u
   - This should pretty dramatically cut down the load on those services by caching requests for the current session.
 - Create your own playlists: You can now select any number of BeatSaver-installed maps from your Mods list and create a playlist from them
   - You can save your playlist file locally, or immediately install it into your game (or both!)
+- Automatic game upgrade detection
+  - BeatVortex will now detect when Beat Saber has been updated since the last time you ran the game (with BSIPA installed) and offer to disable your mods
+  - You can then check for updates and re-enable mods once you know they're compatible.
+- Extra warnings and detections: BeatVortex will now try and warn you about some common mistakes/errors, such as when mods are going to be [yeeted](/docs/usage/bsipa), when you have conflicting update setups, or when installing the wrong files.
+- BSIPA Config Tweaks: check the [new BSIPA docs page](/docs/usage/bsipa) to learn more.
 - Playlist Management improvements
   - There's been a lot of behind-the-scenes updates to the Playlists manager that should make it snappier and stabler.
   - We've also fixed the pretty huge bug where the map list would be for the wrong playlist.
