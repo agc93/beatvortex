@@ -44,6 +44,8 @@ For one, Mod Assistant installs mods into a special `IPA/Pending` folder and BSI
 
 > In fact, if you launched Beat Saber with Vortex, it will pause deployments until you close the game.
 
+Also, by default, BSIPA will auto-update your mods when you launch the game. While this won't bother Mod Assistant, this means that the mods in your install directory won't be the same ones Vortex put there. This means a) your in-game mods might not be the same versions you have installed with Vortex and b) Vortex might ask you to save/revert changes made by BSIPA when you next deploy.
+
 ## Compatibility
 
 While I don't recommend it, it should be possible to use BeatVortex *alongside* Mod Assistant, BeatList or any other modding tools. This is not something I actively test and Vortex will likely react in funny ways to changes made by the other tools, but it shouldn't break anything major.

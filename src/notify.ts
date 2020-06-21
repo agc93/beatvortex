@@ -3,6 +3,7 @@ import { util as vtx } from "vortex-api";
 import { remote, dialog } from "electron";
 
 import { tryRunPatch, PatchFunction } from "./ipa";
+import { IPreviewSettings } from "./settings";
 
 export function showTermsNotification(api: IExtensionApi, autoDismiss: boolean): void;
 export function showTermsNotification(api: IExtensionApi, callback?: (dismiss: NotificationDismiss) => void): void;
@@ -127,4 +128,77 @@ export function showLooseDllDialog(api: IExtensionApi, fileName: string, callbac
     ).then((result: IDialogResult) => {
         callback?.();
     });
+}
+
+export function showBSIPAUpdatesNotification(api: IExtensionApi, callback?: () => void) {
+    return api.sendNotification({
+        type: 'warning',
+        message: "It looks like BSIPA's plugin auto-updates are enabled.",
+        title: 'BSIPA Updates Enabled',
+        actions: [
+            {
+                title: 'More info',
+                action: dismiss => {
+                    showBSIPAUpdatesDialog(api, dismiss);
+                }
+            }
+        ]
+    });
+}
+
+export function showBSIPAUpdatesDialog(api: IExtensionApi, callback?: () => void) {
+    var updatesEnabled = ((api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableUpdates)
+    // var msg = updatesEnabled ? "It looks like BSIPA's "
+    if (updatesEnabled) {
+        api.showDialog(
+            'info',
+            'BSIPA Plugin Updates enabled',
+            {
+                text: "BSIPA's automatic plugin updates seem to be enabled. While this won't break things, be aware that it may result in BSIPA using a different version of plugins than what Vortex has installed. We recommend disabling BSIPA's automatic updates while you're managing updates with Vortex.",
+            }, 
+            [ { label: 'Continue' } ]
+        ).then((result: IDialogResult) => {
+            callback?.();
+        });
+    } else {
+        api.showDialog(
+            'info',
+            'BSIPA Plugin Updates enabled',
+            {
+                text: "BSIPA's automatic plugin updates seem to be enabled. This will result in BSIPA updating the mods you have installed with Vortex, meaning versions in use may not line up correctly, and Vortex may prompt you about changes to your mods."
+            },
+            [ { label: 'Continue '} ]
+        ).then((result) => {
+            callback?.();
+        });
+    }
+}
+
+export function showCategoriesUpdateNotification(api: IExtensionApi, callback?: () => void) {
+    api.sendNotification({
+        type: 'info',
+        title: 'Updating Categories',
+        message: 'Loading current mod categories from BeatMods',
+        displayMS: 8000
+    });
+}
+
+export async function showPreYeetDialog(api: IExtensionApi, callback?: () => void): Promise<boolean> {
+    var diag: IDialogResult = await api.showDialog(
+        'question',
+        "Possible Game Update",
+        {
+            text: "It appears that your copy of Beat Saber has been recently updated or reinstalled, but BSIPA hasn't been run for the current version yet.\n\nWhen BSIPA runs after a patch, it will move all your plugins to prevent any issues when loading the new version. We can instead disable all your currently enabled mods except for BSIPA so that it can update successfully and you can then re-enable your mods after you're sure they're compatible with the new update.\n\nIf you don't want to do this, click Ignore below, but be aware that BSIPA will move all your mods and Vortex might complain about external changes to your mods."
+        },
+        [
+            { label: 'Ignore' },
+            {
+                label: 'Disable All',
+            },
+        ]);
+    var toRun = diag.action == 'Disable All'
+    // if (toRun) {
+    //     patchFn(api, callback)
+    // }
+    return toRun;
 }

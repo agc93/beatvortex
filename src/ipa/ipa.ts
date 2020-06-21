@@ -2,9 +2,9 @@ import { IExtensionApi, IState, IToolStored, IDeployedFile, IProfile } from "vor
 import path = require("path");
 import nfs = require('fs');
 
-import { getGamePath } from "./util";
+import { getGamePath } from "../util";
 import { util, selectors, log, actions } from "vortex-api";
-import { GAME_ID } from ".";
+import { GAME_ID } from "..";
 
 export interface PatchFunction {
     (api: IExtensionApi, callback: () => void) : void;

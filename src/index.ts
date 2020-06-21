@@ -7,9 +7,9 @@ import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, fin
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
-import { showPatchDialog, showTermsNotification, showLooseDllNotification } from "./notify";
+import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog } from "./notify";
 import { migrate031 } from "./migration";
-import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch } from "./ipa";
+import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
@@ -30,6 +30,8 @@ import { sessionReducer } from './session';
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
 
+export const FORCE_DIRTY_PURGE = ['beatvortex', 'forceDirtyPurge'];
+
 export interface DeploymentEventHandler {
     (api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> | Promise<boolean>;
 }
@@ -47,6 +49,7 @@ function main(context: IExtensionContext) {
     }
     context.once(() => {
         enableTrace();
+        new IPAVersionClient(context.api).getUnityGameVersion();
         if (isActiveGame(context)) { }
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
@@ -70,6 +73,10 @@ function main(context: IExtensionContext) {
         }
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
+        });
+        context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
+            handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAUpdateCheck);
+            handleDeploymentEvent(context.api, profileId, deployment, handleVersionUpdate);
         });
         context.api.onAsync('will-purge', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
             traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment) });
@@ -101,24 +108,37 @@ function main(context: IExtensionContext) {
             },
                 "terms of use notification");
         });
-        /* context.api.events.on('retrieve-category-list', (isUpdate: boolean) => {
-            updateCategories(context.api, isUpdate);
-        }); */
-        // ↗ be very careful what you do here! https://github.com/Nexus-Mods/Vortex/issues/6594
         context.api.events.on('gamemode-activated', (gameMode: string) => {
             if (gameMode != undefined && gameMode == GAME_ID && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableCategories)) {
                 var isInstalled = checkBeatModsCategories(context.api);
                 if (!isInstalled) {
                     updateCategories(context.api, false);
-                    context.api.sendNotification({
-                        type: 'info',
-                        title: 'Updating Categories',
-                        message: 'Loading current mod categories from BeatMods',
-                        displayMS: 8000
-                    });
+                    showCategoriesUpdateNotification(context.api);
                 }
             }
           });
+        context.api.onAsync('will-deploy', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
+            var client = new IPAVersionClient(context.api);
+            var currentGame = client.getUnityGameVersion();
+            var lastBsipa = await client.getBSIPAGameVersion();
+            var hasUpdated = (currentGame != null && lastBsipa != null) && currentGame != lastBsipa;
+            if (hasUpdated) {
+                // shit
+                // theoretically this means the game has been updated and BSIPA hasn't been run. By default, it's about 
+                // to yeet all our mods and freak Vortex the fuck out.
+                var disableMods = await showPreYeetDialog(context.api);
+                if (disableMods) {
+                    var installedMods =  context.api.getState().persistent.mods[GAME_ID];
+                    var enabledMods = deployment['bs-mod'].map(df => df.source).map(dfs => installedMods[dfs]).filter(m => m.id.toLowerCase().indexOf('bsipa') == -1);
+                    log('info', 'identified mods eligible for yeeting', {mods: enabledMods.length});
+                    for (const mod of enabledMods) {
+                        traceLog('attempting to disable mod', {id: mod.id, name: mod.attributes.modName})
+                        context.api.store.dispatch(actions.setModEnabled(profileId, mod.id, false));
+                    }
+                }
+                // util.setSafe(context.api.getState().session, FORCE_DIRTY_PURGE, true);
+            }
+        })
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
     context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });
@@ -725,6 +745,23 @@ export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfil
     }
 }
 
+export async function handleBSIPAUpdateCheck(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
+    var bsipaReady = isIPAInstalled(api) && isIPAReady(api);
+    if (bsipaReady) {
+        var configMgr = new BSIPAConfigManager(api);
+        var config = await configMgr.readConfig();
+        if (config != null && config?.Updates?.AutoUpdate) {
+            showBSIPAUpdatesNotification(api);
+        }
+    }
+}
+
+export async function handleVersionUpdate(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
+    var client = new IPAVersionClient(api);
+    util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'gameVersion'], client.getUnityGameVersion());
+    util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'bsipaVersion'], await client.getBSIPAGameVersion());
+}
+
 
 /**
  * A simple event handler to detect and optionally revert BSIPA patching on purge.
@@ -737,6 +774,7 @@ export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfil
  */
 export async function handleBSIPAPurge(api: IExtensionApi, profile: IProfile): Promise<boolean> {
     var alreadyPatched = isIPAReady(api);
+    // var forceSkip = util.getSafe(api.getState().session, FORCE_DIRTY_PURGE, false);
     log('debug', 'BSIPA purge check completed', { alreadyPatched });
     if (alreadyPatched) {
         var result = await showPatchDialog(api, false, tryUndoPatch);
