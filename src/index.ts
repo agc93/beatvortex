@@ -9,7 +9,7 @@ import { ProfileClient } from "vortex-ext-common";
 // local modules
 import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog } from "./notify";
 import { migrate031 } from "./migration";
-import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient } from "./ipa";
+import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
@@ -24,7 +24,7 @@ import { ModelSaberClient } from './modelSaberClient';
 import BeatModsList from "./BeatModsList";
 import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
-import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings } from "./settings";
 import { sessionReducer } from './session';
 
 export const GAME_ID = 'beatsaber'
@@ -77,6 +77,7 @@ function main(context: IExtensionContext) {
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAUpdateCheck);
             handleDeploymentEvent(context.api, profileId, deployment, handleVersionUpdate);
+            handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAConfigTweak);
         });
         context.api.onAsync('will-purge', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
             traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment) });
@@ -216,6 +217,7 @@ function main(context: IExtensionContext) {
     context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
     context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
     context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
+    context.registerSettings('Workarounds', BSIPASettings, undefined, undefined, 100);
     context.registerReducer(['settings', 'beatvortex'], settingsReducer);
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
 

@@ -16,6 +16,9 @@ export const enableMetaserverIntegration =
 export const enablePreviewFeatures =
   createAction('BS_ENABLE_PREVIEW', (previewSettings: IPreviewSettings) => previewSettings);
 
+export const enableBSIPATweaks =
+  createAction('BS_BSIPA_CONFIG', (bsipaSettings: IBSIPASettings) => bsipaSettings);
+
 /**
  * reducer for changes to the authentication
  */
@@ -31,12 +34,16 @@ export const settingsReducer: IReducerSpec = {
       },
       [enablePreviewFeatures as any]: (state, payload: IPreviewSettings) => {
         return util.merge(state, ['preview'], payload);
+      },
+      [enableBSIPATweaks as any]: (state, payload: IBSIPASettings) => {
+        return util.merge(state, ['bsipa'], payload);
       }
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
       metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev/'} as IMetaserverSettings,
-      preview: { enablePlaylistManager: false, enableUpdates: false, enableCategories: false } as IPreviewSettings
+      preview: { enablePlaylistManager: false, enableUpdates: false, enableCategories: false } as IPreviewSettings,
+      bsipa: { }
     },
   };
 
@@ -56,4 +63,9 @@ export interface IPreviewSettings {
   enablePlaylistManager?: boolean;
   enableUpdates?: boolean;
   enableCategories?: boolean;
+}
+
+export interface IBSIPASettings {
+  disableUpdates?: boolean;
+  disableYeeting?: boolean;
 }

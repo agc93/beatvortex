@@ -135,6 +135,7 @@ export function showBSIPAUpdatesNotification(api: IExtensionApi, callback?: () =
         type: 'warning',
         message: "It looks like BSIPA's plugin auto-updates are enabled.",
         title: 'BSIPA Updates Enabled',
+        allowSuppress: true,
         actions: [
             {
                 title: 'More info',
@@ -196,7 +197,7 @@ export async function showPreYeetDialog(api: IExtensionApi, callback?: () => voi
                 label: 'Disable All',
             },
         ]);
-    var toRun = diag.action == 'Disable All'
+    var toRun = diag.action === 'Disable All'
     // if (toRun) {
     //     patchFn(api, callback)
     // }
