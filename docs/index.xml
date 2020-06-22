@@ -120,7 +120,7 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;blockquote>
 &lt;p>Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.&lt;/p>
 &lt;/blockquote>
-&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, plain &lt;code>dll&lt;/code> files provided by some GitHub projects or #pc-mods posts) will &lt;em>not&lt;/em> work! Vortex only supports installing from archives so just add the file to a ZIP and install that.&lt;/p>
+&lt;p>Please note that &amp;ldquo;raw&amp;rdquo; mods that aren't packaged in an archive (for example, plain &lt;code>dll&lt;/code> files provided by some GitHub projects or #pc-mods posts) will not work quite right. Just like ModelSaber models, when you install a loose &lt;code>dll&lt;/code> file Vortex will prompt you to create an archive for just that file so you can still install and manage the mod like archives.&lt;/p>
 &lt;h2 id="updating-mods">Updating Mods&lt;/h2>
 &lt;blockquote>
 &lt;p>This feature is available in preview for &lt;a href="../updates/v0.3.3">v0.3.3&lt;/a> or later&lt;/p>
