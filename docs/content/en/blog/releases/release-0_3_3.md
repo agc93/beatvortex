@@ -1,8 +1,7 @@
 ---
 title: "Alpha 3.3 Release"
 linkTitle: "Release 0.3.3"
-draft: true
-date: 2020-06-16
+date: 2020-06-22
 aliases:
   - /updates/arsenic
   - /updates/v0.3.3

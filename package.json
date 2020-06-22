@@ -1,6 +1,6 @@
 {
   "name": "game-beatsaber",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "BeatVortex adds support for Beat Saber mods in Vortex",
   "main": "./dist/index.js",
   "scripts": {
