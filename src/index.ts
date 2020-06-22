@@ -8,7 +8,7 @@ import { ProfileClient } from "vortex-ext-common";
 
 // local modules
 import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog } from "./notify";
-import { migrate031 } from "./migration";
+import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
@@ -90,10 +90,13 @@ function main(context: IExtensionContext) {
             return Promise.resolve();
         });
         context.api.events.on('start-install', (archivePath: string, callback: (err: Error) => void) => {
-            var isBeatSaber = selectors.activeGameId(context.api.store.getState()) === GAME_ID;
-            var isLoosePlugin = path.extname(archivePath).toLowerCase() == '.dll';
-            if (isBeatSaber && isLoosePlugin) {
-                showLooseDllNotification(context.api, path.basename(archivePath));
+            var looseSupported = meetsMinimum('1.2.17');
+            if (!looseSupported) {
+                var isBeatSaber = selectors.activeGameId(context.api.store.getState()) === GAME_ID;
+                var isLoosePlugin = path.extname(archivePath).toLowerCase() == '.dll';
+                if (isBeatSaber && isLoosePlugin) {
+                    showLooseDllNotification(context.api, path.basename(archivePath));
+                }
             }
         });
         context.api.events.on('profile-did-change', (profileId: string) => {

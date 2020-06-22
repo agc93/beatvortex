@@ -72,7 +72,7 @@ You can also download mod/map archives directly from BeastSaber, BeatSaver, Beat
 
 > Be aware that installing from archives will often not include the full metadata so mods may be confusingly named. Double-click the mod in the mod list to change its name.
 
-Please note that "raw" mods that aren't packaged in an archive (for example, plain `dll` files provided by some GitHub projects or #pc-mods posts) will *not* work! Vortex only supports installing from archives so just add the file to a ZIP and install that.
+Please note that "raw" mods that aren't packaged in an archive (for example, plain `dll` files provided by some GitHub projects or #pc-mods posts) will not work quite right. Just like ModelSaber models, when you install a loose `dll` file Vortex will prompt you to create an archive for just that file so you can still install and manage the mod like archives.
 
 ## Updating Mods
 
