@@ -1,4 +1,46 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.2 Release</title><link>/blog/2020/06/16/alpha-3.2-release/</link><pubDate>Tue, 16 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/16/alpha-3.2-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.3 Release</title><link>/blog/2020/06/22/alpha-3.3-release/</link><pubDate>Mon, 22 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/22/alpha-3.3-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release adds some new features and fixes to the &lt;a href="../updates/v0.3.2">previous alpha release&lt;/a> including:&lt;/p>
+&lt;ul>
+&lt;li>Added &lt;em>preview&lt;/em> support for automatic updates for BeatMods mods!
+&lt;ul>
+&lt;li>This has barely been tested, and we're in uncharted territory, so only enable this one if you're truly brave.&lt;/li>
+&lt;li>Enable them from the Settings page then click &lt;em>Check for Updates&lt;/em> in your Mods list to check for updates from BeatMods&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Session caching: we've started integrating caching support for BeatMods and BeatSaver.
+&lt;ul>
+&lt;li>This should pretty dramatically cut down the load on those services by caching requests for the current session.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Create your own playlists: You can now select any number of BeatSaver-installed maps from your Mods list and create a playlist from them
+&lt;ul>
+&lt;li>You can save your playlist file locally, or immediately install it into your game (or both!)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Automatic game upgrade detection
+&lt;ul>
+&lt;li>BeatVortex will now detect when Beat Saber has been updated since the last time you ran the game (with BSIPA installed) and offer to disable your mods&lt;/li>
+&lt;li>You can then check for updates and re-enable mods once you know they're compatible.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Extra warnings and detections: BeatVortex will now try and warn you about some common mistakes/errors, such as when mods are going to be &lt;a href="../docs/usage/bsipa">yeeted&lt;/a>, when you have conflicting update setups, or when installing the wrong files.&lt;/li>
+&lt;li>BSIPA Config Tweaks: check the &lt;a href="../docs/usage/bsipa">new BSIPA docs page&lt;/a> to learn more.&lt;/li>
+&lt;li>Playlist Management improvements
+&lt;ul>
+&lt;li>There's been a lot of behind-the-scenes updates to the Playlists manager that should make it snappier and stabler.&lt;/li>
+&lt;li>We've also fixed the pretty huge bug where the map list would be for the wrong playlist.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>As with &lt;a href="../updates/v0.3.1">v0.3.1&lt;/a>, this release requires the features and fixes from recent Vortex updates and we &lt;strong>strongly&lt;/strong> recommend only using this version of the extension with Vortex 1.2.17 &lt;em>or higher&lt;/em>.&lt;/p>
+&lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p>
+&lt;h3 id="updating-mods-for-fun-and-profit">Updating mods for fun and profit&lt;/h3>
+&lt;p>Beat Saber is now the first game to support Vortex's mod updates from anywhere other than Nexus Mods! We've been working with the Vortex/Nexus Mods team to test out this functionality (and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">iron out the kinks&lt;/a>), but it's now possible to use Vortex's built-in updates tools without using Nexus Mods.&lt;/p></description></item><item><title>Blog: Alpha 3.2 Release</title><link>/blog/2020/06/16/alpha-3.2-release/</link><pubDate>Tue, 16 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/16/alpha-3.2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
