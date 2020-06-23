@@ -26,6 +26,16 @@ export const tools : ITool[] = [
         shell: true,
         exclusive: true,
         parameters: ['-n']
+    },
+    {
+        id: 'bs-beatsync-console',
+        name: 'BeatSyncConsole',
+        shortName: 'BeatSync',
+        executable: () => 'BeatSyncConsole.exe',
+        requiredFiles: ['BeatSyncConsole.exe'],
+        relative: false,
+        shell: true,
+        exclusive: false
     }
     // we've removed SyncSaber Service, but need to add it back in once I understand BeatSync
 ]

@@ -32,7 +32,7 @@ export function updateCategories(api: IExtensionApi, isUpdate: boolean) : void {
     if (isUpdate) {
         askUser = api.store.dispatch(
             actions.showDialog('question', 'Load BeatMods Categories?', {
-                text: 'If you continue, the categories used by BeatMods will REPLACE the existing mod categories and you will lose any customisations you have made.',
+                text: 'If you continue, the current categories used by BeatMods will REPLACE the existing ones and you will lose any customisations you have made. This will not affect any other categories (such as the Nexus Mods categories).',
             }, [{ label: 'Cancel' }, { label: 'Retrieve' }]))
             .then((result: IDialogResult) => {
                 return result.action === 'Retrieve';
