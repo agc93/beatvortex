@@ -122,26 +122,7 @@ function main(context: IExtensionContext) {
             }
           });
         context.api.onAsync('will-deploy', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
-            var client = new IPAVersionClient(context.api);
-            var currentGame = client.getUnityGameVersion();
-            var lastBsipa = await client.getBSIPAGameVersion();
-            var hasUpdated = (currentGame != null && lastBsipa != null) && currentGame != lastBsipa;
-            if (hasUpdated) {
-                // shit
-                // theoretically this means the game has been updated and BSIPA hasn't been run. By default, it's about 
-                // to yeet all our mods and freak Vortex the fuck out.
-                var disableMods = await showPreYeetDialog(context.api);
-                if (disableMods) {
-                    var installedMods =  context.api.getState().persistent.mods[GAME_ID];
-                    var enabledMods = deployment['bs-mod'].map(df => df.source).map(dfs => installedMods[dfs]).filter(m => m.id.toLowerCase().indexOf('bsipa') == -1);
-                    log('info', 'identified mods eligible for yeeting', {mods: enabledMods.length});
-                    for (const mod of enabledMods) {
-                        traceLog('attempting to disable mod', {id: mod.id, name: mod.attributes.modName})
-                        context.api.store.dispatch(actions.setModEnabled(profileId, mod.id, false));
-                    }
-                }
-                // util.setSafe(context.api.getState().session, FORCE_DIRTY_PURGE, true);
-            }
+            await handleDeploymentEvent(context.api, profileId, deployment, handleYeetDetection);
         })
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
@@ -758,6 +739,29 @@ export async function handleBSIPAUpdateCheck(api: IExtensionApi, profile: IProfi
         if (config != null && config?.Updates?.AutoUpdate) {
             showBSIPAUpdatesNotification(api);
         }
+    }
+}
+
+export async function handleYeetDetection(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
+    var client = new IPAVersionClient(api);
+    var currentGame = client.getUnityGameVersion();
+    var lastBsipa = await client.getBSIPAGameVersion();
+    var hasUpdated = (currentGame != null && lastBsipa != null) && currentGame != lastBsipa;
+    if (hasUpdated) {
+        // shit
+        // theoretically this means the game has been updated and BSIPA hasn't been run. By default, it's about 
+        // to yeet all our mods and freak Vortex the fuck out.
+        var disableMods = await showPreYeetDialog(api);
+        if (disableMods) {
+            var installedMods =  api.getState().persistent.mods[GAME_ID];
+            var enabledMods = deployment['bs-mod'].map(df => df.source).map(dfs => installedMods[dfs]).filter(m => m.id.toLowerCase().indexOf('bsipa') == -1);
+            log('info', 'identified mods eligible for yeeting', {mods: enabledMods.length});
+            for (const mod of enabledMods) {
+                traceLog('attempting to disable mod', {id: mod.id, name: mod.attributes.modName})
+                api.store.dispatch(actions.setModEnabled(profile.id, mod.id, false));
+            }
+        }
+        // util.setSafe(context.api.getState().session, FORCE_DIRTY_PURGE, true);
     }
 }
 
