@@ -1,7 +1,7 @@
 import path = require("path");
 import { util as vtx, selectors, fs, log, util, actions } from "vortex-api";
 import nfs = require('fs');
-import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile } from "vortex-api/lib/types/api";
+import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile, IDiscoveryResult } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
@@ -63,6 +63,15 @@ export function toTitleCase(str: string) {
 export function findGame() {
     return util.steam.findByAppId(STEAMAPP_ID.toString())
         .then((game : ISteamEntry) => game.gamePath);
+}
+
+export function getGameInstallPath(api: IExtensionApi) {
+    var discovery = util.getSafe(api.getState().settings.gameMode.discovered, [GAME_ID], undefined);
+    if (discovery === undefined) {
+        return null;
+    } else {
+        return (discovery as IDiscoveryResult).path;
+    }
 }
 
 export function getGamePath(api: IExtensionApi, useSongPath: boolean): string;

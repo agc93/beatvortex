@@ -53,8 +53,6 @@ export function isIPAReady(api: IExtensionApi) {
  */
 export async function tryRunPatch(api: IExtensionApi, callback?: () => void) {
     var gamePath = getGamePath(api, false);
-    var state : IState = api.store.getState();
-    const discovery = state.settings.gameMode.discovered[GAME_ID];
     if (isIPAInstalled(api) && !isIPAReady(api)) {
         var ipaPath = getIPAPath(api);
         await api.runExecutable(ipaPath, ['-n'], {cwd: gamePath, shell: true, suggestDeploy: false});

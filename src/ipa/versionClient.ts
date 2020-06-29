@@ -18,7 +18,10 @@ export class IPAVersionClient {
     }
     // getUnityGameVersion = async (): Promise<string | undefined> => {
     getUnityGameVersion = (): string | undefined => {
-        var gamePath = this._api.getState().settings.gameMode.discovered[GAME_ID].path;
+        var gamePath = this._api.getState().settings.gameMode.discovered[GAME_ID]?.path;
+        if (gamePath == null) {
+            return;
+        }
         var unityFile = path.join(gamePath, 'Beat Saber_Data', 'globalgamemanagers')
         if (nfs.existsSync(unityFile)) {
             const fileBuffer = fs.readFileSync(unityFile);
@@ -41,7 +44,7 @@ export class IPAVersionClient {
     }
 
     getBSIPAGameVersion = async (): Promise<string | undefined> => {
-        var gamePath = this._api.getState().settings.gameMode.discovered[GAME_ID].path;
+        // var gamePath = this._api.getState().settings.gameMode.discovered[GAME_ID].path;
         var mgr = new BSIPAConfigManager(this._api);
         var config = await mgr.readConfig();
         return config?.LastGameVersion;

@@ -49,7 +49,6 @@ function main(context: IExtensionContext) {
     }
     context.once(() => {
         enableTrace();
-        new IPAVersionClient(context.api).getUnityGameVersion();
         if (isActiveGame(context)) { }
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
@@ -121,9 +120,9 @@ function main(context: IExtensionContext) {
                 }
             }
           });
-        context.api.onAsync('will-deploy', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
+        /* context.api.onAsync('will-deploy', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
             await handleDeploymentEvent(context.api, profileId, deployment, handleYeetDetection);
-        })
+        }) */
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
     context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });

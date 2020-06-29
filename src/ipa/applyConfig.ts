@@ -5,7 +5,6 @@ import { BSIPAConfigManager } from "./configManager";
 import { util, log } from "vortex-api";
 
 export async function applyConfig(api: IExtensionApi) {
-    // var gamePath = api.getState().settings.gameMode.discovered[GAME_ID].path;
     var storeSettings = util.getSafe(api.getState().settings, ['beatvortex', 'bsipa'], undefined) as IBSIPASettings;
     if (storeSettings == undefined) {
         log('info', 'no BSIPA config tweaks configured, skipping!');

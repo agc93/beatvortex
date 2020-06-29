@@ -50,9 +50,9 @@ export class BSIPAConfigManager {
         return null;
     }
 
-    private getConfigPath = (): string => {
-        var installPath = this._api.getState().settings.gameMode.discovered[GAME_ID].path;
-        return path.join(installPath, 'UserData', 'Beat Saber IPA.json');
+    private getConfigPath = (): string | null => {
+        var installPath = this._api.getState().settings.gameMode.discovered[GAME_ID]?.path;
+        return installPath == null ? null : path.join(installPath, 'UserData', 'Beat Saber IPA.json');
     }
 
     private backupIfNotExists = () => {
