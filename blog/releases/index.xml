@@ -1,4 +1,31 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Mon, 22 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.3 Release</title><link>/blog/2020/06/22/alpha-3.3-release/</link><pubDate>Mon, 22 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/22/alpha-3.3-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 28 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.5 Release</title><link>/blog/2020/06/28/alpha-3.5-release/</link><pubDate>Sun, 28 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/28/alpha-3.5-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This is a major bugfix release for the &lt;a href="../../updates/v0.3.4">previous alpha release&lt;/a>.&lt;/p>
+&lt;p>This includes fixes for two major bugs:&lt;/p>
+&lt;ul>
+&lt;li>Path detection failing would cause the extension to fail to load
+&lt;ul>
+&lt;li>As it turns out, there's scenarios where Vortex knows about a game, but not where it's installed. This should now be handled properly.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Playlist creation was shown for all games, not just Beat Saber
+&lt;ul>
+&lt;li>This was a stupid mistake. I've tried to isolate Beat Saber-specific functionality to managing Beat Saber mods and missed this.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>For the major updates in this release, please check the &lt;a href="../../updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
+&lt;h3 id="a-note-on-bugs">A note on bugs&lt;/h3>
+&lt;p>This is the first release to have to fix multiple major (fatal!) bugs, and I should have caught these earlier. To those of you affected by these, I will be trying to ensure releases are more polished before I publish them in future. These were both stupid bugs and should never have hit users the way they did.&lt;/p>
+&lt;p>Big thanks (as always) to Tannin and Pickysaurus for helping out with these bugs and being great about the whole thing.&lt;/p></description></item><item><title>Blog: Alpha 3.4 Release</title><link>/blog/2020/06/23/alpha-3.4-release/</link><pubDate>Tue, 23 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/23/alpha-3.4-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is outdated, and should not be used! There is &lt;a href="../../updates/v0.3.5">a bugfix update&lt;/a> for this release available.&lt;/p>
+&lt;/div>
+&lt;p>This is a minor bugfix release for the &lt;a href="../../updates/v0.3.3">previous alpha release&lt;/a> for the Vortex 1.2.17 release.&lt;/p>
+&lt;p>The only included fix is to disable a warning about installing loose plugin files (i.e. &lt;code>dll&lt;/code> files not in an archive). Vortex handles these files correctly from 1.2.17 onwards, so you should now only see this warning if you are using an older version for some reason.&lt;/p>
+&lt;p>For the major updates in this release, please check the &lt;a href="../../updates/v0.3.3">docs for the previous release&lt;/a>.&lt;/p></description></item><item><title>Blog: Alpha 3.3 Release</title><link>/blog/2020/06/22/alpha-3.3-release/</link><pubDate>Mon, 22 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/22/alpha-3.3-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -40,13 +67,7 @@
 &lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
 &lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p>
 &lt;h3 id="updating-mods-for-fun-and-profit">Updating mods for fun and profit&lt;/h3>
-&lt;p>Beat Saber is now the first game to support Vortex's mod updates from anywhere other than Nexus Mods! We've been working with the Vortex/Nexus Mods team to test out this functionality (and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">iron out the kinks&lt;/a>), but it's now possible to use Vortex's built-in updates tools without using Nexus Mods.&lt;/p></description></item><item><title>Blog: Alpha 3.4 Release</title><link>/blog/2020/06/22/alpha-3.4-release/</link><pubDate>Mon, 22 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/22/alpha-3.4-release/</guid><description>
-&lt;div class="pageinfo pageinfo-primary">
-&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
-&lt;/div>
-&lt;p>This is a minor bugfix release for the &lt;a href="../../updates/v0.3.3">previous alpha release&lt;/a> for the Vortex 1.2.17 release.&lt;/p>
-&lt;p>The only included fix is to disable a warning about installing loose plugin files (i.e. &lt;code>dll&lt;/code> files not in an archive). Vortex handles these files correctly from 1.2.17 onwards, so you should now only see this warning if you are using an older version for some reason.&lt;/p>
-&lt;p>For the major updates in this release, please check the &lt;a href="../../updates/v0.3.3">docs for the previous release&lt;/a>.&lt;/p></description></item><item><title>Blog: Alpha 3.2 Release</title><link>/blog/2020/06/16/alpha-3.2-release/</link><pubDate>Tue, 16 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/16/alpha-3.2-release/</guid><description>
+&lt;p>Beat Saber is now the first game to support Vortex's mod updates from anywhere other than Nexus Mods! We've been working with the Vortex/Nexus Mods team to test out this functionality (and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">iron out the kinks&lt;/a>), but it's now possible to use Vortex's built-in updates tools without using Nexus Mods.&lt;/p></description></item><item><title>Blog: Alpha 3.2 Release</title><link>/blog/2020/06/16/alpha-3.2-release/</link><pubDate>Tue, 16 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/16/alpha-3.2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
