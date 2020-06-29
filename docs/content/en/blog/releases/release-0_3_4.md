@@ -1,7 +1,7 @@
 ---
 title: "Alpha 3.4 Release"
 linkTitle: "Release 0.3.4"
-date: 2020-06-22
+date: 2020-06-23
 aliases:
   - /updates/selenium
   - /updates/v0.3.4
@@ -10,7 +10,7 @@ description: >
 ---
 
 {{% pageinfo %}}
-This release is now available [on Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files).
+This release is outdated, and should not be used! There is [a bugfix update](/updates/v0.3.5) for this release available.
 {{% /pageinfo %}}
 
 This is a minor bugfix release for the [previous alpha release](/updates/v0.3.3) for the Vortex 1.2.17 release.
