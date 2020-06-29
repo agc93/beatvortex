@@ -159,6 +159,8 @@ function main(context: IExtensionContext) {
     context.registerAction(
         'mods-multirow-actions', 300, 'layout-list', {}, 'Create Playlist', modIds => {
             createPlaylist(context.api, modIds);
+        }, (instances) => {
+            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID);
         });
 
     addModSource(context, { id: 'beatmods', name: 'BeatMods', 'url': 'https://beatmods.com/#/mods' });
