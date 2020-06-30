@@ -10,7 +10,7 @@ description: >
 ---
 
 {{% pageinfo %}}
-This release is now available [on Nexus Mods](https://www.nexusmods.com/site/mods/96?tab=files).
+This release is outdated, and should not be used! There is [a bugfix update](/updates/v0.3.6) for this release available.
 {{% /pageinfo %}}
 
 This is a major bugfix release for the [previous alpha release](/updates/v0.3.4).
