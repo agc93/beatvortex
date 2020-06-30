@@ -1,6 +1,32 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.5 Release</title><link>/blog/2020/06/28/alpha-3.5-release/</link><pubDate>Sun, 28 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/28/alpha-3.5-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.6 Release</title><link>/blog/2020/06/30/alpha-3.6-release/</link><pubDate>Tue, 30 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/30/alpha-3.6-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This is another major bugfix release for the &lt;a href="../updates/v0.3.5">previous alpha release&lt;/a>.&lt;/p>
+&lt;p>This includes fixes for two major bugs:&lt;/p>
+&lt;ul>
+&lt;li>Game detection failing or not discovering Beat Saber could crash the Settings page
+&lt;ul>
+&lt;li>Most relevant settings should now only show up if you're actually managing your Beat Saber installation with Vortex&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Metaserver registration has been patched to avoid a sort-of-bug in modmeta-db
+&lt;ul>
+&lt;li>Dependency resolution should be working again&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Automatic game update detection has been disabled by default
+&lt;ul>
+&lt;li>This feature hasn't been tested enough for my liking and was causing some earlier bugs so I have disabled it by default for now.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>For the major updates in this release, please check the &lt;a href="../updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
+&lt;h3 id="a-note-on-bugs">A note on bugs&lt;/h3>
+&lt;p>This release is fixing yet more bugs in the 0.3.x tree, but should also be improving overall polish. If you do find more bugs, &lt;em>please&lt;/em> reach out on GitHub or Discord and I will do my best to get things fixed as quick as I can.&lt;/p>
+&lt;p>Big thanks (as always) to Pickysaurus, Tannin and Nagev for helping out with these bugs and being great about the whole thing.&lt;/p></description></item><item><title>Blog: Alpha 3.5 Release</title><link>/blog/2020/06/28/alpha-3.5-release/</link><pubDate>Sun, 28 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/28/alpha-3.5-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is outdated, and should not be used! There is &lt;a href="../updates/v0.3.6">a bugfix update&lt;/a> for this release available.&lt;/p>
 &lt;/div>
 &lt;p>This is a major bugfix release for the &lt;a href="../updates/v0.3.4">previous alpha release&lt;/a>.&lt;/p>
 &lt;p>This includes fixes for two major bugs:&lt;/p>
