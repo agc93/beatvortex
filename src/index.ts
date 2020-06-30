@@ -3,7 +3,7 @@ import path = require('path');
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod, IDialogResult } from 'vortex-api/lib/types/api';
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase } from './util';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase, isGameManaged } from './util';
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
@@ -46,6 +46,9 @@ function main(context: IExtensionContext) {
     };
     const getPlaylistPath = (game: IGame): string => {
         return path.join(getGamePath(context.api, game, false), 'Playlists');
+    }
+    const isBeatSaberManaged = (): boolean => {
+        return isGameManaged(context.api);
     }
     context.once(() => {
         enableTrace();
@@ -198,9 +201,9 @@ function main(context: IExtensionContext) {
     });
 
     context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
-    context.registerSettings('Download', OneClickSettings, undefined, undefined, 100);
-    context.registerSettings('Interface', PreviewSettings, undefined, undefined, 100);
-    context.registerSettings('Workarounds', BSIPASettings, undefined, undefined, 100);
+    context.registerSettings('Download', OneClickSettings, undefined, isBeatSaberManaged, 100);
+    context.registerSettings('Interface', PreviewSettings, undefined, isBeatSaberManaged, 100);
+    context.registerSettings('Workarounds', BSIPASettings, undefined, isBeatSaberManaged, 100);
     context.registerReducer(['settings', 'beatvortex'], settingsReducer);
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
 
