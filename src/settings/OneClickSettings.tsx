@@ -7,11 +7,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { withTranslation } from 'react-i18next';
 import { Toggle, log, ComponentEx, More, util } from 'vortex-api';
 import { ILinkHandling, registerOneClickInstall } from './actions';
-import { IState } from 'vortex-api/lib/types/api';
+import { IState, IProfile } from 'vortex-api/lib/types/api';
+import { isGameManaged } from '../util';
 const { HelpBlock, FormGroup, ControlLabel } = require('react-bootstrap');
 
 interface IConnectedProps {
     linkHandling: ILinkHandling;
+    profiles: {[profileId: string]: IProfile}
 }
 
 interface IActionProps {
@@ -28,10 +30,11 @@ type IProps = IBaseProps & IConnectedProps & IActionProps;
 
 class OneClickSettings extends ComponentEx<IProps, {}> {
     public render() : JSX.Element {
-        const { t } = this.props;
+        const { t, profiles } = this.props;
         const { enableMaps, enableModels, enablePlaylists } = (this.props as IProps).linkHandling;
         return (
-            <form>
+            isGameManaged(profiles)
+            ? <form>
                 <FormGroup>
                 <ControlLabel>{t('bs:Settings:EnableOCI')}</ControlLabel>
                 <HelpBlock>
@@ -66,6 +69,7 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
                 </Toggle>
                 </FormGroup>
             </form>
+            : <></>
         );
     }
 
@@ -91,7 +95,8 @@ class OneClickSettings extends ComponentEx<IProps, {}> {
 function mapStateToProps(state: IState): IConnectedProps {
     // log('debug', 'mapping beatvortex state to props');
     return {
-        linkHandling: state.settings['beatvortex']['enableOCI']
+        linkHandling: state.settings['beatvortex']['enableOCI'],
+        profiles: util.getSafe(state.persistent, ['profiles'], {})
     };
   }
   

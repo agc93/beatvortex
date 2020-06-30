@@ -57,6 +57,7 @@ export class BSIPAConfigManager {
 
     private backupIfNotExists = () => {
         var configPath = this.getConfigPath();
+        if (configPath == null) {return;}
         var backupPath = `${configPath}.backup`;
         if (nfs.existsSync(backupPath)) {
             return;

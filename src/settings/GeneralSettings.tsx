@@ -40,17 +40,7 @@ class GeneralSettings extends ComponentEx<IProps, {}> {
                         onToggle={this.toggleServer}
                     >
                         {t("bs:Settings:EnableMetaserver")}
-                        {/* <More id='more-oci-maps' name='Metaserver Integration'>
-                        {t('bs:Settings:EnableOCIMapsHelp')}
-                    </More> */}
                     </Toggle>
-                    {/* <InputGroup>
-                    <FormControl
-                        value={this.getServerUrl(serverUrl)}
-                        placeholder={t('Server URL')}
-                        onChange={this.setDownloadPathEvt as any}
-                        />
-                </InputGroup> */}
                 </FormGroup>
             </form>
         );

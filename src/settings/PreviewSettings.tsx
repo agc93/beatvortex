@@ -5,11 +5,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { withTranslation } from 'react-i18next';
 import { Toggle, log, ComponentEx, More, util } from 'vortex-api';
 import { enablePreviewFeatures, IPreviewSettings } from './actions';
-import { IState } from 'vortex-api/lib/types/api';
+import { IState, IProfile } from 'vortex-api/lib/types/api';
+import { isGameManaged } from '../util';
 const { HelpBlock, FormGroup, ControlLabel, InputGroup, FormControl } = require('react-bootstrap');
 
 interface IConnectedProps {
     previewSettings: IPreviewSettings;
+    profiles: {[profileId: string]: IProfile}
 }
 
 interface IActionProps {
@@ -23,10 +25,11 @@ type IProps = IConnectedProps & IActionProps;
 class PreviewSettings extends ComponentEx<IProps, {}> {
     
     public render(): JSX.Element {
-        const { t, previewSettings, onEnablePlaylists, onEnableUpdates, onEnableCategories } = this.props;
+        const { t, previewSettings, onEnablePlaylists, onEnableUpdates, onEnableCategories, profiles } = this.props;
         const { enablePlaylistManager: enablePlaylists, enableUpdates, enableCategories } = previewSettings;
         return (
-            <form>
+            isGameManaged(profiles)
+            ? <form>
                 <FormGroup>
                     <ControlLabel>{t('bs:Settings:PreviewFeatures')}</ControlLabel>
                     <HelpBlock>
@@ -61,6 +64,7 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
                     </Toggle>
                 </FormGroup>
             </form>
+            : <></>
         );
     }
 }
@@ -69,7 +73,8 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
 function mapStateToProps(state: IState): IConnectedProps {
     // log('debug', 'mapping beatvortex state to props');
     return {
-        previewSettings: state.settings['beatvortex']['preview']
+        previewSettings: state.settings['beatvortex']['preview'],
+        profiles: util.getSafe(state.persistent, ['profiles'], {})
     };
 }
 

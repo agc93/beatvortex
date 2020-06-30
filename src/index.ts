@@ -7,7 +7,7 @@ import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, fin
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
-import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog } from "./notify";
+import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification } from "./notify";
 import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
@@ -24,7 +24,7 @@ import { ModelSaberClient } from './modelSaberClient';
 import { BeatModsList } from "./beatmods";
 import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
-import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings } from "./settings";
 import { sessionReducer } from './session';
 
 export const GAME_ID = 'beatsaber'
@@ -58,6 +58,7 @@ function main(context: IExtensionContext) {
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
         handleSettings(context.api, 'preview', registerPreviewSettings);
+        handleSettings(context.api, 'bsipa', registerBSIPASettings);
         if (useTrace) {
             context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
                 log('debug', 'got settings change', { current });
@@ -120,9 +121,6 @@ function main(context: IExtensionContext) {
                 }
             }
           });
-        /* context.api.onAsync('will-deploy', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
-            await handleDeploymentEvent(context.api, profileId, deployment, handleYeetDetection);
-        }) */
     });
     context.registerModType('bs-map', 100, gameId => gameId === GAME_ID, getMapPath, (inst) => Promise.resolve(isSongMod(inst)), { mergeMods: false, name: 'Song Map' });
     context.registerModType('bs-mod', 100, gameId => gameId === GAME_ID, getModPath, (inst) => Promise.resolve(isGameMod(inst)), { mergeMods: true, name: 'Plugin' });
@@ -342,6 +340,7 @@ function prepareForModding(discovery: IDiscoveryResult) {
     // showTermsDialog();
     GAME_PATH = discovery.path;
     let mapsPath = path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels');
+    // let playlistsPath = path.join(discovery.path, 'Playlists')
     return fs.ensureDirWritableAsync(mapsPath, () => Promise.resolve());
 }
 
@@ -832,7 +831,7 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
     if (metaSettings != undefined) {
         log('debug', 'beatvortex: initialising metaserver', { metaSettings });
         if (metaSettings.enableServer && metaSettings.serverUrl) {
-            api.addMetaServer('bs-metaserver', { url: metaSettings.serverUrl });
+            api.addMetaServer('bs-metaserver', { url: metaSettings.serverUrl.replace(/\/$/, '')});
         } else if (metaSettings.enableServer === false) {
             api.addMetaServer('bs-metaserver', undefined);
         }
@@ -866,12 +865,21 @@ function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSe
             api.onAsync('check-mods-version', checkForUpdates);
             api.onAsync('mod-update', installUpdates);
         } else if (previewSettings.enableUpdates === false && oldSettings?.enableUpdates === true) {
-            api.sendNotification({
-                id: `bs-preview-restart`,
-                type: 'warning',
-                title: 'Vortex Restart Required',
-                message: 'Disabling BeatMods updates requires a Vortex restart to take effect!'
-            });
+            showRestartRequiredNotification(api, 'Disabling BeatMods updates requires a Vortex restart to take effect!');
+        }
+    }
+}
+
+function registerBSIPASettings(api: IExtensionApi, bsipaSettings: IBSIPASettings, oldSettings?: IBSIPASettings) {
+    if (bsipaSettings != undefined && bsipaSettings.enableYeetDetection != undefined) {
+        traceLog('beatvortex: handling bsipa settings change');
+        if (bsipaSettings.enableYeetDetection) {
+            log('debug', 'beatvortex: enabling yeet detection');
+            api.onAsync('will-deploy', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
+                await handleDeploymentEvent(api, profileId, deployment, handleYeetDetection);
+            })
+        } else if (bsipaSettings.enableYeetDetection === false && oldSettings?.enableYeetDetection === true) {
+            showRestartRequiredNotification(api, 'Disabling automatic update detection requires a Vortex restart to take effect!');
         }
     }
 }

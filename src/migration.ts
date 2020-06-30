@@ -3,7 +3,7 @@ import { util, log } from "vortex-api";
 import * as semver from "semver";
 import { GAME_ID } from ".";
 import { app, remote } from 'electron';
-import { resolve } from "dns";
+import { enableBSIPATweaks } from "./settings";
 
 const I18N_NAMESPACE = 'beatvortex';
 
@@ -12,7 +12,7 @@ type VersionMatrix = {[extensionVersion: string]: string};
 // matrix of extension versions and what Vortex version they require.
 var minimumVersions: VersionMatrix = {
     '0.3.1': '1.2.13',
-    '0.4.0': '1.2.17'
+    '0.3.8': '1.2.17'
 };
 
 /**
@@ -64,30 +64,41 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
     });
 }
 
-export function migrate040(api: IExtensionApi, oldVersion: string) {
-    const extVersion = '0.4.0'
+export function migrate038(api: IExtensionApi, oldVersion: string) {
+    const extVersion = '0.3.8';
     var minVortexVersion = minimumVersions[extVersion];
+
     if (semver.gte(oldVersion, extVersion)) {
         return Promise.resolve();
     }
+    api.store.dispatch(enableBSIPATweaks({enableYeetDetection: true}));
+    var migrations = [];
 
-    const state = api.store.getState();
-    const mods = util.getSafe(state, ['persistent', 'mods', GAME_ID], {});
-    const hasMods = Object.keys(mods).length > 0;
+    migrations.push(new Promise((resolve) => {
+        api.sendNotification({
+            id: 'beatvortex-migration',
+            type: 'success',
+            message: api.translate(`BeatVortex successfully updated to ${extVersion}`),
+            displayMS: 4000
+        });
+        resolve();
+    }));
 
-    if (!hasMods) {
-        return Promise.resolve();
-    }
-    var vortexVersion = getVortexVersion();
+    var vortexVersion = app.getVersion();
     if (semver.gte(vortexVersion, minVortexVersion)) {
-        return Promise.resolve();
+        //ignored
+    } else {
+        migrations.push(new Promise((resolve) => {
+            return requireVortexVersionNotification(
+                api, 
+                minVortexVersion, 
+                api.translate("A number of the extra features added in v{{extensionVersion}} of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!", { ns: I18N_NAMESPACE, extensionVersion: extVersion }), 
+                () => resolve()
+            );
+        }));
     }
-    log('warn', 'detected beatvortex<->vortex version mismatch', {vortex: vortexVersion, extension: oldVersion});
-    // return Promise.all()
-    var notification = new Promise((resolve) => {
-        return requireVortexVersionNotification(api, minVortexVersion, "If you are still using Vortex versions prior to 1.2.17, you should not enable BeatMods updates! Updating your BeatMods mods in Vortex versions prior to 1.2.17 will result in errors.\nWe're sorry for the inconvenience!", () => resolve());
-    });
-    return notification;
+
+    return Promise.all(migrations);
 }
 
 function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: string, message: string, callback?: () => void) {

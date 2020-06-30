@@ -41,9 +41,9 @@ export const settingsReducer: IReducerSpec = {
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
-      metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev/'} as IMetaserverSettings,
+      metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev'} as IMetaserverSettings,
       preview: { enablePlaylistManager: false, enableUpdates: false, enableCategories: false } as IPreviewSettings,
-      bsipa: { }
+      bsipa: { enableYeetDetection: false }
     },
   };
 
@@ -66,6 +66,7 @@ export interface IPreviewSettings {
 }
 
 export interface IBSIPASettings {
+  enableYeetDetection?: boolean;
   disableUpdates?: boolean;
   disableYeeting?: boolean;
 }

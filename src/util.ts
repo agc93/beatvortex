@@ -11,6 +11,8 @@ export const models = ['avatar', 'platform', 'saber']
 
 export var useTrace: boolean = false;
 
+type ProfileStore = {[profileId: string]: IProfile};
+
 export function getModName(destinationPath: string) : string {
     var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
     return modName;
@@ -90,17 +92,9 @@ export function getGamePath(api: IExtensionApi, gameOrPath: IGame | boolean, use
 }
 
 
-// export function isSongMod(archivePath: string): boolean;
 export function isSongMod(instructions: IInstruction[], allowNested?: boolean) : boolean;
 export function isSongMod(files: string[], allowNested?: boolean) : boolean;
 export function isSongMod(files: string[]|IInstruction[]|string, allowNested: boolean) {
-    /* if (typeof files === 'string') {
-        var filePath = files as string;
-        var modName = path.basename(filePath, path.extname(filePath));
-        let re = /[0-9a-fA-F]{40}|[0-9a-fA-F]{4}/;
-        return re.test(modName);
-        // return modName.length == 4 || modName.length == 40;
-    } */
     if (typeof files[0] === 'string') {
         return (files as string[]).some((f: any) => path.extname(f).toLowerCase() == ".dat" || path.extname(f).toLowerCase() == ".egg") &&
             !(files as string[]).filter((f: any) => path.extname(f).toLowerCase() == ".dat").some((f: string) => f.indexOf('Beat Saber_Data') !== -1)
@@ -146,6 +140,20 @@ export function isActiveGame(context : IExtensionContext | IExtensionApi | Thunk
             : (context as IExtensionApi)
                 ? (context as IExtensionApi).store.getState()
                 : (context as ThunkStore<any>)) === GAME_ID;
+}
+
+export function isGameManaged(profiles: ProfileStore): boolean;
+export function isGameManaged(api: IExtensionApi): boolean;
+export function isGameManaged(apiOrProfiles: IExtensionApi | ProfileStore): boolean {
+    var profiles: {[profileId: string]: IProfile} = {};
+    if (apiOrProfiles.getState) {
+        profiles = util.getSafe((apiOrProfiles as IExtensionApi).getState().persistent, ['profiles'], {});
+    } else {
+        profiles = apiOrProfiles as ProfileStore;
+    }
+    const gameProfiles: string[] = Object.keys(profiles)
+      .filter((id: string) => profiles[id].gameId === GAME_ID);
+    return gameProfiles && gameProfiles.length > 0;
 }
 
 /**

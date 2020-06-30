@@ -203,3 +203,12 @@ export async function showPreYeetDialog(api: IExtensionApi, callback?: () => voi
     // }
     return toRun;
 }
+
+export function showRestartRequiredNotification(api: IExtensionApi, message: string) {
+    api.sendNotification({
+        id: `bs-preview-restart`,
+        type: 'warning',
+        title: 'Vortex Restart Required',
+        message: message
+    });
+}
