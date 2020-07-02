@@ -161,37 +161,40 @@ export async function archiveInstaller(files: string[], rootPath: string, modNam
  */
 export async function installBeatModsArchive(modName: string) : Promise<IInstruction[]> {
     var client = new BeatModsClient();
+    let instructions : IInstruction[] = [];
     var details = await client.getModByFileName(modName);
-    var modAtrributes = {
-        allowRating: false,
-        downloadGame: GAME_ID,
-        fileId: details._id,
-        modId: details.name,
-        modName: details.name,
-        description: details.description,
-        author: details.author.username,
-        logicalFileName: details.name,
-        source: "beatmods",
-        version: details.version,
-        // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
-        uploadedTimestamp: details.uploadDate,
-        category: details.category
-        };
-    var instructions = toInstructions(modAtrributes);
-    var depInstructions : IInstruction[] = details.dependencies.map(d => {
-        return {
-            type: 'rule',
-            rule: {
-                type: 'requires',
-                reference: {
-                    logicalFileName: d.name,
-                    versionMatch: `^${d.version}`
+    if (details != null) {
+        var modAtrributes = {
+            allowRating: false,
+            downloadGame: GAME_ID,
+            fileId: details._id,
+            modId: details.name,
+            modName: details.name,
+            description: details.description,
+            author: details.author.username,
+            logicalFileName: details.name,
+            source: "beatmods",
+            version: details.version,
+            // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
+            uploadedTimestamp: details.uploadDate,
+            category: details.category
+            };
+        instructions = toInstructions(modAtrributes);
+        var depInstructions : IInstruction[] = details.dependencies.map(d => {
+            return {
+                type: 'rule',
+                rule: {
+                    type: 'requires',
+                    reference: {
+                        logicalFileName: d.name,
+                        versionMatch: `^${d.version}`
+                    }
                 }
             }
-        }
-    });
-    log('debug', 'building dependency instructions', depInstructions);
-    instructions.push(...depInstructions);
+        });
+        log('debug', 'building dependency instructions', depInstructions);
+        instructions.push(...depInstructions);
+    }
     return instructions;
     /**
      * The game version problem is caused by https://github.com/bsmg/BeatMods-Website/issues/41.
@@ -199,6 +202,7 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
      * out what the latest version is first, and sepcify a version when we ask for the mod, but 
      * that would *double* the BeatMods requests on *every* install, including the nasty >1MB
      * all versions request.
+     * UPDATE: we could probably use the session cache for this, and just populate it if it's not already?
      */
 }
 

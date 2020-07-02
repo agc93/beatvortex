@@ -146,6 +146,7 @@ export class BeatModsClient {
      */
     async getModByFileName(fileName: string, gameVersion?: string) : Promise<IModDetails> | null {
         var [modName, version] = path.basename(fileName, fileName.endsWith('zip') ? path.extname(fileName) : '').split('-', 2);
+        modName = modName.replace(/_$/, '');
         log('debug', 'beatvortex: retrieving details from beatmods', {modName, version});
         // &gameVersion=${gameVersion ?? '1.8.0'}
         var url = `https://beatmods.com/api/v1/mod?search=${modName}&version=${version}&status=approved&sort=updatedDate&sortDirection=1`;
