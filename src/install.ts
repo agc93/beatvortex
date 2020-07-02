@@ -75,7 +75,7 @@ export async function basicInstaller(files: string[], rootPath: string, modName:
             destination: file,
         };
     });
-    instructions.push(...await enrich?.(modName));
+    instructions.push(...await enrich?.(modName) ?? []);
     return instructions;
 }
 
@@ -113,7 +113,7 @@ export async function modelInstaller(files: string[], rootPath: string, modName:
             destination: `${getCustomFolder(path.extname(file).replace('.', '') as ModelType)}/${file}`
         }
     ];
-    instructions.push(...await enrich?.(modName));
+    instructions.push(...await enrich?.(modName) ?? []);
     return instructions;
 }
 
@@ -146,7 +146,7 @@ export async function archiveInstaller(files: string[], rootPath: string, modNam
             destination: `${root == "." ? file : destination}`
         } as IInstruction
     });
-    instructions.push(...await enrich?.(modName));
+    instructions.push(...await enrich?.(modName) ?? []);
     return instructions;
 }
 

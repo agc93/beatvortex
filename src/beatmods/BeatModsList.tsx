@@ -49,7 +49,6 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     header: React.Component<{}, any, any> = null;
     mainPage: React.Component<{}, any, any> = null;
 
-    mods: IModDetails[];
     state: IBeatModsListState = {
         selected: '',
         gameVersion: '',
@@ -387,7 +386,7 @@ function mapStateToProps(state: IState): IConnectedProps {
     return {
         installed : state.persistent.mods[GAME_ID],
         mods: state.session['beatvortex']['mods'],
-        availableVersions: state.session['beatvortex']['gameVersions']
+        availableVersions: util.getSafe(state.session, ['beatvortex', 'gameVersions'], [])
     };
   }
   
