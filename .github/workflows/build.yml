@@ -50,7 +50,7 @@ jobs:
         name: game-beatsaber
         path: extension
     - name: Create Zip File
-      uses: thedoctor0/zip-release@master
+      uses: thedoctor0/zip-release@76b1a767e74de8576f94ef5dbf69c47ee355f8b1
       with:
         filename: './game-beatsaber.zip'
         path: '.'
