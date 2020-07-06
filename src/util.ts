@@ -5,6 +5,7 @@ import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkSto
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
+import { IVersionList } from "./beatModsClient";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
 export const models = ['avatar', 'platform', 'saber']
@@ -200,5 +201,18 @@ export function traceLog(message: string, metadata?: object) : void {
 export function enableTrace() {
     if (nfs.existsSync('/BeatVortexDebug.txt')) {
         useTrace = true;
+    }
+}
+
+export function supportsModVersion(gameVersion: string, modVersion: string, list: IVersionList): boolean {
+    return (Object.keys(list).includes(gameVersion) && modVersion == gameVersion) ||
+        list[modVersion] && list[modVersion].includes(gameVersion);
+}
+
+export function getCompatibleModVersion(gameVersion: string, list: IVersionList): string {
+    if (Object.keys(list).includes(gameVersion)) {
+        return gameVersion;
+    } else {
+        return Object.keys(list).find(mv => list[mv].includes(gameVersion));
     }
 }

@@ -3,7 +3,7 @@ import path = require('path');
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod, IDialogResult } from 'vortex-api/lib/types/api';
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase, isGameManaged } from './util';
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase, isGameManaged, getGameVersion } from './util';
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
@@ -25,7 +25,7 @@ import { BeatModsList } from "./beatmods";
 import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings } from "./settings";
-import { sessionReducer } from './session';
+import { sessionReducer, updateBeatSaberVersion } from './session';
 
 export const GAME_ID = 'beatsaber'
 let GAME_PATH = '';
@@ -122,6 +122,12 @@ function main(context: IExtensionContext) {
                     updateCategories(context.api, false);
                     showCategoriesUpdateNotification(context.api);
                 }
+            }
+          });
+          context.api.events.on('gamemode-activated', (gameMode: string) => {
+            if (gameMode != undefined && gameMode == GAME_ID) {
+                var version = new IPAVersionClient(context.api)?.getUnityGameVersion() ?? getGameVersion(context.api);
+                context.api.store.dispatch(updateBeatSaberVersion(version));
             }
           });
     });

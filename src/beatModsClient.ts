@@ -6,6 +6,7 @@ import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { updateBeatModsCache, updateBeatModsVersions } from "./session";
 
 export interface ModList { [modName: string]: IModDetails; };
+export interface IVersionList { [modVersion: string]: string[] };
 
 /**
  * A simple client class to encapsulate the majority of beatmods.com-specific logic, including metadata retrieval.
@@ -130,7 +131,7 @@ export class BeatModsClient {
             }
         }
         if (!this._api || allMods.length == 0) {
-            allMods = await this.getAllMods();
+            allMods = await this.getAllMods(undefined);
         }
         return [...new Set(allMods.map(m => m.category))];
     }
@@ -173,7 +174,7 @@ export class BeatModsClient {
      * @param gameVersion - Strongly recommended! Without this filter, the response will be *megabytes* of data!
      * @returns A subset of the available metadata from BeatMods. Returns null on error/not found.
      */
-    getAllMods = async (gameVersion?: string) : Promise<IModDetails[]> => {
+    getAllMods = async (gameVersion: string) : Promise<IModDetails[]> => {
         log('debug', 'beatvortex: retrieving all available mods from BeatMods');
         var url = gameVersion
             ? `https://beatmods.com/api/v1/mod?status=approved&gameVersion=${gameVersion}`
@@ -182,9 +183,23 @@ export class BeatModsClient {
         log('debug', `retrieved ${allMods?.length} mods from BeatMods`);
         if (this._api && allMods != null) {
             log('debug', 'populating session cache with mods', {count: allMods.length, withVersion: gameVersion ?? 'none'});
-            this._api.store.dispatch(gameVersion ? updateBeatModsCache(allMods) : updateBeatModsVersions(allMods));
+            if (gameVersion) {
+                this._api.store.dispatch(updateBeatModsCache(allMods));
+            }
+            // this._api.store.dispatch(gameVersion ? updateBeatModsCache(allMods) : updateBeatModsVersions(allMods));
         }
         return allMods;
+    }
+
+    getAllGameVersions = async (): Promise<IVersionList> => {
+        log('debug', 'beatvortex: retrieving versions from alias file');
+        var url = 'https://alias.beatmods.com/aliases.json';
+        var versionResponse = await this.getApiResponse<IVersionList>(url, (data) => data);
+        if (this._api && versionResponse != null) {
+            log('debug', 'populating session cache with game versions', {count: Object.keys(versionResponse).length});
+            this._api.store.dispatch(updateBeatModsVersions(versionResponse));
+        }
+        return versionResponse;
     }
 
     /**
