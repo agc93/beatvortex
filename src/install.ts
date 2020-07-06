@@ -320,6 +320,7 @@ async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlay
         type: 'bs-playlist',
         installationPath: installPath,
         attributes: {
+            modName: info.playlistTitle,
             name: info.playlistTitle,
             author: info.playlistAuthor,
             pictureUrl: info.image,

@@ -905,6 +905,9 @@ function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url:
 //#region Actions 
 
 export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
+    if (!isActiveGame(api)) {
+        return;
+    }
     var mods = api.getState().persistent.mods[GAME_ID];
     var compatibleMods = modIds
         .map(mid => mods[mid])
