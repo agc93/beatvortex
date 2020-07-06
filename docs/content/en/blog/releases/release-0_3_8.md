@@ -7,7 +7,6 @@ aliases:
   - /updates/v0.3.8
 description: >
   Alpha release of BeatVortex
-draft: true
 ---
 
 {{% pageinfo %}}
@@ -25,7 +24,7 @@ This includes fixes for a number of bugs and sources of instability:
 - A few other minor bugs squashed and general performance improvements in a few places.
 - We've also changed the icons for playlist-related UI components (creating playlists and the playlist manager) to a new custom one that should be a bit clearer.
 
-For the major updates in this release train, please check the [docs for the previous feature release](/updates/v0.3.3).
+For the major updates in this release tree, please check the [docs for the previous feature release](/updates/v0.3.3).
 
 ### A note on bugs
 
