@@ -163,7 +163,7 @@ function main(context: IExtensionContext) {
         }
     );
     context.registerAction(
-        'mods-multirow-actions', 300, 'layout-list', {}, 'Create Playlist', modIds => {
+        'mods-multirow-actions', 300, 'playlist', {}, 'Create Playlist', modIds => {
             createPlaylist(context.api, modIds);
         }, (instances) => {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID);
@@ -197,7 +197,7 @@ function main(context: IExtensionContext) {
         visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
         props: () => ({ api: context.api, mods: [] }),
     });
-    context.registerMainPage('layout-list', 'Playlists', PlaylistView, {
+    context.registerMainPage('playlist', 'Playlists', PlaylistView, {
         group: 'per-game',
         visible: () => {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
