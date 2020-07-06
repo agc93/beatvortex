@@ -1,7 +1,7 @@
 ---
 title: "Alpha 3.8 Release"
 linkTitle: "Release 0.3.8"
-date: 2020-07-02
+date: 2020-07-06
 aliases:
   - /updates/strontium
   - /updates/v0.3.8
