@@ -1,6 +1,6 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – BeatVortex</title><link>/</link><description>Recent content on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Thu, 02 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.7 Release</title><link>/blog/2020/07/02/alpha-3.7-release/</link><pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/02/alpha-3.7-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
-&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;p>This release is outdated, and should not be used! There is &lt;a href="./updates/v0.3.8">a bugfix update&lt;/a> for this release available.&lt;/p>
 &lt;/div>
 &lt;p>This is another bugfix release for the &lt;a href="./updates/">0.3.x release&lt;/a>.&lt;/p>
 &lt;p>This includes fixes for two reported bugs:&lt;/p>
@@ -19,7 +19,26 @@
 &lt;p>For the major updates in this release, please check the &lt;a href="./updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
 &lt;h3 id="a-note-on-bugs">A note on bugs&lt;/h3>
 &lt;p>This release is fixing yet more bugs in the 0.3.x tree, but should also be improving overall polish. If you do find more bugs, &lt;em>please&lt;/em> reach out on GitHub or Discord and I will do my best to get things fixed as quick as I can.&lt;/p>
-&lt;p>Big thanks (as always) to Pickysaurus, Tannin and Nagev for helping out with these bugs and being great about the whole thing.&lt;/p></description></item><item><title>Blog: Alpha 3.6 Release</title><link>/blog/2020/06/30/alpha-3.6-release/</link><pubDate>Tue, 30 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/30/alpha-3.6-release/</guid><description>
+&lt;p>Big thanks (as always) to Pickysaurus, Tannin and Nagev for helping out with these bugs and being great about the whole thing.&lt;/p></description></item><item><title>Blog: Alpha 3.8 Release</title><link>/blog/2020/07/02/alpha-3.8-release/</link><pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/02/alpha-3.8-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This is a general bugfix and polish release for the &lt;a href="./updates/">0.3.x release&lt;/a>.&lt;/p>
+&lt;p>This includes fixes for a number of bugs and sources of instability:&lt;/p>
+&lt;ul>
+&lt;li>BeatMods browser should be significantly more stable
+&lt;ul>
+&lt;li>This includes fixes for some bugs on clean installs and general state bugs. Thanks @Pickysaurus!&lt;/li>
+&lt;li>Dramatically improved how we handle version compatibility including support for matching game versions to compatible mod versions&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Improved game version detection that should be more consistent across the extension.&lt;/li>
+&lt;li>A few other minor bugs squashed and general performance improvements in a few places.&lt;/li>
+&lt;li>We've also changed the icons for playlist-related UI components (creating playlists and the playlist manager) to a new custom one that should be a bit clearer.&lt;/li>
+&lt;/ul>
+&lt;p>For the major updates in this release tree, please check the &lt;a href="./updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
+&lt;h3 id="a-note-on-bugs">A note on bugs&lt;/h3>
+&lt;p>This release is fixing yet more bugs in the 0.3.x tree, but should also be improving overall polish. If you do find more bugs, &lt;em>please&lt;/em> reach out on GitHub or Discord and I will do my best to get things fixed as quick as I can.&lt;/p></description></item><item><title>Blog: Alpha 3.6 Release</title><link>/blog/2020/06/30/alpha-3.6-release/</link><pubDate>Tue, 30 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/30/alpha-3.6-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is outdated, and should not be used! There is &lt;a href="./updates/v0.3.7">a bugfix update&lt;/a> for this release available.&lt;/p>
 &lt;/div>
