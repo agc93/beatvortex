@@ -12,7 +12,7 @@ type VersionMatrix = {[extensionVersion: string]: string};
 // matrix of extension versions and what Vortex version they require.
 var minimumVersions: VersionMatrix = {
     '0.3.1': '1.2.13',
-    '0.3.8': '1.2.17'
+    '0.4.0': '1.2.17'
 };
 
 /**
@@ -64,8 +64,8 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
     });
 }
 
-export function migrate038(api: IExtensionApi, oldVersion: string) {
-    const extVersion = '0.3.8';
+export function migrate040(api: IExtensionApi, oldVersion: string) {
+    const extVersion = '0.4.0';
     var minVortexVersion = minimumVersions[extVersion];
 
     if (semver.gte(oldVersion, extVersion)) {

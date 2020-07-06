@@ -98,10 +98,10 @@ class BeatModsList extends ComponentEx<IProps, {}> {
         this.setState({modVersion: moddingVersion} as IBeatModsListState);
     }
 
-    selectMod = (modId: string) => {
+    selectMod = (modName: string) => {
         var { mods } = this.props;
         // var mod = mods.find(m => m.name == modName);
-        var mod = mods[modId];
+        var mod = Object.values(mods).find(m => m.name == modName);
         this.setState({selected: mod._id});
     }
 
@@ -187,10 +187,15 @@ class BeatModsList extends ComponentEx<IProps, {}> {
 
     private isInstalled = (mod: IModDetails): boolean => {
         var {installed} = (this.props as IProps);
-        var keys = Object.keys(installed);
-        var isInstalled = Object.keys(installed).filter(BeatModsClient.isBeatModsArchive).some(m => m == `${mod.name}-${mod.version}`);
-        log('debug', 'pulled installed mod list', {match: isInstalled ?? 'unknown', count: keys.length, keys});
-        return isInstalled;
+        if (installed && Object.keys(installed)) {
+            var keys = Object.keys(installed);
+            var isInstalled = installed && Object.keys(installed) && Object.keys(installed).filter(BeatModsClient.isBeatModsArchive).some(m => m == `${mod.name}-${mod.version}`);
+            traceLog('pulled installed mod list', {match: isInstalled ?? 'unknown', count: keys.length, keys});
+            return isInstalled;
+        } else {
+            log('debug', 'no installed mods found, assuming not already installed!');
+            return false;
+        }
     }
 
     private isCompatible = (mod: IModDetails): boolean => {
@@ -300,9 +305,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             compatible: this.isCompatible(mod),
             installed: this.isInstalled(mod),
         };
-        let mods = Object.values(this.props.mods);
-        const { t } = this.props;
-        var installedVersion = getGameVersion((this.props as IProps).api);
+        const { t, gameVersion } = this.props;
         // ready.installReady = ready.compatible && !ready.installed
         return (
             <FlexLayout type='column'>
@@ -347,16 +350,16 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                     <Breadcrumb>
                                         <Breadcrumb.Item active>{t("bs:BeatModsList:Dependencies")}</Breadcrumb.Item>
                                         {mod.dependencies.map(d => {
-                                            return <Breadcrumb.Item onClick={() => this.selectMod(d._id)}>{d.name}</Breadcrumb.Item>
+                                            return <Breadcrumb.Item onClick={() => this.selectMod(d.name)}>{d.name}</Breadcrumb.Item>
                                         })}
                                     </Breadcrumb>
                                 }
                             </FlexLayout>
                         </FlexLayout.Flex>
                         <FlexLayout.Fixed className="description-version-warning">
-                            {installedVersion == mod.gameVersion
+                            {gameVersion == mod.gameVersion
                                 ? <></>
-                                : t("bs:BeatModsList:VersionWarning", {gameVersion: mod.gameVersion, installedVersion: installedVersion ?? t('your version')})
+                                : t("bs:BeatModsList:VersionWarning", {gameVersion: mod.gameVersion, installedVersion: gameVersion ?? t('your version')})
                             }
                         </FlexLayout.Fixed>
                         <FlexLayout.Fixed>
@@ -390,8 +393,8 @@ class BeatModsList extends ComponentEx<IProps, {}> {
 function mapStateToProps(state: IState): IConnectedProps {
     // log('debug', 'mapping beatvortex state to props');
     return {
-        installed : state.persistent.mods[GAME_ID],
-        mods: state.session['beatvortex']['mods'],
+        installed : util.getSafe(state.persistent, ['mods', GAME_ID], {}),
+        mods: state.session['beatvortex']['mods'], //for the record, this not being a getSafe is intentional
         availableVersions: util.getSafe(state.session, ['beatvortex', 'modVersions'], {}),
         gameVersion: util.getSafe(state.session, ['beatvortex', 'gameVersion'], undefined)
     };
