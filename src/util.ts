@@ -131,14 +131,15 @@ export function isModelModInstructions(instructions: IInstruction[]) : boolean {
 }
 
 // WARNING: I'm honestly not sure this is working, and I have no idea why not. I think the type checking might not be right?
+// you'd be right, because that wasn't how the JS type system works....at all.
 export function isActiveGame(api: IExtensionApi): boolean;
 export function isActiveGame(context: IExtensionContext): boolean;
 export function isActiveGame(store: ThunkStore<any>): boolean;
 export function isActiveGame(context : IExtensionContext | IExtensionApi | ThunkStore<any>) : boolean {
     return selectors.activeGameId(
-        (context as IExtensionContext) 
+        (context as any).api 
             ? (context as IExtensionContext).api.store.getState()
-            : (context as IExtensionApi)
+            : (context as any).store
                 ? (context as IExtensionApi).store.getState()
                 : (context as ThunkStore<any>)) === GAME_ID;
 }

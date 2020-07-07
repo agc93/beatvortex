@@ -309,7 +309,7 @@ async function addTableAttributes(context: IExtensionContext) {
         {
             ...tableAttributes.artist,
             calc: (mod: IMod) => util.getSafe(mod.attributes, ['songAuthor'], ''),
-            condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID,
+            condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
     );
     context.registerTableAttribute(
@@ -317,7 +317,8 @@ async function addTableAttributes(context: IExtensionContext) {
         {
             ...tableAttributes.difficulties,
             calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'difficulties'], []).map(toTitleCase),
-            customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod)
+            customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod),
+            condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
     );
     context.registerTableAttribute(
@@ -325,7 +326,8 @@ async function addTableAttributes(context: IExtensionContext) {
         {
             ...tableAttributes.modes,
             calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'variants'], []).map(toTitleCase),
-            customRenderer: (mod: IMod) => modesRenderer(context.api, mod)
+            customRenderer: (mod: IMod) => modesRenderer(context.api, mod),
+            condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
     );
     context.registerTableAttribute(
@@ -333,7 +335,7 @@ async function addTableAttributes(context: IExtensionContext) {
         {
             ...tableAttributes.bpm,
             calc: (mod: IMod) => util.getSafe(mod.attributes, ['bpm'], []),
-
+            condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
     );
 }
