@@ -1,6 +1,4 @@
 import { IExtensionContext, NotificationDismiss, IExtensionApi, IDialogResult } from "vortex-api/lib/types/api";
-import { util as vtx } from "vortex-api";
-import { remote, dialog } from "electron";
 
 import { tryRunPatch, PatchFunction } from "./ipa";
 import { IPreviewSettings } from "./settings";
@@ -59,28 +57,6 @@ export async function showPatchDialog(api: IExtensionApi, toPatch: boolean, patc
     //     patchFn(api, callback)
     // }
     return toRun;
-}
-
-
-/**
- * Shows a modal dialog confirming a user's consent to the terms of use.
- *
- * @remarks
- * - These terms of use are reproduced from the BSMG Wiki under CC BY-NC-SA.
- *
- * @param context - The extension context. Only required for translation of dialog text.
- * @param callback - A callback to execute when the dialog is dismissed.
- */
-export function showNativeTermsDialog(context?: IExtensionContext, callback?: () => void) {
-    var msg = 'By proceeding you are agreeing to the following terms:';
-    var detail = "You may experience problems that don't exist in the vanilla game. 99.9% of bugs, crashes, and lag are due to mods. \nMods are subject to being broken by updates and that's normal - be patient and respectful when this happens, as modders are volunteers with real lives. \nBeat Games aren't purposefully trying to break mods. They wish to work on the codebase and sometimes this breaks mods, but they are not out to kill mods. \nDo not attack the devs for issues related to mods, and vice versa - modders and devs are two separate groups.";
-    remote.dialog.showMessageBox(vtx.getVisibleWindow(), {
-        type: 'info',
-        message: context ? context.api.translate(msg) : msg,
-        detail: context ? context.api.translate(detail) : detail,
-        buttons: ["I accept"],
-        defaultId: 0
-    }, callback ? callback : (resp: number, checked: boolean) => { });
 }
 
 export function showTermsDialog(api: IExtensionApi, callback?: () => void) {
