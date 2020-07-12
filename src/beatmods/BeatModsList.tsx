@@ -5,13 +5,12 @@ import * as Redux from 'redux';
 import { connect } from 'react-redux';
 import { IExtensionApi, IMod, IState } from 'vortex-api/lib/types/api';
 import { IModDetails, BeatModsClient, IVersionList } from '../beatModsClient';
-import { getGameVersion, traceLog, supportsModVersion, getCompatibleModVersion } from '../util';
+import { traceLog, supportsModVersion, getCompatibleModVersion } from '../util';
 import { util } from "vortex-api";
 import { setDownloadModInfo, GAME_ID, directDownloadInstall } from '..';
 import { rsort } from "semver";
 import { withTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
-import { IPAVersionClient } from '../ipa';
 
 interface IConnectedProps {
     installed: { [modId: string]: IMod; };

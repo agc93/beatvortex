@@ -180,6 +180,36 @@ export async function showPreYeetDialog(api: IExtensionApi, callback?: () => voi
     return toRun;
 }
 
+export async function showPlaylistCreationDialog(api: IExtensionApi, callback?: () => void): Promise<{continue: boolean, title: string, image: string}> {
+    var result: IDialogResult = await api.showDialog(
+        'question',
+        'Create Playlist',
+        {
+            text: 'Enter a name for your new playlist',
+            input: [
+                {
+                    id: 'title',
+                    value: '',
+                    label: 'Title'
+                },
+                {
+                    id: 'image',
+                    value: '',
+                    label: 'Optional image URL'
+                }
+            ]
+        },
+        [
+            {label: 'Cancel'},
+            {label: 'Create'}
+        ]);
+    var toRun = result.action === 'Create'
+    // if (toRun) {
+    //     patchFn(api, callback)
+    // }
+    return {continue: toRun, title: result.input?.title, image: result.input?.image};
+}
+
 export function showRestartRequiredNotification(api: IExtensionApi, message: string) {
     api.sendNotification({
         id: `bs-preview-restart`,

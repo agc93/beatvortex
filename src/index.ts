@@ -7,7 +7,7 @@ import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, fin
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
-import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification } from "./notify";
+import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
 import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
@@ -63,10 +63,6 @@ function main(context: IExtensionContext) {
         handleSettings(context.api, 'preview', registerPreviewSettings);
         handleSettings(context.api, 'bsipa', registerBSIPASettings);
         if (useTrace) {
-            context.api.onStateChange(['settings', 'metaserver', 'servers'], (previous, current: { [id: string]: { url: string; priority: number; } }) => {
-                log('debug', 'got settings change', { current });
-                logMetaservers(context.api, current);
-            });
             context.api.events.on('profile-did-change', (profileId: string) => {
                 handleProfileChange(context.api, profileId, (profile) => {
                     log('debug', 'beatvortex got the profile change event! checking profile.');
@@ -746,6 +742,19 @@ export async function handleBSIPADeployment(api: IExtensionApi, profile: IProfil
     }
 }
 
+/**
+ * A simple event handler to detect and notify the user when BSIPA updates are enabled.
+ * 
+ * @remarks
+ * This method will run on every deployment, but only take action if:
+ *  - BSIPA has been deployed and run
+ *  - The BSIPA config file is in place
+ *  - The config file has AutoUpdate enabled
+ * 
+ * @param api - The extension API.
+ * @param profile - The current profile.
+ * @param deployment - The current deployment object.
+ */
 export async function handleBSIPAUpdateCheck(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
     var bsipaReady = isIPAInstalled(api) && isIPAReady(api);
     if (bsipaReady) {
@@ -757,6 +766,18 @@ export async function handleBSIPAUpdateCheck(api: IExtensionApi, profile: IProfi
     }
 }
 
+/**
+ * A simple event handler to detect and notify the user when a game update has occurred and BSIPA yeeting is about to happen.
+ * 
+ * @remarks
+ * This method will run on every deployment, but only take action if:
+ * - Unity and BSIPA game versions don't match
+ * - the disableYeeting config tweak isn't enabled
+ * 
+ * @param api - The extension API.
+ * @param profile - The current profile.
+ * @param deployment - The current deployment object.
+ */
 export async function handleYeetDetection(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
     var client = new IPAVersionClient(api);
     var currentGame = client.getUnityGameVersion();
@@ -766,6 +787,11 @@ export async function handleYeetDetection(api: IExtensionApi, profile: IProfile,
         // shit
         // theoretically this means the game has been updated and BSIPA hasn't been run. By default, it's about 
         // to yeet all our mods and freak Vortex the fuck out.
+        var storeSettings = util.getSafe(api.getState().settings, ['beatvortex', 'bsipa'], undefined) as IBSIPASettings;
+        if (storeSettings != undefined && storeSettings.disableYeeting) {
+            // the config tweak will have disabled yeeting anyway
+            return;
+        }
         var disableMods = await showPreYeetDialog(api);
         if (disableMods) {
             var installedMods =  api.getState().persistent.mods[GAME_ID];
@@ -776,10 +802,16 @@ export async function handleYeetDetection(api: IExtensionApi, profile: IProfile,
                 api.store.dispatch(actions.setModEnabled(profile.id, mod.id, false));
             }
         }
-        // util.setSafe(context.api.getState().session, FORCE_DIRTY_PURGE, true);
     }
 }
 
+/**
+ * An event handler to detect and store the current game version for use in other extension components.
+ * 
+ * @param api - The extension API.
+ * @param profile - The current profile.
+ * @param deployment - The current deployment object.
+ */
 export async function handleVersionUpdate(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
     var client = new IPAVersionClient(api);
     util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'gameVersion'], client.getUnityGameVersion());
@@ -854,7 +886,7 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
 }
 
 /**
- * A (currently unused) event handler to execute when the preview settings are changed.
+ * An event handler to execute when the preview settings are changed.
  * 
  * @remarks
  * - This method was originally responsible for registering the actual preview components, 
@@ -862,6 +894,7 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
  * 
  * @param context The extension context.
  * @param previewSettings - The preview settings to apply
+ * @param oldSettings - The previous settings state (used to warn when disabling)
  */
 function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSettings, oldSettings?: IPreviewSettings) {
     if (previewSettings != undefined) {
@@ -885,6 +918,16 @@ function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSe
     }
 }
 
+/**
+ * An event handler to execute when the BSIPA settings are changed.
+ * 
+ * @remarks
+ * - This method is *not* responsible for the config tweaks! That happens in ipa/applyConfig.ts
+ * 
+ * @param context The extension context.
+ * @param previewSettings - The preview settings to apply
+ * @param oldSettings - The previous settings state (used to warn when disabling)
+ */
 function registerBSIPASettings(api: IExtensionApi, bsipaSettings: IBSIPASettings, oldSettings?: IBSIPASettings) {
     if (bsipaSettings != undefined && bsipaSettings.enableYeetDetection != undefined) {
         traceLog('beatvortex: handling bsipa settings change');
@@ -897,19 +940,6 @@ function registerBSIPASettings(api: IExtensionApi, bsipaSettings: IBSIPASettings
             showRestartRequiredNotification(api, 'Disabling automatic update detection requires a Vortex restart to take effect!');
         }
     }
-}
-
-/**
- * Debug function to log the currently configured metaservers.
- * 
- * @param api The extension API.
- * @param metaSettings The current (new) metaserver settings
- */
-function logMetaservers(api: IExtensionApi, metaSettings: { [id: string]: { url: string; priority: number; } }) {
-    var servers = Object.keys(metaSettings).map(k => {
-        return { id: k, url: metaSettings[k].url }
-    });
-    log('debug', 'got metaserver state', { count: servers.length, servers: servers });
 }
 
 //#endregion
@@ -932,33 +962,12 @@ export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
         });
     } else {
         var mgr = new PlaylistManager(api);
-        var result: IDialogResult = await api.showDialog(
-            'question',
-            'Create Playlist',
-            {
-                text: 'Enter a name for your new playlist',
-                input: [
-                    {
-                        id: 'title',
-                        value: '',
-                        label: 'Title'
-                    },
-                    {
-                        id: 'image',
-                        value: '',
-                        label: 'Optional image URL'
-                    }
-                ]
-            },
-            [
-                {label: 'Cancel'},
-                {label: 'Create'}
-            ]);
-        if (result.action == 'Cancel') {
+        var result = await showPlaylistCreationDialog(api);
+        if (!result.continue) {
             return;
         }
-        if (result.action == 'Create') {
-            var content = mgr.createPlaylistContent(result.input.title, compatibleMods.map(m => m.id), null, result.input.image);
+        if (result.continue) {
+            var content = mgr.createPlaylistContent(result.title, compatibleMods.map(m => m.id), null, result.image);
             api.sendNotification({
                 id: `playlist-creation`,
                 type: 'success',
@@ -969,7 +978,7 @@ export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
                     title: 'Save to file', action: async () => {
                       const playlistsPath = path.join(util.getVortexPath('temp'), 'BeatSaberPlaylists');
                       await fs.ensureDirWritableAsync(playlistsPath, () => Promise.resolve());
-                      const tmpPath = path.join(playlistsPath, util.deriveInstallName(result.input.title, undefined) + ".bplist");
+                      const tmpPath = path.join(playlistsPath, util.deriveInstallName(result.title, undefined) + ".bplist");
                       const formatted = JSON.stringify(content, null, '\t');
                       await fs.writeFileAsync(tmpPath, formatted);
                       util.opn(playlistsPath).catch(() => null);
