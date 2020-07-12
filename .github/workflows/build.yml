@@ -31,7 +31,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
-    - run: cp ./gameart.png ./dist/ && cp ./src/language*.json ./dist/
     - uses: actions/upload-artifact@v1
       with:
         name: game-beatsaber

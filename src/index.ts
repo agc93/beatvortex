@@ -347,12 +347,16 @@ async function addTableAttributes(context: IExtensionContext) {
  *
  * @param discovery - The details for the discovered game.
  */
-function prepareForModding(discovery: IDiscoveryResult) {
+async function prepareForModding(discovery: IDiscoveryResult) {
     // showTermsDialog();
     GAME_PATH = discovery.path;
     let mapsPath = path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels');
-    // let playlistsPath = path.join(discovery.path, 'Playlists')
-    return fs.ensureDirWritableAsync(mapsPath, () => Promise.resolve());
+    let playlistsPath = path.join(discovery.path, 'Playlists')
+    await fs.ensureDirWritableAsync(mapsPath);
+    await fs.ensureDirWritableAsync(playlistsPath);
+    // I don't honestly know how much of this duplication is actually necessary, but it works now, so I'm going to leave it
+    // given this should only be called pretty infrequently, I don't think round-tripping a couple of extra times is a huge problem
+    return fs.ensureDirWritableAsync(mapsPath, () => fs.ensureDirWritableAsync(playlistsPath, () => Promise.resolve()));
 }
 
 /**

@@ -79,7 +79,15 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
             id: 'beatvortex-migration',
             type: 'success',
             message: api.translate(`BeatVortex successfully updated to ${extVersion}`),
-            displayMS: 4000
+            displayMS: 4000,
+            actions: [
+                {
+                    title: 'More...',
+                    action: (dismiss) => {
+                        showUpgradeDialog(api, extVersion, "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n- BeatMods upgrades are now enabled by default\n- Mod categories are now enabled by default\n- Automatic game upgrade detection has been re-enabled and improved dramatically", () => dismiss());
+                    }
+                }
+            ]
         });
         resolve();
     }));
@@ -128,4 +136,15 @@ function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: 
             }
         ],
     });
+}
+
+function showUpgradeDialog(api: IExtensionApi, newVersion: string, message: string, callback?: () => void) {
+    return api.showDialog('info', `BeatVortex updated to v${newVersion}`, {
+        text: message,
+        links: [
+            {label: 'Release Notes', action: () => util.opn(`https://beatvortex.dev/updates/v${newVersion}`)}
+        ]
+    }, [
+        {label: 'Close', action: () => callback?.()}
+    ]);
 }

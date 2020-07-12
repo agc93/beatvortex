@@ -175,6 +175,7 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
             logicalFileName: details.name,
             source: "beatmods",
             version: details.version,
+            homepage: details.link,
             // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
             uploadedTimestamp: details.uploadDate,
             category: details.category

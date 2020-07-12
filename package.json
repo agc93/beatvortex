@@ -5,8 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "webpack": "node ./node_modules/webpack/bin/webpack --config webpack.config.js --display-error-details --progress --profile --color",
-    "bundle7z": "7z a -t7z game-beatsaber.7z .\\dist\\index.js .\\dist\\info.json .\\gameart.png",
-    "build": "npm run webpack && extractInfo && copyfiles -f ./src/language*.json ./src/**/*.scss ./src/*.scss ./src/**/*.svg ./dist/",
+    "build": "npm run webpack && extractInfo && copyfiles -f ./gameart.png ./src/language*.json ./src/**/*.scss ./src/*.scss ./src/**/*.svg ./dist/",
     "tsdoc": "typedoc"
   },
   "config": {
@@ -14,11 +13,6 @@
   },
   "author": "agc93",
   "license": "MIT",
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/agc93/beatvortex.git"

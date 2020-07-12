@@ -25,9 +25,7 @@ export const enableBSIPATweaks =
 export const settingsReducer: IReducerSpec = {
     reducers: {
       [registerOneClickInstall as any]: (state, payload:ILinkHandling) => {
-        // const { url, instructions, subscriber } = payload;
         return util.merge(state, ['enableOCI'], payload);
-        // util.setSafe(state, [ 'enableOCI' ], payload);
       },
       [enableMetaserverIntegration as any]: (state, payload: IMetaserverSettings) => {
         return util.merge(state, ['metaserver'], payload);
