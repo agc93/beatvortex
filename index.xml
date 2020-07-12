@@ -1,4 +1,18 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – BeatVortex</title><link>/</link><description>Recent content on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Mon, 06 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.8 Release</title><link>/blog/2020/07/06/alpha-3.8-release/</link><pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/06/alpha-3.8-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – BeatVortex</title><link>/</link><description>Recent content on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 12 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.9 Release</title><link>/blog/2020/07/12/alpha-3.9-release/</link><pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/12/alpha-3.9-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This is a general bugfix and polish release for the &lt;a href="./updates/">0.3.x release&lt;/a>.&lt;/p>
+&lt;p>This includes fixes for a number of bugs and some minor improvements:&lt;/p>
+&lt;ul>
+&lt;li>Beat Saber-specific attributes should now only show when you're managing your Beat Saber mods. Thanks @Pickysaurus!&lt;/li>
+&lt;li>Fixed a potential bug that would prevent deployments on new installs.&lt;/li>
+&lt;li>Tweaked some attributes for installed mods&lt;/li>
+&lt;li>Some more minor fixes, refactoring and cleanup&lt;/li>
+&lt;/ul>
+&lt;p>For the major updates in this release tree, please check the &lt;a href="./updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
+&lt;h2 id="looking-forward">Looking forward&lt;/h2>
+&lt;p>Barring any huge problems, this will be the last of the 0.3.x releases, and I'll be pushing for a 0.4 release in the next few weeks (time permitting). While it won't pack quite the feature list that 0.3.1 did, 0.4.x should still be a good milestone. Thanks to everyone who has reported bugs, helped out with questions, or has just downloaded and used BeatVortex!&lt;/p></description></item><item><title>Blog: Alpha 3.8 Release</title><link>/blog/2020/07/06/alpha-3.8-release/</link><pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/06/alpha-3.8-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
