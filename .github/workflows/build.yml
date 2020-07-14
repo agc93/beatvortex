@@ -61,7 +61,7 @@ jobs:
         body: |
           Download and install using the Extensions pane in Vortex.
 
-          To manually install, extract the zip to C:\Users\<user-name>\AppData\Roaming\Vortex\plugins\game-beatsaber.
+          To manually install, extract the zip to %APPDATA%\Vortex\plugins\game-beatsaber.
 
           Read about the changes in this release at [beatvortex.dev/updates/${{ steps.vars.outputs.tag }}](https://beatvortex.dev/updates/${{ steps.vars.outputs.tag }}).
         files: |
