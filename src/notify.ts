@@ -124,20 +124,22 @@ export function showBSIPAUpdatesNotification(api: IExtensionApi, callback?: () =
 }
 
 export function showBSIPAUpdatesDialog(api: IExtensionApi, callback?: () => void) {
-    var updatesEnabled = ((api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableUpdates)
     // var msg = updatesEnabled ? "It looks like BSIPA's "
+    var updatesEnabled = false;
+    //so we have a problem here. We *should* be warning people about this if **and only if** we're not using our launch params to do this.
     if (updatesEnabled) {
         api.showDialog(
             'info',
             'BSIPA Plugin Updates enabled',
             {
-                text: "BSIPA's automatic plugin updates seem to be enabled. While this won't break things, be aware that it may result in BSIPA using a different version of plugins than what Vortex has installed. We recommend disabling BSIPA's automatic updates while you're managing updates with Vortex.",
+                text: "BSIPA's automatic plugin updates seem to be enabled. While this won't break things, be aware that it may result in BSIPA using a different version of plugins than what Vortex has installed. We recommend disabling BSIPA's automatic updates while you're managing mods with Vortex.",
             }, 
             [ { label: 'Continue' } ]
         ).then((result: IDialogResult) => {
             callback?.();
         });
-    } else {
+    }
+    /* } else {
         api.showDialog(
             'info',
             'BSIPA Plugin Updates enabled',
@@ -148,7 +150,7 @@ export function showBSIPAUpdatesDialog(api: IExtensionApi, callback?: () => void
         ).then((result) => {
             callback?.();
         });
-    }
+    } */
 }
 
 export function showCategoriesUpdateNotification(api: IExtensionApi, callback?: () => void) {

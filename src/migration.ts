@@ -1,18 +1,18 @@
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { util, log } from "vortex-api";
 import * as semver from "semver";
-import { GAME_ID } from ".";
+import { GAME_ID, I18N_NAMESPACE } from ".";
 import { app, remote } from 'electron';
 import { enableBSIPATweaks } from "./settings";
 
-const I18N_NAMESPACE = 'beatvortex';
+
 
 type VersionMatrix = {[extensionVersion: string]: string};
 
 // matrix of extension versions and what Vortex version they require.
 var minimumVersions: VersionMatrix = {
     '0.3.1': '1.2.13',
-    '0.4.0': '1.2.17'
+    '0.4.0': '1.3.0'
 };
 
 /**
@@ -49,7 +49,7 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
     if (!hasMods) {
         return Promise.resolve();
     }
-    var vortexVersion = app.getVersion();
+    var vortexVersion = getVortexVersion();
     if (semver.gte(vortexVersion, minVortexVersion)) {
         return Promise.resolve();
     }
@@ -84,7 +84,7 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
                 {
                     title: 'More...',
                     action: (dismiss) => {
-                        showUpgradeDialog(api, extVersion, "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n- BeatMods upgrades are now enabled by default\n- Mod categories are now enabled by default\n- Automatic game upgrade detection has been re-enabled and improved dramatically", () => dismiss());
+                        showUpgradeDialog(api, extVersion, "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n- BeatMods updates are now enabled by default\n- Mod categories are now enabled by default\n- Automatic game upgrade detection has been re-enabled and improved dramatically\n\nDue to some enhancements in Vortex, we also now recommend launching Beat Saber from Vortex, rather than directly. While launching directly will still work, BSIPA features might conflict with Vortex and lead to some unexpected behaviour.", () => dismiss());
                     }
                 }
             ]
@@ -92,7 +92,7 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
         resolve();
     }));
 
-    var vortexVersion = app.getVersion();
+    var vortexVersion = getVortexVersion();
     if (semver.gte(vortexVersion, minVortexVersion)) {
         //ignored
     } else {

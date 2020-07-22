@@ -5,6 +5,7 @@ import nfs = require('fs');
 import { getGamePath } from "../util";
 import { util, selectors, log, actions } from "vortex-api";
 import { GAME_ID } from "..";
+import { IBSIPASettings } from "../settings";
 
 export interface PatchFunction {
     (api: IExtensionApi, callback: () => void) : void;
@@ -78,4 +79,18 @@ export async function tryUndoPatch(api: IExtensionApi, callback?: () => void) {
             callback();
         }
     }
+}
+
+export function getBSIPALaunchArgs(state: IState): string {
+    var bsipaSettings = util.getSafe<IBSIPASettings>(state.settings, ['beatvortex', 'bsipa'], undefined);
+    var bsipaOpts = '';
+    if (bsipaSettings != undefined) {
+        if (bsipaSettings.disableUpdates) {
+            bsipaOpts += '--no-updates';
+        }
+        if (bsipaSettings.disableYeeting) {
+            bsipaOpts += '--no-yeet';
+        }
+    }
+    return bsipaOpts;
 }

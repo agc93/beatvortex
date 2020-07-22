@@ -31,12 +31,14 @@
     "bs:PlaylistView:NoPlaylists": "No playlists were found in your Beat Saber installation directory!",
     "bs:PlaylistView:NoMaps": "This playlist doesn't seem to contain any maps!",
     "bs:Settings:BSIPATitle": "Beat Saber IPA (BSIPA) Configuration Tweaks",
-    "bs:Settings:BSIPAHelp": "Check the options below to change or override certain values in the BSIPA configuration file in your game directory. These will take effect the next time you deploy your mods and can be used to force BSIPA not to update your mods or move your mods on updates",
+    "bs:Settings:BSIPAHelp": "Check the options below to change or override certain values in BSIPA's configuration. These will take effect the next time you launch your game (or deploy your mods) and can be used to force BSIPA not to update your mods or move your mods on updates",
     "bs:Settings:BSIPAYeeting": "Disable BSIPA's game upgrade handling",
     "bs:Settings:BSIPAYeetingHelp": "This option will disable BSIPA's plugin \"yeeting\" function. This functionality moves all your plugins into a special folder whenever the game is upgraded to avoid loading incompatible plugins.\n\nWe also detect this when deploying mods, so you shouldn't use this without knowing what it means!",
     "bs:Settings:BSIPAYeetDetection": "Enable automatic game update handling",
     "bs:Settings:BSIPAYeetDetectionHelp": "This will attempt to automatically detect when you have recently updated your Beat Saber to more gracefully handle updates (and work better with BSIPA)",
     "bs:Settings:BSIPAUpdates": "Disable BSIPA's automatic updates",
     "bs:Settings:BSIPAUpdatesHelp": "This option will disable BSIPA's automatic updates for plugins.\nBSIPA, by default, will attempt to automatically check for and install updates to your installed plugins. This means your plugins might not be the same ones you installed with Vortex and can lead to some odd behaviour. We recommend disabling BSIPA's updates if you're using Vortex for updates (or vice versa).",
-    "bs:Settings:BSIPARestoreSettings": "Please note: disabling the options above will NOT revert the changes to your configuration file! Disabling the tweak will just stop Vortex from overriding the config change on your next mod deploy."
+    "bs:Settings:BSIPARestoreSettings": "Please note: disabling the options above will NOT revert the changes to your configuration file! Disabling the tweak will just stop Vortex from overriding the config change on your next mod deploy.",
+    "bs:Settings:BSIPAConfigFile": "Apply these settings to the BSIPA configuration file",
+    "bs:Settings:BSIPAConfigFileHelp": "This option will also apply the changes you have enabled above to the BSIPA configuration file on mod deployment. Most notably, this will mean that these settings will take effect when launching the game directly (i.e. not through Vortex).\n\nPlease note: disabling this will NOT revert the changes to your configuration file! Disabling the tweak will just stop Vortex from overriding the config change on your next mod deploy."
 }

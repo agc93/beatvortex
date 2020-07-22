@@ -9,14 +9,14 @@ import { ProfileClient } from "vortex-ext-common";
 // local modules
 import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
 import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
-import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak } from "./ipa";
+import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak, getBSIPALaunchArgs } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 import { updateCategories, checkBeatModsCategories } from "./categories";
 
 // clients
-import { BeatSaverClient, IMapDetails } from './beatSaverClient';
+import { BeatSaverClient } from './beatSaverClient';
 import { BeatModsClient } from './beatModsClient';
 import { ModelSaberClient } from './modelSaberClient';
 
@@ -27,10 +27,9 @@ import { difficultiesRenderer, modesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings } from "./settings";
 import { sessionReducer, updateBeatSaberVersion } from './session';
 
-export const GAME_ID = 'beatsaber'
+export const GAME_ID = 'beatsaber';
+export const I18N_NAMESPACE = 'beatvortex';
 let GAME_PATH = '';
-
-export const FORCE_DIRTY_PURGE = ['beatvortex', 'forceDirtyPurge'];
 
 export interface DeploymentEventHandler {
     (api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> | Promise<boolean>;
@@ -52,15 +51,15 @@ function main(context: IExtensionContext) {
     }
     context.once(() => {
         enableTrace();
-        if (isActiveGame(context)) { }
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
         context.api.setStylesheet('bs-map-attributes', path.join(__dirname, 'attributes.scss'));
         util.installIconSet('beatvortex', path.join(__dirname, 'icons.svg'));
         addTranslations(context.api, 'beatvortex');
+        setupUpdates(context.api);
         handleSettings(context.api, 'enableOCI', registerProtocols);
         handleSettings(context.api, 'metaserver', registerMetaserver);
-        handleSettings(context.api, 'preview', registerPreviewSettings);
+        handleSettings(context.api, 'preview');
         handleSettings(context.api, 'bsipa', registerBSIPASettings);
         if (useTrace) {
             context.api.events.on('profile-did-change', (profileId: string) => {
@@ -80,10 +79,10 @@ function main(context: IExtensionContext) {
         });
         context.api.onAsync('will-purge', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
             traceLog('beatvortex got will-purge', { profileId, deploying: Object.keys(deployment) });
-            await handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAPurge)
+            await handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAPurge);
             Promise.resolve();
         });
-        context.api.onAsync('install-playlist', async (installUrl: string) => {
+        context.api.onAsync('install-playlist-url', async (installUrl: string) => {
             traceLog('attempting install of playlist', { playlist: installUrl });
             await installRemotePlaylist(context.api, installUrl);
             return Promise.resolve();
@@ -112,7 +111,7 @@ function main(context: IExtensionContext) {
                 "terms of use notification");
         });
         context.api.events.on('gamemode-activated', (gameMode: string) => {
-            if (gameMode != undefined && gameMode == GAME_ID && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableCategories)) {
+            if (gameMode != undefined && gameMode == GAME_ID) {
                 var isInstalled = checkBeatModsCategories(context.api);
                 if (!isInstalled) {
                     updateCategories(context.api, false);
@@ -154,10 +153,12 @@ function main(context: IExtensionContext) {
         'Get BeatMods Categories', 
         () => updateCategories(context.api, true), 
         () => {
-            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
-                && ((context.api.getState().settings['beatvortex']['preview'] as IPreviewSettings).enableCategories)
+            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID);
         }
     );
+    try {
+        // context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
+    } catch {}
     context.registerAction(
         'mods-multirow-actions', 300, 'playlist', {}, 'Create Playlist', modIds => {
             createPlaylist(context.api, modIds);
@@ -638,7 +639,7 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
 
 async function handlePlaylistLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
     log('info', 'handling playlist oneclick install', { url });
-    await api.emitAndAwait('install-playlist', url);
+    await api.emitAndAwait('install-playlist-url', url);
 }
 
 /**
@@ -886,36 +887,24 @@ function registerMetaserver(api: IExtensionApi, metaSettings: IMetaserverSetting
 }
 
 /**
- * An event handler to execute when the preview settings are changed.
+ * A simple handler to register the events used for checking mod updates
  * 
- * @remarks
- * - This method was originally responsible for registering the actual preview components, 
- *     but this has been moved into the components themselves as enable conditions.
- * 
- * @param context The extension context.
- * @param previewSettings - The preview settings to apply
- * @param oldSettings - The previous settings state (used to warn when disabling)
+ * @param api The extension API
  */
-function registerPreviewSettings(api: IExtensionApi, previewSettings: IPreviewSettings, oldSettings?: IPreviewSettings) {
-    if (previewSettings != undefined) {
-        log('debug', 'beatvortex: initialising preview settings', { previewSettings });
-        const checkForUpdates = async (gameId, mods: { [id: string]: IMod }) => {
-            traceLog('attempting beatvortex update check', { modCount: Object.keys(mods).length, game: gameId });
-            await checkForBeatModsUpdates(api, gameId, mods);
-            return Promise.resolve();
-        };
-        const installUpdates = async (gameId: string, modId: string) => {
-            traceLog('attempting beatvortex mod update', { modId });
-            await installBeatModsUpdate(api, gameId, modId);
-            return Promise.resolve();
-        };
-        if (previewSettings.enableUpdates) {
-            api.onAsync('check-mods-version', checkForUpdates);
-            api.onAsync('mod-update', installUpdates);
-        } else if (previewSettings.enableUpdates === false && oldSettings?.enableUpdates === true) {
-            showRestartRequiredNotification(api, 'Disabling BeatMods updates requires a Vortex restart to take effect!');
-        }
-    }
+function setupUpdates(api: IExtensionApi) {
+    log('debug', 'beatvortex: initialising update handlers');
+    const checkForUpdates = async (gameId, mods: { [id: string]: IMod }) => {
+        traceLog('attempting beatvortex update check', { modCount: Object.keys(mods).length, game: gameId });
+        await checkForBeatModsUpdates(api, gameId, mods);
+        return Promise.resolve();
+    };
+    const installUpdates = async (gameId: string, modId: string) => {
+        traceLog('attempting beatvortex mod update', { modId });
+        await installBeatModsUpdate(api, gameId, modId);
+        return Promise.resolve();
+    };
+    api.onAsync('check-mods-version', checkForUpdates);
+    api.onAsync('mod-update', installUpdates);
 }
 
 /**
@@ -994,6 +983,11 @@ export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
               });
         }
     }
+}
+
+function getLaunchParams(api: IExtensionApi): {[key:string]: string} {
+    var bsipaOpts = getBSIPALaunchArgs(api.getState());
+    return {'BSIPA_OPTS': bsipaOpts};
 }
 
 //#endregion

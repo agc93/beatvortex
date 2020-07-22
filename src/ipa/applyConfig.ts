@@ -9,12 +9,15 @@ export async function applyConfig(api: IExtensionApi) {
         log('info', 'no BSIPA config tweaks configured, skipping!');
         return;
     }
-    var mgr = new BSIPAConfigManager(api);
-    if (storeSettings.disableUpdates && mgr.configExists()) {
-        await mgr.disableUpdates();
-    }
-    if (mgr.configExists() && storeSettings.disableYeeting) {
-        await mgr.disableYeeting();
+    if (storeSettings.applyToConfig) {
+        log('info', 'BSIPA config tweaks enabled! Applying launch settings to configuration file', {settings: storeSettings});
+        var mgr = new BSIPAConfigManager(api);
+        if (storeSettings.disableUpdates && mgr.configExists()) {
+            await mgr.disableUpdates();
+        }
+        if (mgr.configExists() && storeSettings.disableYeeting) {
+            await mgr.disableYeeting();
+        }
     }
 }
 
