@@ -6,4 +6,6 @@ import PreviewSettings from "./PreviewSettings";
 export { PreviewSettings}
 import BSIPASettings from "./BSIPASettings";
 export { BSIPASettings }
+import SyncSettings from "./SyncSettings";
+export { SyncSettings }
 export * from './actions'

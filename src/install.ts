@@ -337,20 +337,22 @@ async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlay
     api.store.dispatch(actions.setModEnabled(profileId, installPath, true));
     api.events.emit('mods-enabled', [ installPath ], true, GAME_ID);
     var sourceName = ref.fileUrl ? new URL(ref.fileUrl).host : path.basename(ref.fileName) ?? 'local file';
-    api.sendNotification({
-        id: `ready-to-install-${installPath}`,
-        type: 'success',
-        title: api.translate('Playlist installed'),
-        message: `Installed ${installPath} playlist from ${sourceName}.`,
-        actions: [
-          {
-            title: 'Install Maps', action: dismiss => {
-                installPlaylistMaps(api, info.songs);
-                dismiss();
+    if (info.songs && info.songs.length > 0) {
+        api.sendNotification({
+            id: `ready-to-install-${installPath}`,
+            type: 'success',
+            title: api.translate('Playlist installed'),
+            message: `Installed ${installPath} playlist from ${sourceName}.`,
+            actions: [
+            {
+                title: 'Install Maps', action: dismiss => {
+                    installPlaylistMaps(api, info.songs);
+                    dismiss();
+                },
             },
-          },
-        ],
-      });
+            ],
+        });
+    }
 }
 
 /**
@@ -362,12 +364,12 @@ async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlay
  * @param api - The extension API.
  * @param maps - The set of maps from the installed playlist.
  */
-export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[]) {
+export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[], playlistName?: string) {
     var installed = api.getState().persistent.mods[GAME_ID];
     var toInstall = maps.filter(plm => !Object.values(installed).some(i => (i.id == plm.key) || (i?.attributes['mapHash'] == plm.hash)));
     api.sendNotification({
         type: 'info',
-        title: "Now installing playlist",
+        title: `Now installing ${playlistName ?? 'playlist'}`,
         message: `Installing ${toInstall.length} maps from BeatSaver`,
         noDismiss: true,
         displayMS: 4000

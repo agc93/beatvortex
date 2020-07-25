@@ -1,11 +1,12 @@
-import { fs, log, util } from "vortex-api";
+import { fs, log, util, actions } from "vortex-api";
 import path = require('path');
+import retry = require('async-retry');
 import { ILocalPlaylist, IPlaylistEntry } from ".";
-import { getAllFiles } from "../util";
+import { getAllFiles, ModList, traceLog, getUserName } from "../util";
 import { BeatSaverClient } from "../beatSaverClient";
-import { IExtensionApi, IMod } from "vortex-api/lib/types/api";
+import { IExtensionApi, IMod, IModTable } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
-import { IPlaylistInfo } from "../playlistClient";
+import { IPlaylistInfo, PlaylistClient, PlaylistRef } from "../playlistClient";
 
 /**
  * This class was intended as a utility class encompassing local-only playlist 
@@ -32,6 +33,62 @@ export class PlaylistManager {
         }
         // this._client = new BeatSaverClient();
     }
+
+    playlistExists = async (name: string): Promise<boolean> => {
+        var playlists = await this.getInstalledPlaylists();
+        return playlists.some(p => p.title.toLowerCase() == name.toLowerCase());
+    }
+
+    isPlaylistInstalled = async (name: string): Promise<boolean> => {
+        if (!this._api) {
+            throw new Error("Cannot determine installed playlists!");
+        } else {
+            var modList = util.getSafe<ModList>(this._api.getState().persistent.mods, [GAME_ID], {});
+            var mods = Object.values(modList).filter(m => m.type == 'bs-playlist');
+            return mods.some(m => util.getSafe(m.attributes, ['name'], '').toLowerCase() == name.toLowerCase());
+        }
+    }
+
+    updatePlaylist = async (playlistName: string, idents: string[], replace: boolean = true): Promise<IPlaylistEntry[]> => {
+        if (!this._api) {
+            throw new Error("Cannot determine installed playlists!")
+        } else {
+            var target = await retry(async bail => {
+                var modList = util.getSafe<ModList>(this._api.getState().persistent.mods, [GAME_ID], {});
+                var playlists = Object.values(modList).filter(m => m.type == 'bs-playlist');
+                var match = playlists.find(p => util.getSafe(p.attributes, ['name'], '').toLowerCase() == playlistName.toLowerCase());
+                if (!match) {
+                    throw new Error("could not locate playlist");
+                }
+                return match;
+            }, { retries: 5 });
+            /* await new Promise(r => setTimeout(r, 1500));
+            var modList = util.getSafe<ModList>(this._api.getState().persistent.mods, [GAME_ID], {});
+            var playlists = Object.values(modList).filter(m => m.type == 'bs-playlist');
+            var match = playlists.find(p => util.getSafe(p.attributes, ['name'], '').toLowerCase() == playlistName.toLowerCase());
+            if (!match) {
+                throw new Error("could not locate playlist");
+            }
+            var target = match; */
+            if (target) {
+                log('debug', 'identified existing playlist for update', {mod: target.id, maps: idents.length});
+                var author = util.getSafe(target.attributes, ['author'], '');
+                var image = util.getSafe(target.attributes, ['pictureUrl'], undefined);
+                var pl = this.createPlaylistContent(playlistName, idents, author, image);
+                traceLog('generated updated playlist model', {playlist: pl})
+                var client = new PlaylistClient();
+                var ref: PlaylistRef = {
+                    fileName: `${pl.playlistTitle}.bplist`,
+                    fileUrl: undefined,
+                    source: 'Local'
+                }
+                var targetPath = await client.saveToFile(this._api, ref, pl);
+                return pl.songs;
+            }
+        }
+    }
+
+    
     
     /**
      * Retrieves all locally installed *and deployed* playlists. This method reads directly 
@@ -60,7 +117,7 @@ export class PlaylistManager {
         return localData;
     }
 
-    static createPlaylistContent(name: string, maps: string[], author: string, image?: string) {
+    static createPlaylistContent(name: string, maps: string[], author: string, image?: string): IPlaylistInfo {
         var playlist: IPlaylistInfo = 
         {
             playlistTitle: name,
@@ -73,13 +130,13 @@ export class PlaylistManager {
         return playlist;
     }
 
-    createPlaylistContent = (name: string, mapIdents: string[], author?: string, image?: string) => {
+    createPlaylistContent = (name: string, mapIdents: string[], author?: string, image?: string): IPlaylistInfo => {
         if (!this._api) {
             return PlaylistManager.createPlaylistContent(name, mapIdents, author, image);
         } else {
             var playlist: IPlaylistInfo = {
                 playlistTitle: name,
-                playlistAuthor: author ?? util.getSafe(this._api.getState().persistent, ['nexus', 'userInfo', 'name'], undefined),
+                playlistAuthor: author ?? getUserName(this._api.getState()),
                 songs: []
             };
             var mods = this._api.getState().persistent.mods[GAME_ID];
@@ -88,7 +145,7 @@ export class PlaylistManager {
                 if (mi.length == 4) {
                     mod = mods[mi];
                 } else {
-                    mod = Object.values(mods).find(m => util.getSafe(mod.attributes, ['mapHash'], '') == mi);
+                    mod = Object.values(mods).find(m => util.getSafe(m.attributes, ['mapHash'], '') == mi);
                 }
                 if (mod) {
                     return {
@@ -96,9 +153,12 @@ export class PlaylistManager {
                         key: mod.id,
                         songName: util.getSafe(mod.attributes, ['modName'], undefined),
                     }
+                } else {
+                    return mi.length == 4 ? {key: mi, hash: undefined} : {hash: mi, key:undefined}
                 }
             });
             playlist.songs = maps;
+            playlist.image = image ?? undefined;
             return playlist;
         }
     }

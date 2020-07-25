@@ -1,7 +1,7 @@
 import path = require("path");
 import { util as vtx, selectors, fs, log, util, actions } from "vortex-api";
 import nfs = require('fs');
-import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile, IDiscoveryResult } from "vortex-api/lib/types/api";
+import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile, IDiscoveryResult, IMod } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
@@ -13,6 +13,7 @@ export const models = ['avatar', 'platform', 'saber']
 export var useTrace: boolean = false;
 
 type ProfileStore = {[profileId: string]: IProfile};
+export interface ModList { [modId: string]: IMod; };
 
 export function getModName(destinationPath: string) : string {
     var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
@@ -216,4 +217,8 @@ export function getCompatibleModVersion(gameVersion: string, list: IVersionList)
     } else {
         return Object.keys(list).find(mv => list[mv].includes(gameVersion));
     }
+}
+
+export function getUserName(state: IState): string {
+    return util.getSafe(state.persistent, ['nexus', 'userInfo', 'name'], undefined);
 }

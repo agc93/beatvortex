@@ -19,6 +19,9 @@ export const enablePreviewFeatures =
 export const enableBSIPATweaks =
   createAction('BS_BSIPA_CONFIG', (bsipaSettings: IBSIPASettings) => bsipaSettings);
 
+export const setSyncSettings =
+  createAction('BS_SYNC_SETTING', (syncSettings: ISyncSettings ) => syncSettings);
+
 /**
  * reducer for changes to the authentication
  */
@@ -35,13 +38,17 @@ export const settingsReducer: IReducerSpec = {
       },
       [enableBSIPATweaks as any]: (state, payload: IBSIPASettings) => {
         return util.merge(state, ['bsipa'], payload);
+      },
+      [setSyncSettings as any]: (state, payload: ISyncSettings) => {
+        return util.merge(state, ['sync'], payload);
       }
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
       metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev'} as IMetaserverSettings,
       preview: { enablePlaylistManager: false } as IPreviewSettings,
-      bsipa: { enableYeetDetection: true, applyToConfig: false }
+      bsipa: { enableYeetDetection: true, applyToConfig: false },
+      sync: {syncOnDeploy: false} as ISyncSettings
     },
   };
 
@@ -66,4 +73,9 @@ export interface IBSIPASettings {
   disableUpdates?: boolean;
   disableYeeting?: boolean;
   applyToConfig?: boolean;
+}
+
+export interface ISyncSettings {
+  beastSaberUsername?: string;
+  syncOnDeploy?: boolean;
 }

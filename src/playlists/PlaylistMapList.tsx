@@ -7,6 +7,7 @@ import { IExtensionApi, IModTable, IMod, IState } from 'vortex-api/lib/types/api
 import { GAME_ID } from '..';
 import { BeatSaverClient, IMapDetails } from '../beatSaverClient';
 import { ILocalPlaylist, IPlaylistEntry } from './types';
+import { MapDetails, LoadingSpinner } from "../controls";
 
 interface IConnectedProps {
     installed: { [modId: string]: IMod; };
@@ -51,7 +52,7 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         return (
             <div className='pv-detail-base'>
                 {isLoading
-                    ? this.renderLoadingSpinner()
+                    ? <LoadingSpinner />
                     :
                     <FlexLayout type="row">
                         <FlexLayout.Fixed className="pv-maps-list" style={{ maxWidth: '40%' }}>
@@ -131,26 +132,8 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
     }
 
     private renderDescription = (detail: IMapDetails) => {
-        var d = new Date(detail.uploaded)
         return (
-            <FlexLayout type="column">
-                <FlexLayout.Fixed>
-                    <FlexLayout type="column">
-                        <div className="pv-map-meta">
-                            <div className="pv-map-meta-title">{detail.name} by {detail.metadata?.levelAuthorName ?? 'an unknown user'}</div>
-                            <div className="pv-map-meta-extra">
-                                <div className="pv-map-meta-source">Uploaded to BeatSaver as {detail.key} on {d.toLocaleDateString()}</div>
-                                <div className="pv-map-meta-difficulties">Difficulties: {this.renderDifficulties(detail)}</div>
-                            </div>
-                        </div>
-                    </FlexLayout>
-                </FlexLayout.Fixed>
-                <FlexLayout.Flex>
-                    <div className='pv-map-description'>
-                        {detail.description}
-                    </div>
-                </FlexLayout.Flex>
-            </FlexLayout>
+            <MapDetails details={detail}></MapDetails>
         )
     }
 

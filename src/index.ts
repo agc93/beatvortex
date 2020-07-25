@@ -24,8 +24,9 @@ import { ModelSaberClient } from './modelSaberClient';
 import { BeatModsList } from "./beatmods";
 import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
-import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings, SyncSettings } from "./settings";
 import { sessionReducer, updateBeatSaberVersion } from './session';
+import { SyncView, syncReducer, SyncService } from './sync';
 
 export const GAME_ID = 'beatsaber';
 export const I18N_NAMESPACE = 'beatvortex';
@@ -54,6 +55,8 @@ function main(context: IExtensionContext) {
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
         context.api.setStylesheet('bs-map-attributes', path.join(__dirname, 'attributes.scss'));
+        context.api.setStylesheet('bs-sync-view', path.join(__dirname, 'syncView.scss'));
+        context.api.setStylesheet('bs-common', path.join(__dirname, 'beatVortex.scss'));
         util.installIconSet('beatvortex', path.join(__dirname, 'icons.svg'));
         addTranslations(context.api, 'beatvortex');
         setupUpdates(context.api);
@@ -202,13 +205,20 @@ function main(context: IExtensionContext) {
         },
         props: () => ({ api: context.api }),
     });
+    context.registerMainPage('refresh', 'Sync', SyncView, {
+        group: 'per-game',
+        visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
+        props: () => ({ api: context.api, service: new SyncService(context.api) }),
+    });
 
     context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
     context.registerSettings('Download', OneClickSettings, undefined, isBeatSaberManaged, 100);
     context.registerSettings('Interface', PreviewSettings, undefined, isBeatSaberManaged, 100);
     context.registerSettings('Workarounds', BSIPASettings, undefined, isBeatSaberManaged, 100);
+    context.registerSettings('Interface', SyncSettings, undefined, isBeatSaberManaged, 101);
     context.registerReducer(['settings', 'beatvortex'], settingsReducer);
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
+    context.registerReducer(['persistent', 'beatvortex', 'sync'], syncReducer);
 
 
     /*

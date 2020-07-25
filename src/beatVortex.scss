@@ -1,0 +1,37 @@
+%vertical-list {
+    max-width: 40%;
+    min-width: 20%;
+    margin-right: 4px;
+    border-right: $border-width solid $border-color;
+    overflow: auto;
+  }
+
+  .bv-list-status {
+    font-size: smaller;
+    font-style: italic;
+    color: $text-color-disabled;
+  
+    .btn {
+      @extend .btn-embed;
+      margin-left: 1em;
+    }
+  }
+
+  .bv-item-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  %footer-container {
+    max-height: 20%;
+    border-top: $border-width solid $border-color;
+    min-height: 10%;
+  }
+  
+  %footer-actions {
+    float: right;
+    padding: 1em;
+    margin: 0.5em;
+    margin-top: 1.5em;
+  }
