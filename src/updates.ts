@@ -8,6 +8,9 @@ import { GAME_ID, directDownloadInstall, setDownloadModInfo } from ".";
 const UPDATE_CHECK_DELAY = 60 * 60 * 1000;
 
 export async function checkForBeatModsUpdates(api: IExtensionApi, gameId: string, mods: { [id: string]: IMod }) {
+    if (gameId !== GAME_ID) {
+        return Promise.resolve();
+    }
     var now = Date.now()
     var store = api.store;
     var client = new BeatModsClient();

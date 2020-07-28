@@ -21,6 +21,7 @@ interface IActionProps {
     onDisableYeeting: (enable: boolean) => void;
     onDisableUpdates: (enable: boolean) => void;
     onEnableYeetDetection: (enable: boolean) => void;
+    onEnableConfigTweak: (enable: boolean) => void;
 }
 
 type IProps = IConnectedProps & IActionProps;
@@ -28,12 +29,13 @@ type IProps = IConnectedProps & IActionProps;
 class BSIPASettings extends ComponentEx<IProps, {}> {
     
     public render(): JSX.Element {
-        const { t, bsipaSettings, onDisableUpdates, onDisableYeeting, onEnableYeetDetection, installPath, profiles } = this.props;
-        const { disableUpdates, disableYeeting, enableYeetDetection } = bsipaSettings;
+        const { t, bsipaSettings, onDisableUpdates, onDisableYeeting, onEnableYeetDetection, onEnableConfigTweak, installPath, profiles } = this.props;
+        const { disableUpdates, disableYeeting, enableYeetDetection, applyToConfig } = bsipaSettings;
         if (installPath == undefined || !isGameManaged(profiles)) {
             /* this happens when the extension is installed but either
             ** a) Beat Saber isn't, or
-            ** b) it's not managed, but has been before or something. 
+            ** b) it's a dummy install (hey Picky!)
+            ** c) it's not managed, but has been before or something. 
             ** in short: this needs improving.
             */
             return (<></>)
@@ -73,6 +75,17 @@ class BSIPASettings extends ComponentEx<IProps, {}> {
                             {t('bs:Settings:BSIPAUpdatesHelp')}
                         </More>
                     </Toggle>
+                    <Toggle
+                        style={{ marginTop: 10 }}
+                        checked={applyToConfig}
+                        onToggle={onEnableConfigTweak}
+                    >
+                        {t("bs:Settings:BSIPAConfigFile")}
+                        <More id='more-bsipa-configfile' name='Appy to BSIPA Configuration'>
+                            {t('bs:Settings:BSIPAConfigFileHelp')}
+                        </More>
+                    </Toggle>
+
                 </FormGroup>
                 <HelpBlock>
                     {t('bs:Settings:BSIPARestoreSettings')}
@@ -106,6 +119,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
         },
         onEnableYeetDetection: (enable: boolean) => {
             return dispatch(enableBSIPATweaks({enableYeetDetection: enable}));
+        },
+        onEnableConfigTweak: (enable: boolean) => {
+            return dispatch(enableBSIPATweaks({applyToConfig: enable}));
         }
     }
 }
