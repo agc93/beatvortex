@@ -2,6 +2,8 @@ import path = require("path");
 import { util as vtx, selectors, fs, log, util, actions } from "vortex-api";
 import nfs = require('fs');
 import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile, IDiscoveryResult, IMod } from "vortex-api/lib/types/api";
+import marked from "marked";
+
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
@@ -221,4 +223,15 @@ export function getCompatibleModVersion(gameVersion: string, list: IVersionList)
 
 export function getUserName(state: IState): string {
     return util.getSafe(state.persistent, ['nexus', 'userInfo', 'name'], undefined);
+}
+
+export function renderMarkdown(inputMd: string): string {
+    var mdOpts: marked.MarkedOptions = {
+        pedantic: false,
+        gfm: true,
+        sanitize: true,
+        smartLists: true
+    };
+    // marked.setOptions(mdOpts);
+    return marked(inputMd, mdOpts);
 }
