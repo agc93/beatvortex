@@ -207,7 +207,10 @@ function main(context: IExtensionContext) {
     });
     context.registerMainPage('refresh', 'Sync', SyncView, {
         group: 'per-game',
-        visible: () => selectors.activeGameId(context.api.store.getState()) === GAME_ID,
+        visible: () => {
+            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
+                && (util.getSafe<IPreviewSettings>(context.api.getState().settings, ['beatvortex', 'preview'], {})?.enableSync == true);
+        },
         props: () => ({ api: context.api, service: new SyncService(context.api) }),
     });
 

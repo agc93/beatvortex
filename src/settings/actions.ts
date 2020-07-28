@@ -48,7 +48,7 @@ export const settingsReducer: IReducerSpec = {
       metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev'} as IMetaserverSettings,
       preview: { enablePlaylistManager: false } as IPreviewSettings,
       bsipa: { enableYeetDetection: true, applyToConfig: false },
-      sync: {syncOnDeploy: false} as ISyncSettings
+      sync: { syncOnDeploy: false } as ISyncSettings
     },
   };
 
@@ -66,6 +66,7 @@ export interface IMetaserverSettings {
 
 export interface IPreviewSettings {
   enablePlaylistManager?: boolean;
+  enableSync?: boolean;
 }
 
 export interface IBSIPASettings {

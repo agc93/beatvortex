@@ -100,7 +100,7 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
             return requireVortexVersionNotification(
                 api, 
                 minVortexVersion, 
-                api.translate("A number of the extra features added in v{{extensionVersion}} of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!", { ns: I18N_NAMESPACE, extensionVersion: extVersion }), 
+                api.translate("bs:VortexVersionWarningBody", { ns: I18N_NAMESPACE, extensionVersion: extVersion }), 
                 () => resolve()
             );
         }));
@@ -113,8 +113,8 @@ function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: 
     return api.sendNotification({
         id: 'beatvortex-requires-upgrade',
         type: 'warning',
-        message: api.translate(`BeatVortex requires Vortex v${minVortexVersion} or higher!`,
-            { ns: I18N_NAMESPACE }),
+        message: api.translate('bs:VortexVersionWarning',
+            { ns: I18N_NAMESPACE, vortexVersion: minVortexVersion }),
         noDismiss: true,
         actions: [
             {
