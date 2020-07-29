@@ -2,9 +2,11 @@ import { IExtensionApi, IMod } from "vortex-api/lib/types/api";
 import { BeastSaberClient } from ".";
 import { IBookmark } from "./beastSaberClient";
 import { GAME_ID } from "..";
-import { util, actions, log } from "vortex-api";
+import nfs from "fs";
+import path from "path";
+import { util, actions, log, fs } from "vortex-api";
 import { SyncSources, updateDownloadedMaps } from "./actions";
-import { traceLog, getCurrentProfile, ModList } from "../util";
+import { traceLog, getCurrentProfile, ModList, getGamePath } from "../util";
 import { PlaylistManager, installMaps } from "../playlists";
 import { installLocalPlaylist, installPlaylistMaps } from "../install";
 import { updateBookmarksCache } from "../session";
@@ -35,6 +37,10 @@ export class SyncService {
         if (!allBookmarks) {
             return;
         }
+        try {
+            var imported = this.importHistory();
+            log('info', 'imported sync history', {history: imported.length})
+        } catch {}
         var toSync: IBookmark[] = []
         var installed = Object.values(util.getSafe<ModList>(this._api.getState().persistent.mods, [GAME_ID], {}))
             .filter(m => m.type == 'bs-map')
@@ -88,6 +94,25 @@ export class SyncService {
         await installLocalPlaylist(this._api, bmPlaylist);
         // return await this._mgr.isPlaylistInstalled('Bookmarks');
         return true;
+    }
+
+    importHistory = (filePath?: string): string[] => {
+        if (!filePath) {
+            var gamePath = getGamePath(this._api, false);
+            filePath = path.join(gamePath, 'UserData', 'BeatSyncHistory.json')
+        }
+        if (nfs.existsSync(filePath)) {
+            var content = nfs.readFileSync(filePath, {encoding: 'utf8'});
+            var parsed = JSON.parse(content) as {Key: string, Value: {}}[];
+            if (parsed) {
+                var hashes = parsed.map(hi => hi.Key.toLowerCase());
+                if (hashes && hashes.length > 0) {
+                    this._api.store.dispatch(updateDownloadedMaps(SyncSources.BeastSaberBookmarks, hashes));
+                    return hashes;
+                }
+            }
+        }
+        return [];
     }
 
     

@@ -71,6 +71,10 @@ export function findGame() {
         .then((game : ISteamEntry) => game.gamePath);
 }
 
+/**
+ * @deprecated
+ * @param api extension API
+ */
 export function getGameInstallPath(api: IExtensionApi) {
     var discovery = util.getSafe(api.getState().settings.gameMode.discovered, [GAME_ID], undefined);
     if (discovery === undefined) {
@@ -84,13 +88,13 @@ export function getGamePath(api: IExtensionApi, useSongPath: boolean): string;
 export function getGamePath(api: IExtensionApi, game: IGame, useSongPath: boolean): string;
 export function getGamePath(api: IExtensionApi, gameOrPath: IGame | boolean, useSongPath?: boolean) {
     const state: IState = api.store.getState();
-    if (gameOrPath as IGame) {
-        var game = gameOrPath as IGame;
-        const discovery = state.settings.gameMode.discovered[game.id];
-        return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
-    } else {
+    if (typeof gameOrPath === 'boolean') {
         useSongPath = gameOrPath as boolean;
         const discovery = state.settings.gameMode.discovered[GAME_ID];
+        return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
+    } else {
+        var game = gameOrPath as IGame;
+        const discovery = state.settings.gameMode.discovered[game.id];
         return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
     }
 }

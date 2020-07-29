@@ -3,7 +3,8 @@ import { util, log } from "vortex-api";
 import * as semver from "semver";
 import { GAME_ID, I18N_NAMESPACE } from ".";
 import { app, remote } from 'electron';
-import { enableBSIPATweaks } from "./settings";
+import { enableBSIPATweaks, IBSIPASettings } from "./settings";
+import { renderMarkdown } from "./util";
 
 
 
@@ -71,7 +72,9 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
     if (semver.gte(oldVersion, extVersion)) {
         return Promise.resolve();
     }
-    api.store.dispatch(enableBSIPATweaks({enableYeetDetection: true}));
+    var existingSettings = util.getSafe<IBSIPASettings>(api.getState().settings, ['beatvortex', 'bsipa'], {});
+    var tweaksAlreadyEnabled = existingSettings?.disableUpdates || existingSettings?.disableYeeting;
+    api.store.dispatch(enableBSIPATweaks({enableYeetDetection: true, disableUpdates: true, disableYeeting: false, applyToConfig: false}));
     var migrations = [];
 
     migrations.push(new Promise((resolve) => {
@@ -84,7 +87,7 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
                 {
                     title: 'More...',
                     action: (dismiss) => {
-                        showUpgradeDialog(api, extVersion, "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n- BeatMods updates are now enabled by default\n- Mod categories are now enabled by default\n- Automatic game upgrade detection has been re-enabled and improved dramatically\n\nDue to some enhancements in Vortex, we also now recommend launching Beat Saber from Vortex, rather than directly. While launching directly will still work, BSIPA features might conflict with Vortex and lead to some unexpected behaviour.", () => dismiss());
+                        showUpgradeDialog(api, extVersion, "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n- BeatMods updates and category support are now enabled by default\n- Automatic game upgrade detection has been re-enabled and improved\n\nDue to some enhancements in Vortex, we also now recommend launching Beat Saber from Vortex, rather than directly. While launching directly will still work, BSIPA features might conflict with Vortex and lead to some unexpected behaviour.", () => dismiss());
                     }
                 }
             ]
@@ -140,7 +143,7 @@ function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: 
 
 function showUpgradeDialog(api: IExtensionApi, newVersion: string, message: string, callback?: () => void) {
     return api.showDialog('info', `BeatVortex updated to v${newVersion}`, {
-        text: message,
+        htmlText: renderMarkdown(message),
         links: [
             {label: 'Release Notes', action: () => util.opn(`https://beatvortex.dev/updates/v${newVersion}`)}
         ]

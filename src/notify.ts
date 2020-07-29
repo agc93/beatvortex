@@ -73,39 +73,6 @@ export function showTermsDialog(api: IExtensionApi, callback?: () => void) {
     });
 }
 
-export function showLooseDllNotification(api: IExtensionApi, fileName: string) {
-    return api.sendNotification({
-        type: 'warning',
-        message: "It looks like you might be trying to install a loose plugin. This probably won't work.",
-        title: 'Loose Plugin Detected',
-        noDismiss: true,
-        actions: [
-            {
-                title: 'More info',
-                action: dismiss => {
-                    showLooseDllDialog(api, fileName, dismiss);
-                }
-            }
-        ]
-    });
-}
-
-export function showLooseDllDialog(api: IExtensionApi, fileName: string, callback?: () => void) {
-
-    var msg = "It looks like the mod you're currently installing is a loose DLL file.\n\nIf you are trying to install a BSIPA plugin that you downloaded from GitHub or Discord, this will almost certainly not work how you think!\n" +
-        "To install it properly, remove the 'mod' you just installed, add the DLL file to a ZIP file (or any other archive format) and install that with Vortex instead. The installer will then deploy your plugin to the right location.\nSee beatvortex.dev/docs/faq for more information.";
-    api.showDialog(
-        'info',
-        'Installing Loose Plugins',
-        {
-            text: msg,
-        }, 
-        [ { label: 'Continue' } ]
-    ).then((result: IDialogResult) => {
-        callback?.();
-    });
-}
-
 export function showBSIPAUpdatesNotification(api: IExtensionApi, callback?: () => void) {
     return api.sendNotification({
         type: 'warning',

@@ -7,7 +7,7 @@ import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, fin
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
-import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
+import { showPatchDialog, showTermsNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
 import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak, getBSIPALaunchArgs } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
@@ -73,11 +73,12 @@ function main(context: IExtensionContext) {
             });
         }
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
+            setTitle("Verifying BSIPA deployment");
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
         });
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
+            setTitle("Checking BSIPA configuration");
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAUpdateCheck);
-            handleDeploymentEvent(context.api, profileId, deployment, handleVersionUpdate);
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAConfigTweak);
         });
         context.api.onAsync('will-purge', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
@@ -89,16 +90,6 @@ function main(context: IExtensionContext) {
             traceLog('attempting install of playlist', { playlist: installUrl });
             await installRemotePlaylist(context.api, installUrl);
             return Promise.resolve();
-        });
-        context.api.events.on('start-install', (archivePath: string, callback: (err: Error) => void) => {
-            var looseSupported = meetsMinimum('1.2.17');
-            if (!looseSupported) {
-                var isBeatSaber = selectors.activeGameId(context.api.store.getState()) === GAME_ID;
-                var isLoosePlugin = path.extname(archivePath).toLowerCase() == '.dll';
-                if (isBeatSaber && isLoosePlugin) {
-                    showLooseDllNotification(context.api, path.basename(archivePath));
-                }
-            }
         });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
@@ -818,20 +809,6 @@ export async function handleYeetDetection(api: IExtensionApi, profile: IProfile,
         }
     }
 }
-
-/**
- * An event handler to detect and store the current game version for use in other extension components.
- * 
- * @param api - The extension API.
- * @param profile - The current profile.
- * @param deployment - The current deployment object.
- */
-export async function handleVersionUpdate(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
-    var client = new IPAVersionClient(api);
-    util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'gameVersion'], client.getUnityGameVersion());
-    util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'bsipaVersion'], await client.getBSIPAGameVersion());
-}
-
 
 /**
  * A simple event handler to detect and optionally revert BSIPA patching on purge.
