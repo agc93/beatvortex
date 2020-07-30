@@ -50,6 +50,7 @@ function main(context: IExtensionContext) {
     const isBeatSaberManaged = (): boolean => {
         return isGameManaged(context.api);
     }
+    // context.requireVersion("^1.3");
     context.once(() => {
         enableTrace();
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
@@ -151,7 +152,7 @@ function main(context: IExtensionContext) {
         }
     );
     try {
-        // context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
+        context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
     } catch {}
     context.registerAction(
         'mods-multirow-actions', 300, 'playlist', {}, 'Create Playlist', modIds => {
