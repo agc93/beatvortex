@@ -367,12 +367,12 @@ async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlay
 export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[], playlistName?: string) {
     var installed = api.getState().persistent.mods[GAME_ID];
     var toInstall = maps.filter(plm => !Object.values(installed).some(i => (i.id == plm.key) || (i?.attributes['mapHash'] == plm.hash)));
-    api.sendNotification({
+    var installNot = api.sendNotification({
         type: 'info',
         title: `Now installing ${playlistName ?? 'playlist'}`,
         message: `Installing ${toInstall.length} maps from BeatSaver`,
         noDismiss: true,
-        displayMS: 4000
+        displayMS: 5000
     });
     var profileId = getCurrentProfile(api);
     await installMaps(api, toInstall.map(i => i.hash ?? i.key), (api, modIds) => {
@@ -380,6 +380,12 @@ export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEnt
             api.store.dispatch(actions.setModEnabled(profileId, id, true));
         }
         api.events.emit('mods-enabled', modIds, true, GAME_ID);
+        api.dismissNotification(installNot);
+        api.sendNotification({
+            type: 'success',
+            title: `${playlistName ?? 'Playlist'} installed`,
+            message: `Installed and enabled ${toInstall.length} maps`
+        });
     });
     // lol jks we are auto-enabling these now.
 }

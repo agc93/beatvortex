@@ -260,7 +260,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
         return (<FlexLayout type="row">
             <span style={{fontWeight: 'bold', margin: '0.25em'}}>Beat Saber Version: </span>
             <ButtonGroup aria-label="Game Version" className="version-switcher">
-                {rsort(availableVersions, { loose: true}).slice(0,4).map(av => {
+                {rsort(availableVersions, { loose: true}).slice(0,6).map(av => {
                     return <Button className={gameVersion == av ? "active" : ""} onClick={() => this.forceGameVersion(av)}>{av}</Button>
                 })}
             </ButtonGroup>

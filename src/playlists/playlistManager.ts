@@ -1,9 +1,10 @@
 import { fs, log, util, actions } from "vortex-api";
 import path = require('path');
 import retry = require('async-retry');
+import asyncPool from "tiny-async-pool";
 import { ILocalPlaylist, IPlaylistEntry } from ".";
 import { getAllFiles, ModList, traceLog, getUserName } from "../util";
-import { BeatSaverClient } from "../beatSaverClient";
+import { BeatSaverClient, IMapDetails } from "../beatSaverClient";
 import { IExtensionApi, IMod, IModTable } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
 import { IPlaylistInfo, PlaylistClient, PlaylistRef } from "../playlistClient";
@@ -178,11 +179,12 @@ export const installMaps = async (api: IExtensionApi, mapIdents: string[], callb
     }));
     log('info', `downloading ${details.length} maps`);
     if (details != null && details.length > 0) {
-        await Promise.all(details.map(async map => {
+        const installMap = async (map: IMapDetails): Promise<void> => {
             log('debug', `got details from beatsaver API`, map);
             var link = client.buildDownloadLink(map);
             // log('debug', `attempting proxy: ${map}`);
-            api.events.emit('start-download', 
+            return new Promise<void>((resolve, reject) => {
+                api.events.emit('start-download', 
                 [link], 
                 {
                     game: 'beatsaber'
@@ -190,9 +192,17 @@ export const installMaps = async (api: IExtensionApi, mapIdents: string[], callb
                 null, 
                 (err: Error, id?: string) => {
                     directDownloadInstall(api, map, err, id, (api) => setDownloadModInfo(api.store, id, {...map, source: 'beatsaver', id: map.key}));
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
                 }, 
                 true);
-        }));
+            });
+        }
+        await asyncPool(5, details, installMap);
+        // await Promise.all(details.map(installMap));
         if (callbackFn) {
             callbackFn(api, details.map(m => m.key));
         }
