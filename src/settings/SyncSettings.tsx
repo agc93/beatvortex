@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as Redux from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { withTranslation } from 'react-i18next';
-import { Toggle, log, ComponentEx, More, util } from 'vortex-api';
+import { Toggle, log, ComponentEx, More, util, FormTextItem } from 'vortex-api';
 import { IPreviewSettings, ISyncSettings, setSyncSettings } from './actions';
 import { IState, IProfile } from 'vortex-api/lib/types/api';
 import { isGameManaged, getUserName } from '../util';
@@ -26,7 +26,7 @@ type IProps = IConnectedProps & IActionProps;
 class SyncSettings extends ComponentEx<IProps, {}> {
     
     public render(): JSX.Element {
-        const { t, previewSettings, syncSettings, profiles, onSetUsername } = this.props;
+        const { t, previewSettings, syncSettings, profiles, onSetUsername, userName } = this.props;
         const { beastSaberUsername } = syncSettings;
         return (
             isGameManaged(profiles)
@@ -38,14 +38,15 @@ class SyncSettings extends ComponentEx<IProps, {}> {
                     </HelpBlock>
                     <InputButton
                         initialValue={beastSaberUsername}
+                        label="BeastSaber Username"
                         id='input-set-username'
                         key='input-set-username'
                         tooltip={t('Set your BeastSaber username')}
                         onConfirmed={onSetUsername}
                     />
                     {/* <Toggle
-                        checked={enablePlaylists}
-                        onToggle={onEnablePlaylists}
+                        checked={enableSyncOnDeploy}
+                        onToggle={onEnableSyncOnDeploy}
                     >
                         {t("bs:Settings:EnablePreviewPlaylists")}
                         <More id='more-oci-maps' name='Playlist Management Preview'>
@@ -56,6 +57,11 @@ class SyncSettings extends ComponentEx<IProps, {}> {
             </form>
             : <></>
         );
+    }
+
+    private handleChange = (key, value) => {
+        log('debug', 'handling username change');
+        this.props.onSetUsername(value);
     }
 
 

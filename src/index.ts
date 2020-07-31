@@ -151,9 +151,9 @@ function main(context: IExtensionContext) {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID);
         }
     );
-    try {
+    /* context.optional(() => {
         context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
-    } catch {}
+    }); */
     context.registerAction(
         'mods-multirow-actions', 300, 'playlist', {}, 'Create Playlist', modIds => {
             createPlaylist(context.api, modIds);

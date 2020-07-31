@@ -28,6 +28,7 @@
     "bs:VortexVersionWarningBody": "A number of the extra features added in v{{extensionVersion}} of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!",
     "bs:PlaylistView:NoPlaylists": "No playlists were found in your Beat Saber installation directory!",
     "bs:PlaylistView:NoMaps": "This playlist doesn't seem to contain any maps!",
+    "bs:SyncView:NoBookmarks": "No bookmarks were found for the specified user!",
     "bs:Settings:BSIPATitle": "Beat Saber IPA (BSIPA) Configuration Tweaks",
     "bs:Settings:BSIPAHelp": "Check the options below to change or override certain values in BSIPA's configuration. These will take effect the next time you launch your game (or deploy your mods) and can be used to force BSIPA not to update your mods or move your mods on updates",
     "bs:Settings:BSIPAYeeting": "Disable BSIPA's game upgrade handling",

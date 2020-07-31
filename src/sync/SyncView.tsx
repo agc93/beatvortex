@@ -81,10 +81,11 @@ class SyncView extends ComponentEx<IProps, {}> {
         return (
             <MainPage ref={(mainPage) => { this.mainPage = mainPage; }}>
                 <MainPage.Header ref={(header) => { this.header = header; }}>
+                    {!userName && 
                     <FlexLayout type="column">
                         <>Make sure you configure your username in Settings first!</>
-                        {/* {this.renderSearchBox()} */}
                     </FlexLayout>
+                    }
                 </MainPage.Header>
                 <MainPage.Body>
                     {isLoading
@@ -104,7 +105,7 @@ class SyncView extends ComponentEx<IProps, {}> {
                                     </Panel.Heading>
                                     <Panel.Body>
                                         <FlexLayout type="column">
-                                            <FlexLayout.Fixed>Title</FlexLayout.Fixed>
+                                            <FlexLayout.Fixed>BeastSaber Bookmarks {userName ? `(${userName})` : ''}</FlexLayout.Fixed>
                                             <FlexLayout.Flex>
                                         <FlexLayout type="row">
                                             <FlexLayout.Fixed className="sv-bookmarklist">
@@ -115,7 +116,7 @@ class SyncView extends ComponentEx<IProps, {}> {
                                                                 .filter(s => searchFilter ? s.title.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 : true)
                                                                 .map(this.renderListEntry)} {/* only returns ListGroupEntry */}
                                                         </ListGroup>
-                                                        : t("bs:PlaylistView:NoPlaylists")
+                                                        : t("bs:SyncView:NoBookmarks")
                                                     }
                                                     {bookmarks && 
                                                         <div className='bv-list-status'>
