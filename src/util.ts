@@ -10,7 +10,7 @@ import { STEAMAPP_ID } from "./meta";
 import { IVersionList } from "./beatModsClient";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
-export const models = ['avatar', 'platform', 'saber']
+export const models = ['avatar', 'platform', 'saber', 'plat']
 
 export var useTrace: boolean = false;
 
@@ -122,7 +122,6 @@ export function isGameMod(filesOrInstructions: string[]|IInstruction[]) : boolea
 }
 
 export function isModelMod(files: string[]) : boolean {
-
     return files.length == 1 && models.some(m => files[0].toLowerCase().endsWith(m));
         // && models.some(m => path.extname(path.basename(files[0])).toLowerCase() == m);
 }

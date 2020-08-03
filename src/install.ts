@@ -75,7 +75,11 @@ export async function basicInstaller(files: string[], rootPath: string, modName:
             destination: file,
         };
     });
+    try {
     instructions.push(...await enrich?.(modName) ?? []);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -91,8 +95,12 @@ export async function looseInstaller(files: string[], rootPath: string, modName:
             }
         });
     traceLog('mapped loose instructions', {instructions, isArray: Array.isArray(instructions), count: instructions?.length});
-    var meta = await enrich?.(modName) ?? [];
-    instructions.push(...meta);
+    try {
+        var meta = await enrich?.(modName) ?? [];
+        instructions.push(...meta);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -113,7 +121,11 @@ export async function modelInstaller(files: string[], rootPath: string, modName:
             destination: `${getCustomFolder(path.extname(file).replace('.', '') as ModelType)}/${file}`
         }
     ];
-    instructions.push(...await enrich?.(modName) ?? []);
+    try {
+        instructions.push(...await enrich?.(modName) ?? []);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -146,7 +158,11 @@ export async function archiveInstaller(files: string[], rootPath: string, modNam
             destination: `${root == "." ? file : destination}`
         } as IInstruction
     });
-    instructions.push(...await enrich?.(modName) ?? []);
+    try {
+        instructions.push(...await enrich?.(modName) ?? []);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -179,7 +195,7 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
             // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
             uploadedTimestamp: details.uploadDate,
             category: details.category
-            };
+        };
         instructions = toInstructions(modAtrributes);
         var depInstructions : IInstruction[] = details.dependencies.map(d => {
             return {
