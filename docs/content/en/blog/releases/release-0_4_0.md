@@ -28,7 +28,11 @@ This release adds some big new features and fixes to the previous alpha releases
   - The new Sync view will let you easily sync your BeastSaber bookmarks to your local library without leaving Vortex
   - You can enable this from the Interface tab in Settings.
   - See below for more info on this
+- New BSMG Services dialog
+  - If you're having issues downloading mods or maps from any of the BSMG sites (BeatMods, BeatSaver, ModelSaber etc), there's a new dialog to let you know when those services are down or degraded.
+  - Check the global menu (three dots in the top right of the Vortex window) to find it.
 - Plenty of other improvements and fixes
+  - We now limit concurrent downloads from BeatSaver to avoid hitting limits (and not overload it!)
   - Playlist manager<sup>preview</sup> should be much more stable now
   - We've cleaned up a lot of old features that weren't in use anymore
   - Some UI components (especially Playlists and Sync) should now be much faster and more intuitive

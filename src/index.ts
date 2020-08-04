@@ -130,13 +130,13 @@ function main(context: IExtensionContext) {
         ...gameMetadata,
         id: GAME_ID,
         queryPath: findGame,
+        parameters: getLaunchVariables(),
         setup: (discovery: IDiscoveryResult) => {
             log('debug', 'running beatvortex setup')
             prepareForModding(discovery);
         },
         environment: {
-            SteamAPPId: STEAMAPP_ID.toString(),
-            gamepath: GAME_PATH
+            SteamAPPId: STEAMAPP_ID.toString()
         }
     });
     context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
@@ -152,9 +152,9 @@ function main(context: IExtensionContext) {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID);
         }
     );
-    /* context.optional(() => {
-        context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
-    }); */
+    // context.optional(() => {
+    context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
+    // });
     context.registerAction(
         'mods-multirow-actions', 300, 'playlist', {}, 'Create Playlist', modIds => {
             createPlaylist(context.api, modIds);
@@ -982,8 +982,19 @@ export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
 }
 
 function getLaunchParams(api: IExtensionApi): {[key:string]: string} {
-    var bsipaOpts = getBSIPALaunchArgs(api.getState());
-    return {'BSIPA_OPTS': bsipaOpts};
+    var opts = {
+        BSIPA_OPTS: ''
+    };
+    if (api) {
+        opts.BSIPA_OPTS = getBSIPALaunchArgs(api.getState());
+        // opts.BSIPA_OPTS = bsipaOpts
+    }
+    return opts;
+}
+
+function getLaunchVariables(): string[] {
+    var params = getLaunchParams(null);
+    return Object.keys(params).map(p => `{${p}}`);
 }
 
 //#endregion

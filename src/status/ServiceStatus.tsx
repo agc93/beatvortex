@@ -105,7 +105,7 @@ class ServiceStatusDialog extends ComponentEx<IProps, IComponentState> {
 
     private renderService = (service: IStatResult, index: number) => {
         const { t, language } = this.props;
-        const style = service.status == "operational" ? "success" : "warning";
+        const style = service.status == "operational" ? "success" : service.status == "degraded" ? "warning" : "danger";
         const recentResults = service.data.slice(0, 10);
         const uptime = Math.round(service.uptime * 100);
         const uptimeStyle = uptime == 100 ? "success" : uptime > 80 ? "warning" : "danger";
@@ -146,9 +146,6 @@ class ServiceStatusDialog extends ComponentEx<IProps, IComponentState> {
         }
     }
 
-    /* public componentWillReceiveProps(nextProps: IProps) {
-        this.updateStats();
-    } */
     public componentDidMount() {
         this.updateStats();
     }
