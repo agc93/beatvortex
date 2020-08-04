@@ -1,33 +1,26 @@
-import axios, { AxiosResponse } from 'axios';
-import { log } from 'vortex-api';
-import path = require('path');
-import { models, toTitleCase, trimString } from '../util';
+import { trimString } from '../util';
 import { HttpClient } from '../httpClient';
 import { IStatResult } from './types';
 
 /**
- * A simple client class to encapsulate the majority of modelsaber.com-specific logic, including metadata retrieval.
- *
- * @remarks
- * This client uses *only* unauthenticated endpoints, no auth has been implemented.
+ * A simple client class to retrieve service statistics from a running Statty API.
  */
 export class StattyClient extends HttpClient {
     private baseUrl: string = '';
     /**
-     *
+     * Creates a new Statty client for the given API endpoint.
+     * 
+     * @param baseUrl the base API URL (don't include /api/)
      */
     constructor(baseUrl: string) {
         super();
         this.baseUrl = trimString(baseUrl, '/');
     }
+    
     /**
-     * Retrieves the given model's metadata from the ModelSaber API
-     *
-     * @remarks
-     * - This method only works with one-click install links, not HTTP URLs.
-     *
-     * @param installLink - The one-click installation link for the ModelSaber model.
-     * @returns A subset of the available metadata from ModelSaber. Returns null on error/not found
+     * Gets the status and stats for a single service
+     * 
+     * @param service Service name (e.g. 'wiki')
      */
     async getServiceStatus(service: string): Promise<IStatResult> | null {
         var url = `${this.baseUrl}/api/stats/${service ?? ''}`;
@@ -36,6 +29,9 @@ export class StattyClient extends HttpClient {
         return details;
     }
 
+    /**
+     * Gets the status and stats for all available services.
+     */
     async getAllServices(): Promise<IStatResult[]> | null {
         var url = `${this.baseUrl}/api/stats`;
 

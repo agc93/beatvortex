@@ -68,6 +68,10 @@
       @extend .pv-text;
       font-weight: bold;
     }
+
+    .pv-playlist-item-status {
+      margin-top: 5px;
+    }
   }
 }
 
