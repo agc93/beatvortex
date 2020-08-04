@@ -27,6 +27,7 @@ import { difficultiesRenderer, modesRenderer } from './attributes'
 import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings, SyncSettings } from "./settings";
 import { sessionReducer, updateBeatSaberVersion } from './session';
 import { SyncView, syncReducer, SyncService } from './sync';
+import { ServiceStatusDialog } from "./status";
 
 export const GAME_ID = 'beatsaber';
 export const I18N_NAMESPACE = 'beatvortex';
@@ -215,6 +216,10 @@ function main(context: IExtensionContext) {
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
     context.registerReducer(['persistent', 'beatvortex', 'sync'], syncReducer);
 
+    context.registerAction('global-icons', 200, 'dashboard', {}, 'BSMG Services',
+        () => { context.api.store.dispatch(actions.setDialogVisible('bs-service-status-dialog')); });
+
+    context.registerDialog('bs-service-status-dialog', ServiceStatusDialog);
 
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module

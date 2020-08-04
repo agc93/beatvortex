@@ -238,3 +238,11 @@ export function renderMarkdown(inputMd: string): string {
     // marked.setOptions(mdOpts);
     return marked(inputMd, mdOpts);
 }
+
+export function trimString (s: string, c: string) {
+    if (c === "]") c = "\\]";
+    if (c === "\\") c = "\\\\";
+    return s.replace(new RegExp(
+      "^[" + c + "]+|[" + c + "]+$", "g"
+    ), "");
+}
