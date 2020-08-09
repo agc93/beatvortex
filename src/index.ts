@@ -8,7 +8,7 @@ import { ProfileClient } from "vortex-ext-common";
 
 // local modules
 import { showPatchDialog, showTermsNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
-import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
+import { migrate031, getVortexVersion, meetsMinimum, migrate040 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak, getBSIPALaunchArgs } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
@@ -139,7 +139,8 @@ function main(context: IExtensionContext) {
             SteamAPPId: STEAMAPP_ID.toString()
         }
     });
-    context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
+    // context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
+    context.registerMigration((oldVersion) => migrate040(context.api, oldVersion));
     addTableAttributes(context);
     context.registerAction(
         'categories-icons', 
@@ -210,7 +211,7 @@ function main(context: IExtensionContext) {
     context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
     context.registerSettings('Download', OneClickSettings, undefined, isBeatSaberManaged, 100);
     context.registerSettings('Interface', PreviewSettings, undefined, isBeatSaberManaged, 100);
-    context.registerSettings('Workarounds', BSIPASettings, undefined, isBeatSaberManaged, 100);
+    context.registerSettings('Workarounds', BSIPASettings, () => ({api: context.api}), isBeatSaberManaged, 100);
     context.registerSettings('Interface', SyncSettings, undefined, isBeatSaberManaged, 101);
     context.registerReducer(['settings', 'beatvortex'], settingsReducer);
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
@@ -899,8 +900,8 @@ function setupUpdates(api: IExtensionApi) {
         await installBeatModsUpdate(api, gameId, modId);
         return Promise.resolve();
     };
-    api.onAsync('check-mods-version', checkForUpdates);
-    api.onAsync('mod-update', installUpdates);
+    api.events.on('check-mods-version', checkForUpdates);
+    api.events.on('mod-update', installUpdates);
 }
 
 /**

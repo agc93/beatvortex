@@ -1,4 +1,4 @@
-import { IExtensionApi } from "vortex-api/lib/types/api";
+import { IExtensionApi, IDialogResult } from "vortex-api/lib/types/api";
 import { util, log } from "vortex-api";
 import * as semver from "semver";
 import { GAME_ID, I18N_NAMESPACE } from ".";
@@ -69,47 +69,53 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
     const extVersion = '0.4.0';
     var minVortexVersion = minimumVersions[extVersion];
 
-    if (semver.gte(oldVersion, extVersion)) {
+    if (semver.neq(oldVersion, '0.0.0') && semver.gte(oldVersion, extVersion)) {
         return Promise.resolve();
     }
-    var existingSettings = util.getSafe<IBSIPASettings>(api.getState().settings, ['beatvortex', 'bsipa'], {});
-    var tweaksAlreadyEnabled = existingSettings?.disableUpdates || existingSettings?.disableYeeting;
-    api.store.dispatch(enableBSIPATweaks({enableYeetDetection: true, disableUpdates: true, disableYeeting: false, applyToConfig: false}));
-    var migrations = [];
 
-    migrations.push(new Promise((resolve) => {
-        api.sendNotification({
+    var vortexVersion = getVortexVersion();
+    log('debug', 'checking beatvortex migration compatibility', {oldVersion, extVersion, vortexVersion, minVortexVersion});
+    if (semver.gte(vortexVersion, minVortexVersion)) {
+        //ignored
+    } else {
+        requireVortexVersionNotification(
+            api, 
+            minVortexVersion, 
+            api.translate("bs:VortexVersionWarningBody", { ns: I18N_NAMESPACE, extensionVersion: extVersion }), 
+            () => {}
+        );
+    }
+    // var existingSettings = util.getSafe<IBSIPASettings>(api.getState().settings, ['beatvortex', 'bsipa'], {});
+    // var tweaksAlreadyEnabled = existingSettings?.disableUpdates || existingSettings?.disableYeeting;
+    api.store.dispatch(enableBSIPATweaks({enableYeetDetection: true, disableUpdates: true, disableYeeting: false, applyToConfig: false}));
+    // var migrations = [];
+    // log('debug', 'sending migration notification');
+    return new Promise((resolve) => {
+        return api.sendNotification({
             id: 'beatvortex-migration',
             type: 'success',
             message: api.translate(`BeatVortex successfully updated to ${extVersion}`),
-            displayMS: 4000,
+            noDismiss: true,
             actions: [
                 {
                     title: 'More...',
                     action: (dismiss) => {
-                        showUpgradeDialog(api, extVersion, "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n- BeatMods updates and category support are now enabled by default\n- Automatic game upgrade detection has been re-enabled and improved\n\nDue to some enhancements in Vortex, we also now recommend launching Beat Saber from Vortex, rather than directly. While launching directly will still work, BSIPA features might conflict with Vortex and lead to some unexpected behaviour.", () => dismiss());
+                        showUpgradeDialog(api, extVersion, getReleaseText(), () => {
+                            dismiss();
+                            resolve();
+                        });
+                    }
+                },
+                {
+                    title: 'Understood',
+                    action: dismiss => {
+                      dismiss();
+                      resolve();
                     }
                 }
             ]
         });
-        resolve();
-    }));
-
-    var vortexVersion = getVortexVersion();
-    if (semver.gte(vortexVersion, minVortexVersion)) {
-        //ignored
-    } else {
-        migrations.push(new Promise((resolve) => {
-            return requireVortexVersionNotification(
-                api, 
-                minVortexVersion, 
-                api.translate("bs:VortexVersionWarningBody", { ns: I18N_NAMESPACE, extensionVersion: extVersion }), 
-                () => resolve()
-            );
-        }));
-    }
-
-    return Promise.all(migrations);
+    })
 }
 
 function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: string, message: string, callback?: () => void) {
@@ -131,7 +137,7 @@ function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: 
                 },
             },
             {
-                title: 'Understood',
+                title: 'Dismiss',
                 action: dismiss => {
                     dismiss();
                     callback?.();
@@ -141,13 +147,19 @@ function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: 
     });
 }
 
-function showUpgradeDialog(api: IExtensionApi, newVersion: string, message: string, callback?: () => void) {
+function showUpgradeDialog(api: IExtensionApi, newVersion: string, message: string, callback?: () => void): Promise<IDialogResult> {
     return api.showDialog('info', `BeatVortex updated to v${newVersion}`, {
         htmlText: renderMarkdown(message),
-        links: [
-            {label: 'Release Notes', action: () => util.opn(`https://beatvortex.dev/updates/v${newVersion}`)}
-        ]
     }, [
+        {label: 'Release Notes', action: () => util.opn(`https://beatvortex.dev/updates/v${newVersion}`)},
         {label: 'Close', action: () => callback?.()}
     ]);
+}
+
+const getReleaseText = () => {
+    return "BeatVortex 0.4.x includes a few new features you might want to know about:\n\n" +
+        "- BeatMods updates and category support are now enabled by default\n" + 
+        "- Automatic game upgrade detection has been re-enabled and improved\n" + 
+        "- Some new preview features have been added (enable them in Settings)\n\n" +
+        "Due to some enhancements in Vortex, we also now recommend launching Beat Saber from Vortex, rather than directly. While launching directly will still work, BSIPA features might conflict with Vortex and lead to some unexpected behaviour."
 }

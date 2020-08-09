@@ -4,12 +4,18 @@ import * as Redux from 'redux';
 import path = require('path');
 import { ThunkDispatch } from 'redux-thunk';
 import { withTranslation } from 'react-i18next';
-import { Toggle, log, ComponentEx, More, util, selectors } from 'vortex-api';
+import { Toggle, log, ComponentEx, More, util, selectors, actions } from 'vortex-api';
 import { enableBSIPATweaks, IBSIPASettings } from './actions';
-import { IState, IProfile } from 'vortex-api/lib/types/api';
+import { IState, IProfile, IExtensionApi } from 'vortex-api/lib/types/api';
 import { GAME_ID } from '..';
 import { isGameManaged } from '../util';
+import { Button } from 'react-bootstrap';
+import { BSIPAConfigManager } from '../ipa';
 const { HelpBlock, FormGroup, ControlLabel, InputGroup, FormControl } = require('react-bootstrap');
+
+interface IBaseProps {
+    api: IExtensionApi;
+}
 
 interface IConnectedProps {
     bsipaSettings: IBSIPASettings,
@@ -22,9 +28,10 @@ interface IActionProps {
     onDisableUpdates: (enable: boolean) => void;
     onEnableYeetDetection: (enable: boolean) => void;
     onEnableConfigTweak: (enable: boolean) => void;
+    onResetConfig: () => void;
 }
 
-type IProps = IConnectedProps & IActionProps;
+type IProps = IConnectedProps & IActionProps & IBaseProps;
 
 class BSIPASettings extends ComponentEx<IProps, {}> {
     
@@ -85,16 +92,37 @@ class BSIPASettings extends ComponentEx<IProps, {}> {
                             {t('bs:Settings:BSIPAConfigFileHelp')}
                         </More>
                     </Toggle>
-
+                    <HelpBlock>
+                        {t('bs:Settings:BSIPARestoreSettings')}
+                    </HelpBlock>
                 </FormGroup>
-                <HelpBlock>
-                    {t('bs:Settings:BSIPARestoreSettings')}
-                </HelpBlock>
-                <HelpBlock>
-                    Your BSIPA Configuration file is at {configPath}
-                </HelpBlock>
+                {/* <hr />
+                <FormGroup>
+                    <HelpBlock>
+                        Your BSIPA Configuration file is at {configPath}
+                    </HelpBlock>
+                    <div style={{ marginTop: 10 }}>
+                        {t('bs:Settings:BSIPAReset')}
+                        <More id='more-bs-config-reset' name={t('bs:Settings:BSIPAReset')}>
+                            {t('bs:Settings:BSIPAResetHelp')}
+                        </More>
+                        <Button
+                            id='bs-reset-config'
+                            onClick={this.resetConfig}
+                            style={{ marginLeft: 5 }}
+                        >
+                            {t('Force Reset')}
+                        </Button>
+                    </div>
+                </FormGroup> */}
             </form>
         );
+    }
+
+    private resetConfig = () => {
+        const {onResetConfig, api, installPath } = this.props;
+        BSIPAConfigManager.deleteConfig(path.join(installPath, 'User Data', 'Beat Saber IPA.json'));
+        onResetConfig();
     }
 }
 
@@ -122,6 +150,13 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
         },
         onEnableConfigTweak: (enable: boolean) => {
             return dispatch(enableBSIPATweaks({applyToConfig: enable}));
+        },
+        onResetConfig: () => {
+            return dispatch(actions.addNotification({
+                title: 'BSPIA configuration cleared',
+                message: 'Your BSIPA config file will be regenerated next time you run the game.',
+                type: 'success'
+            }));
         }
     }
 }

@@ -40,6 +40,8 @@
     "bs:Settings:BSIPARestoreSettings": "Please note: disabling the options above will NOT revert the changes to your configuration file! Disabling the tweak will just stop Vortex from overriding the config change on your next mod deploy.",
     "bs:Settings:BSIPAConfigFile": "Apply these settings to the BSIPA configuration file",
     "bs:Settings:BSIPAConfigFileHelp": "This option will also apply the changes you have enabled above to the BSIPA configuration file on mod deployment. Most notably, this will mean that these settings will take effect when launching the game directly (i.e. not through Vortex).\n\nPlease note: disabling this will NOT revert the changes to your configuration file! Disabling the tweak will just stop Vortex from overriding the config change on your next mod deploy.",
+    "bs:Settings:BSIPAReset": "Reset BSIPA Configuration to default",
+    "bs:Settings:BSIPAResetHelp": "If you want to start over, you can also reset your BSIPA configuration. This will DELETE your BSIPA configuration file and a new one will be generated the next time you launch Beat Saber",
     "bs:Settings:SyncHelp": "Before you can use the BeastSaber sync functionality, you'll need to provide your bsaber.com username below",
     "bs:Settings:SyncUsername": "BeastSaber Username",
     "_bs:Settings:EnablePreviewUpdates": "Enable BeatMods Update Support",
