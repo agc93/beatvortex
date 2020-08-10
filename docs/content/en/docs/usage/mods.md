@@ -76,10 +76,10 @@ Please note that "raw" mods that aren't packaged in an archive (for example, pla
 
 ## Updating Mods
 
-> This feature is available in preview for [v0.3.3](/updates/v0.3.3) or later
+> This feature is available in [v0.4.0](/updates/v0.4.0) or later
 
-In the latest versions of BeatVortex, you can enable support for BeatMods updates in the Preview Settings. You can then use the normal "Check for Updates" button in the Mods list to immediately check all your installed BeatMods mods for updates and optionally update them in one-click. This will also preserve the old version in your Mods list! 
+In the latest versions of BeatVortex, support for BeatMods updates is enabled by default. You can use the normal "Check for Updates" button in the Mods list to immediately check all your installed BeatMods mods for updates and optionally update them in one-click. This will also preserve the old version in your Mods list! 
 
 Mod updates are a new feature that have not necessarily been fully tested, so please report any bugs or issues you find. 
 
-That being said, BSIPA will also try and automatically keep your mods updated on launch by default. This will lead to the mods you see in-game not necessarily being the same version you deployed, and Vortex might prompt you about changes to the files when BSIPA updates them.
+That being said, BSIPA will also try and automatically keep your mods updated on launch by default. This will lead to the mods you see in-game not necessarily being the same version you deployed, and Vortex might prompt you about changes to the files when BSIPA updates them. Check the [docs here](/docs/usage/bsipa) for more info on that.

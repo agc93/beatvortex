@@ -36,9 +36,7 @@ To check and enable preview features, open the Interface tab of your Settings pa
 
 ### Categories
 
-> This feature is currently in preview!
-
-When you first start managing Beat Saber (or after the update to v0.3.3 for existing users), BeatVortex will pull down the current set of categories from BeatMods. The next time you start Vortex, you should be able to sort, filter and group your mods by category so you can just check your Stream Tools or hide the Tools for Modders.
+When you first start managing Beat Saber (or after the update to v0.4.x for existing users), BeatVortex will pull down the current set of categories from BeatMods. The next time you start Vortex, you should be able to sort, filter and group your mods by category so you can just check your Stream Tools or hide the Tools for Modders.
 
 ### Handling your Mods list
 

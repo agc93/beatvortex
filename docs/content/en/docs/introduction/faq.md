@@ -36,12 +36,6 @@ The first (and major) point is that BeatVortex can't tell which versions are for
 
 The other (unfixable from our end) problem is that the BeatMods API has a very [weird bug/behaviour](https://github.com/bsmg/BeatMods-Website/issues/41) that means we somehow have to know what game version the mod uses in order to find out what game version the mod uses. This is also why we don't display what game version an installed mod uses: the BeatMods API tells us the completely wrong version.
 
-### I installed a `dll` file I downloaded and it's not working!?
-
-Vortex's whole design is built around mods being part of an archive file. As such, when you try and install a `dll` file on its own, Vortex won't know what to do and will usually try and *extract* the DLL looking for the mod inside.
-
-To install `dll` files you get from GitHub, Discord, or anywhere else, add them to a ZIP file first (right-click -> *Send to* -> *Compressed (zipped) folder* on Windows), then install the ZIP file. Vortex will take care of the rest, including placing the plugin file in the correct place when you deploy.
-
 ### None of my mods are installed suddenly? Where did they go?
 
 This can happen for a few reasons, most commonly an update for Beat Saber or if you verify/reinstall/move the game in Steam. First, *run Beat Saber at least once*. After any update, you need to run Beat Saber at least once to update a few important files.
@@ -58,6 +52,4 @@ As of v0.3.1, dependencies support is available and enabled by default: dependen
 
 ### Are mod updates supported?
 
-Mod updates are an in-progress feature! As of v0.3.3, we have preview support for installing updates for BeatMods mods using Vortex. Check the [usage docs](/usage/mods) for more information.
-
-This is still a preview feature as non-Nexus updates is pretty new ground for Vortex, and I haven't been able to test it that thoroughly. Also, BeatMods is a wild mess of inconsistent logic which makes things a bit less simple.
+As of v0.4.0, mod updates are supported and enabled by default: check your mods for updates like you would any other Vortex-managed game and BeatVortex will automatically check BeatMods for any available updates! Check the [usage docs](/usage/mods) for more information.

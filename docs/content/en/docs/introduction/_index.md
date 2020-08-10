@@ -17,10 +17,13 @@ BeatVortex is still beta-quality software! While I can test locally, I won't be 
 - **Finding new mods**: Most mods can be browsed directly using the built-in BeatMods browser. Using the "Get more mods" menu in Vortex to download mods should automatically install them with Vortex.
 - **Profiles**: Create multiple profiles for different sets of mods or songs and quickly switch between them.
 - **OneClick installs**: There is *preview* support for OneClick installs from BeatSaver and ModelSaber allowing you to install and manage songs easier than ever.
+- **Dependencies**: Vortex's support for dependencies is....complicated but as of Alpha 3, BeatVortex will warn you about missing dependencies, and attempt to automatically install them.
+- **Updates**: Vortex's native update check will now check for and install updates for any of your mods from BeatMods
 
 There's some features that we've included to get them in your hands as fast as possible, but might still have some rough edges:
 
-- **Dependencies**: Vortex's support for dependencies is....complicated. Currently, BeatVortex will warn you about missing dependencies, and attempt to automatically install them. This is still not fully tested, however.
+- **Playlists**: BeatVortex natively supports installing and managing playlists, and there is also a playlists manager in Vortex that [you can enable](/docs/usage/playlists/#preview-feature-playlists-view)
+- **[Sync](/docs/usage/sync)**: A lightweight alternative to BeatSyncConsole, this preview feature can sync and install your bookmarked maps from BeastSaber
 
 Finally, there's a few things that anyone used to other tools might miss though, as we haven't implemented them yet:
 
