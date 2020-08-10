@@ -15,6 +15,10 @@ export async function checkForBeatModsUpdates(api: IExtensionApi, gameId: string
     var store = api.store;
     var client = new BeatModsClient();
     var filteredMods = Object.values(mods)
+        .filter(mod => {
+            var versionAttr = util.getSafe(mod.attributes, ['version'], undefined);
+            return versionAttr && (semver.valid(versionAttr) != null)
+        })
         .filter(mod => util.getSafe(mod.attributes, ['source'], undefined) === 'beatmods');
         // .filter(mod =>(now - (util.getSafe(mod.attributes, ['lastUpdateTime'], 0) || 0)) > UPDATE_CHECK_DELAY);
     log('debug', 'running beatvortex update check', {count: filteredMods.length});
