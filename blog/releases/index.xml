@@ -1,4 +1,55 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 12 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 3.9 Release</title><link>/blog/2020/07/12/alpha-3.9-release/</link><pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/12/alpha-3.9-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Mon, 10 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 4 Release</title><link>/blog/2020/08/10/alpha-4-release/</link><pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/10/alpha-4-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release marks the next full alpha of the BeatVortex extension. If you can install and test this extension, all feedback (on Nexus Mods or GitHub) is very appreciated!&lt;/p>
+&lt;p>This release adds some big new features and fixes to the previous alpha releases including:&lt;/p>
+&lt;ul>
+&lt;li>BeatMods updates and categories for everyone
+&lt;ul>
+&lt;li>We've promoted BeatMods update and categories support out of preview features and they're now enabled by default for all users&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>BSIPA integration improvements
+&lt;ul>
+&lt;li>There's been more tweaks and improvements to the BSIPA integration&lt;/li>
+&lt;li>Thanks to improvements in Vortex, we now automatically disable BSIPA's auto-updates when you launch Beat Saber from Vortex&lt;/li>
+&lt;li>See below for more info on the BSIPA changes&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>New Sync feature in preview
+&lt;ul>
+&lt;li>The new Sync view will let you easily sync your BeastSaber bookmarks to your local library without leaving Vortex&lt;/li>
+&lt;li>You can enable this from the Interface tab in Settings.&lt;/li>
+&lt;li>See below for more info on this&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>New BSMG Services dialog
+&lt;ul>
+&lt;li>If you're having issues downloading mods or maps from any of the BSMG sites (BeatMods, BeatSaver, ModelSaber etc), there's a new dialog to let you know when those services are down or degraded.&lt;/li>
+&lt;li>Check the global menu (three dots in the top right of the Vortex window) to find it.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Plenty of other improvements and fixes
+&lt;ul>
+&lt;li>We now limit concurrent downloads from BeatSaver to avoid hitting limits (and not overload it!)&lt;/li>
+&lt;li>Playlist manager&lt;sup>preview&lt;/sup> should be much more stable now&lt;/li>
+&lt;li>We've cleaned up a lot of old features that weren't in use anymore&lt;/li>
+&lt;li>Some UI components (especially Playlists and Sync) should now be much faster and more intuitive&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>A lot of the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;h3 id="bsipa-integration">BSIPA integration&lt;/h3>
+&lt;p>As covered in the &lt;a href="../../docs/usage/bsipa/">documentation&lt;/a>, BSIPA has a lot of extra features that overlap a bit with some of BeatVortex's features. In particular, BSIPA has its own game update handling and automatic mod updates that will conflict with Vortex and can lead to some odd stuff™.&lt;/p>
+&lt;p>To make this easier, we now disable BSIPA's plugin updates by default &lt;em>when launching the game through Vortex&lt;/em>. You can control which BSIPA features are enabled using the toggles in the Workarounds tab of your Vortex settings. If you want these toggles to apply when launching the game directly (or through Steam), enable the &lt;em>Apply these settings to the BSIPA configuration file&lt;/em> option in Workarounds.&lt;/p>
+&lt;blockquote>
+&lt;p>See the &lt;a href="../../docs/usage/bsipa">BSIPA docs page&lt;/a> for more information on this feature&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="sync-suppreviewsup">Sync &lt;sup>preview&lt;/sup>&lt;/h3>
+&lt;p>The new Sync view is available as a preview feature that can be enabled in your &lt;em>Interface&lt;/em> settings. You can use this new view to automatically download and install maps you bookmark on BeastSaber to your local mod library.&lt;/p>
+&lt;p>You will need to configure your BeastSaber username in Settings first, then you can use the &lt;strong>Sync&lt;/strong> button to fetch your bookmarked maps and &lt;strong>Install&lt;/strong> to immediately download and install any unsynced maps. Your bookmarks will also be automatically added to a &lt;em>Bookmarks&lt;/em> playlist.&lt;/p>
+&lt;p>If you are already using BeatSyncConsole, &lt;em>keep using it&lt;/em>! BeatSyncConsole is dramatically more full-featured, flexible and configurable than BeatVortex's Sync. The Sync view is an alternative for those who want a simpler way of downloading bookmarks without needing to set up or run an external tool.&lt;/p></description></item><item><title>Blog: Alpha 3.9 Release</title><link>/blog/2020/07/12/alpha-3.9-release/</link><pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/12/alpha-3.9-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>

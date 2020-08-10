@@ -131,19 +131,22 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;p>Plugin Yeeting refers to a feature in BSIPA intended to simplify game ugprades. When BSIPA detects that the game itself has been updated since BSIPA last ran, it will &lt;strong>move&lt;/strong> all your installed plugins into a special folder in your install directory to ensure that incompatible mods aren't loaded after an upgrade. This process is called &amp;ldquo;yeeting&amp;rdquo;.&lt;/p>
 &lt;p>While this isn't a problem if you're manually installing mods (or presumably using Mod Assistant), when BSIPA does this Vortex will lose track of the files it deployed to the install directory and think you deleted them. If BSIPA does &amp;ldquo;yeet&amp;rdquo; your mods, you'll see a dialog in Vortex asking you whether you really want to delete all the files in your mod folders (no, you don't).&lt;/p>
 &lt;p>BeatVortex will now also detect when Beat Saber has been upgraded and offer to disable all your currently installed mods (except for BSIPA) until you can run your game (thus updating BSIPA) and you can then re-enable your mods once you've verified they are compatible with the latest game version.&lt;/p>
+&lt;blockquote>
+&lt;p>You can also disable BSIPA's handling completely using the toggle in the Workarounds tab of your Settings, but we don't recommend it.&lt;/p>
+&lt;/blockquote>
 &lt;h2 id="pluginmod-updates">Plugin/mod Updates&lt;/h2>
 &lt;p>Also, by default, BSIPA will auto-update your mods when you launch the game. While this won't bother Mod Assistant, this means that the mods in your install directory won't be the same ones Vortex put there. This means a) your in-game mods might not be the same versions you have installed with Vortex and b) Vortex might ask you to save/revert changes made by BSIPA when you next deploy.&lt;/p>
 &lt;p>Like with OneClick installs, things will go a lot smoother if you have only one app handling updates, so we recommend disabling updates in BSIPA or in BeatVortex depending on which one you want handling updates.&lt;/p>
-&lt;blockquote>
-&lt;p>Even if BeatVortex's updates are disabled, Vortex will still prompt you to save/revert the changes made when BSIPA updates your mods&lt;/p>
-&lt;/blockquote>
+&lt;p>When you launch Beat Saber from Vortex, we automatically disable BeatMods's automatic updates, but this will only apply when launching from Vortex by default (see below).&lt;/p>
 &lt;h2 id="configuration-tweaks">Configuration Tweaks&lt;/h2>
 &lt;blockquote>
-&lt;p>This feature is available in &lt;a href="../../updates/v0.3.3">v0.3.3&lt;/a> or later&lt;/p>
+&lt;p>This feature is available in &lt;a href="../../updates/v0.4.0">v0.4.0&lt;/a> or later&lt;/p>
 &lt;/blockquote>
-&lt;p>Since these overlapping areas can sometimes cause problems, BeatVortex includes the ability to apply overrides/tweaks to the BSIPA configuration file when you deploy your mods. Check the Workarounds tab of the Settings page to find them. Enabling these tweaks will edit &lt;code>Beat Saber IPA.json&lt;/code> to disable certain features when you deploy.&lt;/p>
-&lt;p>Disabling plugin yeeting will set the &lt;code>YeetMods&lt;/code> value of the configuration file to &lt;code>false&lt;/code>, disabling BSIPA's plugin yeeting entirely. We don't recommend using this unless you are running into problems as BeatVortex's own game update detection should help you through the upgrade process without getting in BSIPA's way.&lt;/p>
-&lt;p>Disabling plugin auto-updates will set the &lt;code>Updates.AutoCheckUpdates&lt;/code> and &lt;code>Updates.AutoUpdate&lt;/code> values of the configuration file to &lt;code>false&lt;/code>, disabling BSIPA's automatic plugin updates entirely. We recommend turning this on &lt;strong>if&lt;/strong> you're using Vortex to handle your BeatMods plugin updates as it will mean that your installed version is the version you see in-game, and BSIPA won't update mods that you haven't updated in Vortex.&lt;/p></description></item><item><title>Docs: Installing Playlists</title><link>/docs/usage/playlists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/playlists/</guid><description>
+&lt;p>Since these overlapping areas can sometimes cause problems, BeatVortex includes the ability to apply overrides/tweaks to the BSIPA configuration file when you deploy your mods. Check the Workarounds tab of the Settings page to find them. Enabling these tweaks will change how BSIPA works when you launch the game.&lt;/p>
+&lt;p>Disabling plugin yeeting is the equivalent of setting &lt;code>YeetMods&lt;/code> value of the configuration file to &lt;code>false&lt;/code>, disabling BSIPA's plugin yeeting entirely. We don't recommend using this unless you are running into problems as BeatVortex's own game update detection should help you through the upgrade process without getting in BSIPA's way.&lt;/p>
+&lt;p>Disabling plugin auto-updates will set the &lt;code>Updates.AutoCheckUpdates&lt;/code> and &lt;code>Updates.AutoUpdate&lt;/code> values of the configuration file to &lt;code>false&lt;/code>, disabling BSIPA's automatic plugin updates entirely. We recommend turning this on &lt;strong>if&lt;/strong> you're using Vortex to handle your BeatMods plugin updates as it will mean that your installed version is the version you see in-game, and BSIPA won't update mods that you haven't updated in Vortex.&lt;/p>
+&lt;h3 id="configuration-file">Configuration File&lt;/h3>
+&lt;p>By default, enabling the tweaks above will &lt;strong>only&lt;/strong> affect Beat Saber when launched from Vortex, not from Steam or anywhere else. If you want the same behaviour when launching from Steam or your Start menu as you get when launching from Vortex, Vortex can also apply these tweaks to your &lt;code>Beat Saber IPA.json&lt;/code>. If you enable the &lt;em>Apply these settings to the BSIPA configuration file&lt;/em> tweak in your Workarounds tab, Vortex will automatically apply any of your chosen BSIPA changes to your configuration file next time you deploy, ensuring the behaviour is the same, whether you launch from Vortex or not.&lt;/p></description></item><item><title>Docs: Installing Playlists</title><link>/docs/usage/playlists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/playlists/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>BeatVortex 0.3.1 or later is required to install playlists using Vortex.&lt;/p>
 &lt;p>If you're currently using Beatlist for playlists, see below for extra information.&lt;/p>
@@ -176,7 +179,29 @@ C:\Users\&amp;lt;your-user-name-here&amp;gt;\AppData\Roaming\Vortex\plugins\game
 &lt;ul>
 &lt;li>Enabling playlist link handling in your Vortex settings will likely prevent Mod Assistant from handling those links.&lt;/li>
 &lt;li>Installing a playlist with Vortex will separately install each song in the playlist as a manageable mod in Vortex.&lt;/li>
-&lt;/ul></description></item><item><title>Docs: BeatVortex for Mod Assistant Users</title><link>/docs/usage/mod-assistant/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/mod-assistant/</guid><description>
+&lt;/ul></description></item><item><title>Docs: Bookmark Sync</title><link>/docs/usage/sync/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/sync/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>BeatVortex 0.4.0 or later is required to use the Sync view..&lt;/p>
+&lt;p>If you're currently using BeatSyncConsole for syncing, see below for extra information.&lt;/p>
+&lt;/div>
+&lt;p>The BeatVortex Sync view allows you to easily sync bookmarked maps from BeastSaber to your local library, directly from within Vortex.&lt;/p>
+&lt;p>This feature is &lt;em>very new&lt;/em> and there's certain to be some bugs. If you do enable the feature and encounter any bugs, please report them &lt;a href="https://github.com/agc93/beatvortex/issues">on GitHub&lt;/a>.&lt;/p>
+&lt;h2 id="setting-up">Setting up&lt;/h2>
+&lt;blockquote>
+&lt;p>This feature is available in v0.4.0 or later&lt;/p>
+&lt;/blockquote>
+&lt;p>The Sync view is new and hasn't been fully tested, so it has been included as a preview feature in 0.4.x releases. To enable it, head over to the Interface tab of the Settings page and look for &amp;ldquo;BeatVortex Preview Features&amp;rdquo;. Check &amp;ldquo;Enable Bookmark Sync&amp;rdquo; on to enable the new interface, and you should see the new page appear in the sidebar (switch back to your Mods list if it doesn't immediately appear).&lt;/p>
+&lt;p>Also make sure to set your BeastSaber username in the Interface tab of your Settings!&lt;/p>
+&lt;h2 id="syncing-bookmarks">Syncing Bookmarks&lt;/h2>
+&lt;p>You can now switch to the Sync view and wait for your bookmarked maps to be retrieved from BeastSaber.&lt;/p>
+&lt;p>You can then use the Sync button to update your local &lt;em>Bookmarks&lt;/em> playlist with your latest bookmarked maps (the playlist will be automatically created if this is your first run). The Install button will update your BeastSaber bookmarks and immediately download and install any unsynced maps.&lt;/p>
+&lt;blockquote>
+&lt;p>BeatVortex will not redownload maps that BeatSyncConsole has previously downloaded!&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="beatvortex-or-beatsyncconsole">BeatVortex or BeatSyncConsole?&lt;/h2>
+&lt;p>If you're already using BeatSyncConsole, I &lt;em>would not&lt;/em> recommend switching to BeatVortex unless you have a solid reason to. BeatSyncConsole is much more configurable, includes support for a multitude of different sources, and is widely used by the community. At this time, there are no plans to extend BeatVortex Sync with more sources or configuration as BeatSyncConsole is perfectly capable of handling that use case.&lt;/p>
+&lt;p>If you're not currently using BeatSyncConsole, or are looking for a simpler way of syncing bookmarks without needing an external tool, give BeatVortex's Sync a try. BeatVortex Sync gives you a simpler option, integrated with the rest of your mod management, available through a graphical interface, but without any of the advanced features or configuration of BeatSyncConsole.&lt;/p>
+&lt;p>In short, pick the best tool for your use case! That being said, &lt;strong>do not&lt;/strong> use both at the same time. BeatSyncConsole won't know which maps BeatVortex Sync has already downloaded and will most likely download duplicates or run into conflicts.&lt;/p></description></item><item><title>Docs: BeatVortex for Mod Assistant Users</title><link>/docs/usage/mod-assistant/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/usage/mod-assistant/</guid><description>
 &lt;p>First and foremost, the best advice for Mod Assistant users is this: if you don't want to change, &lt;strong>you don't have to!&lt;/strong>&lt;/p>
 &lt;p>BeatVortex is a completely unofficial project and is &lt;strong>not&lt;/strong> intended as a replacement to Mod Assistant, which is also a very good way of handling Beat Saber mods. If you're happy with Mod Assistant and don't have any preference for using Vortex, don't feel like you need to make the switch!&lt;/p>
 &lt;div class="pageinfo pageinfo-primary">
