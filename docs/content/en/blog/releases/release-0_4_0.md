@@ -1,8 +1,7 @@
 ---
 title: "Alpha 4 Release"
 linkTitle: "Release 0.4.0"
-date: 2020-07-29
-draft: true
+date: 2020-08-10
 aliases:
   - /updates/zirconium
   - /updates/v0.4.0

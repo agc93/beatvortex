@@ -1,7 +1,6 @@
 ---
 title: "Bookmark Sync"
 linkTitle: "Sync"
-draft: true
 weight: 41
 description: >
   How to sync your bookmarked maps with Vortex.
