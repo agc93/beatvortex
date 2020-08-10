@@ -87,7 +87,7 @@ export async function installBeatModsUpdate(api: IExtensionApi, gameId: string, 
         update.name, 
         (err: Error, id?: string) => {
             directDownloadInstall(api, update, err, id, (api) => {
-                setDownloadModInfo(api.store, id, {...update, source: 'beatmods'});
+                setDownloadModInfo(api.store, id, {...update, source: 'beatmods', id: update._id});
             });
         }, 
         true);

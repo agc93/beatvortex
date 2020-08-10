@@ -535,17 +535,20 @@ async function handleSettings<T>(api: IExtensionApi, key: string, stateFunc?: (a
  * @param id - ID of the *download* being enriched. Not the modId!
  * @param details - The basic metadata to add to the download.
  */
-export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: { name: string, source: string, id?: string }) {
-    // store.dispatch(actions.setDownloadModInfo(id, 'modId', details.key));
-    // store.dispatch(actions.setDownloadModInfo(id, 'modName', details.name));
+export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: { name: string, source: string, id?: string, fileId?: string }, meta?: {[key: string]: {}}) {
     store.dispatch(actions.setDownloadModInfo(id, 'name', details.name));
-    // store.dispatch(actions.setDownloadModInfo(id, 'downloadGame', GAME_ID));
     store.dispatch(actions.setDownloadModInfo(id, 'game', GAME_ID));
-    // store.dispatch(actions.setDownloadModInfo(id, 'author', details.metadata.levelAuthorName))
     store.dispatch(actions.setDownloadModInfo(id, 'logicalFileName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'source', details.source));
     if (details.id) {
-        store.dispatch(actions.setDownloadModInfo(id, 'externalId', details.id));
+        store.dispatch(actions.setDownloadModInfo(id, 'custom.fileId', details.id));
+    }
+    //TODO: we should really add more metadata here then use an attribute extractor to save us an API call during installation.
+    //Aside from saving an API call, it would also reduce our reliance on the file names to detect sources.
+    if (meta && Object.keys(meta).length > 0) {
+        for (const key of Object.keys(meta)) {
+            store.dispatch(actions.setDownloadModInfo(id, key, meta[key]));
+        }
     }
 }
 

@@ -1,43 +1,97 @@
-import axios, { AxiosResponse } from 'axios';
-import { log } from 'vortex-api';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { log, util } from 'vortex-api';
 import path = require('path');
-import { models, toTitleCase } from './util';
-
+import { models, toTitleCase, traceLog } from './util';
+import retry from 'async-retry';
+import { IExtensionApi, IState } from 'vortex-api/lib/types/api';
+import { ThunkDispatch } from 'redux-thunk';
+import * as Redux from 'redux';
 
 /**
- * A simple client class to encapsulate the majority of modelsaber.com-specific logic, including metadata retrieval.
+ * A simple client base class to encapsulate retrieving data from a JSON API endpoint.
  *
  * @remarks
  * This client uses *only* unauthenticated endpoints, no auth has been implemented.
  */
 export class HttpClient {
-    
+
+    protected retryCount: number = 3;
+
     /**
-     * Helper method for retrieving data from the ModelSaber API.
+     * Helper method for retrieving data from the a JSON API.
      *
      * @remarks
      * - This method is just the common logic and needs a callback to declare what to return from the output.
      *
      * @param url - The endpoint URL for the request.
      * @param returnHandler - A callback to take the API response and return specific data.
-     * @returns A subset of the available metadata from ModelSaber. Returns null on error/not found
+     * @returns The repsonse after transformation by the returnHandler. Returns null on error/not found.
      */
-    protected async getApiResponse<T>(url: string, returnHandler: (data: any) => T) : Promise<T> | null {
-        var resp = await axios.request({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse) => {
-            const { data } = resp;
-            return returnHandler(data);
-            // return data[0] as IModelDetails; //we just have to assume first here since we don't know what the ID is anymore.
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
-        return resp;
+    protected getApiResponse = async <T>(url: string, returnHandler?: (data: any) => T, onError?: (err: Error) => any): Promise<T | null> | null => {
+        returnHandler = returnHandler ?? ((data) => data);
+        try {
+            var resp = await retry(async bail => {
+                try {
+                    var response = await axios.request<T>({
+                        url: url,
+                        headers: { 'User-Agent': 'BeatVortex/0.1.0' }
+                    });
+                    const { data } = response;
+                    return returnHandler(data);
+                } catch (err) {
+                    if ((err as AxiosError).response && (err as AxiosError).response.status == 404) {
+                        bail(err);
+                    } else {
+                        throw (err);
+                    }
+                }
+            }, {
+                retries: this.retryCount ?? 3,
+                onRetry: (err) => {
+                    log('debug', 'error during HTTP request, retrying', { err });
+                }
+            });
+            return resp;
+        } catch (err) {
+            if (onError) {
+                return onError?.(err);
+            } else {
+                throw (err);
+            }
+        }
     }
 
-    private getType(fileName: string) {
+    protected getType(fileName: string) {
         return path.extname(fileName).replace('.', '');
+    }
+}
+
+export class CachedHttpClient extends HttpClient {
+    protected _api: IExtensionApi;
+    /**
+     *
+     */
+    constructor(api: IExtensionApi) {
+        super();
+        this._api = api;
+    }
+
+    protected checkCache<TCache, T>(statePath: string[], stateHandler?: (cache: TCache) => T) {
+        stateHandler = stateHandler ?? ((cache) => cache as any);
+        if (this._api) {
+            var cache = util.getSafeCI<TCache>(this._api.getState(), statePath, undefined);
+            if (cache != undefined && cache) {
+                return stateHandler(cache);
+            }
+        }
+        return null;
+    }
+
+    protected updateCache = (dispatchAction: Redux.Action, checkAction?: () => boolean) => {
+        checkAction = checkAction ?? (() => true);
+        if (this._api && checkAction) {
+            // traceLog('adding entry to cache', {ident: mapKey, key: resp.key});
+            this._api.store.dispatch(dispatchAction);
+        }
     }
 }

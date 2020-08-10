@@ -4,6 +4,7 @@ import path = require('path');
 import { getGameVersion, traceLog } from './util';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { updateBeatModsCache, updateBeatModsVersions } from "./session";
+import { HttpClient } from './httpClient';
 
 export interface ModList { [modName: string]: IModDetails; };
 export interface IVersionList { [modVersion: string]: string[] };
@@ -14,13 +15,14 @@ export interface IVersionList { [modVersion: string]: string[] };
  * @remarks
  * This client uses *only* unauthenticated endpoints, no auth has been implemented.
  */
-export class BeatModsClient {
+export class BeatModsClient extends HttpClient {
 
     private _api: IExtensionApi;
     /**
      *
      */
     constructor(api?: IExtensionApi) {
+        super();
         this._api = api;
     }
 
@@ -179,7 +181,7 @@ export class BeatModsClient {
         var url = gameVersion
             ? `https://beatmods.com/api/v1/mod?status=approved&gameVersion=${gameVersion}`
             : `https://beatmods.com/api/v1/mod?status=approved`;
-        var allMods = await this.getApiResponse<IModDetails[]>(url, (data) => data)
+        var allMods = await this.getApiResponse<IModDetails[]>(url, (data) => data, (err) => {return null;})
         log('debug', `retrieved ${allMods?.length} mods from BeatMods`);
         if (this._api && allMods != null) {
             log('debug', 'populating session cache with mods', {count: allMods.length, withVersion: gameVersion ?? 'none'});
@@ -200,31 +202,6 @@ export class BeatModsClient {
             this._api.store.dispatch(updateBeatModsVersions(versionResponse));
         }
         return versionResponse;
-    }
-
-    /**
-     * Helper method for retrieving data from the ModelSaber API.
-     *
-     * @remarks
-     * - This method is just the common logic and needs a callback to declare what to return from the output.
-     *
-     * @param url - The endpoint URL for the request.
-     * @param returnHandler - A callback to take the API response and return specific data.
-     * @returns A subset of the available metadata from ModelSaber. Returns null on error/not found
-     */
-    private async getApiResponse<T>(url: string, returnHandler: (data: any) => T) : Promise<T> | null {
-        var resp = await axios.request({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse) => {
-            const { data } = resp;
-            return returnHandler(data);
-            // return data[0] as IModelDetails; //we just have to assume first here since we don't know what the ID is anymore.
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
-        return resp;
     }
 
     static getDownloads(mod: IModDetails) : string[] {

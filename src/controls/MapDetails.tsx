@@ -35,6 +35,8 @@ class MapDetails extends ComponentEx<IProps, IComponentState> {
     private renderDescription = (detail: IMapDetails) => {
         var d = new Date(detail.uploaded)
         return (
+            detail != null
+            ?
             <FlexLayout type="column">
                 <FlexLayout.Fixed>
                     <FlexLayout type="column">
@@ -53,6 +55,7 @@ class MapDetails extends ComponentEx<IProps, IComponentState> {
                     </div>
                 </FlexLayout.Flex>
             </FlexLayout>
+            : <>Unknown Map!</>
         )
     }
 

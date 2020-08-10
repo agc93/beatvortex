@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { log } from 'vortex-api';
 import path = require('path');
 import { models, toTitleCase } from './util';
+import { HttpClient } from './httpClient';
 
 /**
  * Gets the correct installation folder path for the given custom model.
@@ -32,7 +33,7 @@ export function getCustomFolder(type: ModelType) {
  * @remarks
  * This client uses *only* unauthenticated endpoints, no auth has been implemented.
  */
-export class ModelSaberClient {
+export class ModelSaberClient extends HttpClient {
     /**
      * Determines if the given link is a valid modelsaber.com installation link.
      * @remarks
@@ -91,16 +92,7 @@ export class ModelSaberClient {
 
         //after further testing, this should get replaced with a call to getApiResponse
         // see getModelByFileName for an example.
-        var resp = await axios.request({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse) => {
-            const { data } = resp;
-            return data[linkDetails.id] as IModelDetails;
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
+        var resp = await this.getApiResponse<IModelDetails>(url, (data) => data[linkDetails.id])
         return resp;
     }
 
@@ -122,35 +114,6 @@ export class ModelSaberClient {
         var url = `https://modelsaber.com/api/v2/get.php?filter=name:${path.basename(fileName, path.extname(fileName))}&sort=desc&type=${this.getType(fileName)}`;
         var details = await this.getApiResponse(url, (data) => data[0] as IModelDetails);
         return details;
-    }
-
-    /**
-     * Helper method for retrieving data from the ModelSaber API.
-     *
-     * @remarks
-     * - This method is just the common logic and needs a callback to declare what to return from the output.
-     *
-     * @param url - The endpoint URL for the request.
-     * @param returnHandler - A callback to take the API response and return specific data.
-     * @returns A subset of the available metadata from ModelSaber. Returns null on error/not found
-     */
-    private async getApiResponse(url: string, returnHandler: (data: any) => IModelDetails) : Promise<IModelDetails> | null {
-        var resp = await axios.request({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse) => {
-            const { data } = resp;
-            return returnHandler(data);
-            // return data[0] as IModelDetails; //we just have to assume first here since we don't know what the ID is anymore.
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
-        return resp;
-    }
-
-    private getType(fileName: string) {
-        return path.extname(fileName).replace('.', '');
     }
 }
 

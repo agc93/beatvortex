@@ -4,6 +4,7 @@ import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { traceLog } from './util';
 import { cacheBeatSaverMap } from './session';
 import retry from 'async-retry';
+import { HttpClient, CachedHttpClient } from './httpClient';
 
 /**
  * A simple client class to encapsulate the majority of beatsaver.com-specific logic, including metadata retrieval.
@@ -11,14 +12,15 @@ import retry from 'async-retry';
  * @remarks
  * This client uses *only* unauthenticated endpoints, no auth has been implemented.
  */
-export class BeatSaverClient {
+export class BeatSaverClient extends CachedHttpClient {
 
-    private _api: IExtensionApi;
+    // private _api: IExtensionApi;
     /**
      *
      */
     constructor(api?: IExtensionApi) {
-        this._api = api;
+        super(api);
+        // this._api = api;
     }
 
     static isArchiveName(str: string, requireExtension?: boolean): boolean {
@@ -36,30 +38,30 @@ export class BeatSaverClient {
      */
     getMapDetails = async (mapKey: string): Promise<IMapDetails> | null => {
         var url = mapKey.length === 4 ? `https://beatsaver.com/api/maps/detail/${mapKey}` : `https://beatsaver.com/api/maps/by-hash/${mapKey}`;
-        if (this._api) {
+        var cachedMap = this.checkCache<IMapDetails, IMapDetails>(['session', 'beatvortex', 'maps', mapKey]);
+        if (cachedMap) {
+            traceLog('pulled map from cache!', {map: mapKey});
+            return cachedMap;
+        }
+        /* if (this._api) {
             var map = util.getSafeCI<IMapDetails>(this._api.getState().session, ['beatvortex', 'maps', mapKey], undefined);
             if (map != undefined) {
-                traceLog('pulled map from cache!', {map: mapKey});
-                return map;
+                
             }
+        } */
+        try {
+            var resp = await this.getApiResponse<IMapDetails>(url, null, (err) => null);
+            this.updateCache(cacheBeatSaverMap(resp.hash, resp), () => resp != null);
+            return resp;
+        } catch (err) {
+            log('error', 'error fetching map details from BeatSaver', {map: mapKey, err});
+            return null;
         }
-        var resp = await retry(async bail => {
-            var response = await axios.request<IMapDetails>({
-                url: url,
-                headers: {'User-Agent': 'BeatVortex/0.1.0' }
-            });
-            if (response.status === 404) {
-                bail(new Error('Not Found'));
-            }
-            const { data } = response;
-            return data;
-
-        }, { retries: 3 });
-        if (this._api && resp != null) {
+        
+        /* if (this._api && resp != null) {
             traceLog('adding map to cache', {ident: mapKey, key: resp.key});
             this._api.store.dispatch(cacheBeatSaverMap(resp.hash, resp));
-        }
-        return resp;
+        } */
     }
 
     /**
