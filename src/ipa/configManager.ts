@@ -1,7 +1,7 @@
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { GAME_ID } from "..";
 import path = require("path");
-import { fs } from "vortex-api";
+import { fs, log } from "vortex-api";
 import nfs = require('fs');
 
 export class BSIPAConfigManager {
@@ -69,6 +69,29 @@ export class BSIPAConfigManager {
     configExists = (): boolean => {
         var configPath = this.getConfigPath();
         return nfs.existsSync(configPath);
+    }
+
+    static async deleteConfig(configPath: string, confirmCb?: () => boolean): Promise<boolean> {
+        var cb = cb ?? (() => true);
+        if (nfs.existsSync(configPath)) {
+            try {
+                var configContent = await fs.readFileAsync(configPath, { encoding: 'utf-8' });
+                var config = JSON.parse(configContent);
+                config.Regenerate = true;
+                await fs.writeFileAsync(configPath, JSON.stringify(config, null, 2));
+                return true;
+            } catch (err) {
+                log('error', 'error setting regenerate', {err});
+                try {
+                    await fs.unlinkAsync(configPath, {showDialogCallback: cb});
+                    return true;
+                } catch {
+                    log('error', "well shit, this isn't looking too good")
+                }
+            }
+            // return false;
+        }
+        return false;
     }
 }
 

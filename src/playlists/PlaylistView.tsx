@@ -1,4 +1,4 @@
-import { MainPage, log, FlexLayout, Icon, actions, Spinner, ComponentEx } from 'vortex-api';
+import { MainPage, log, FlexLayout, Icon, actions, Spinner, ComponentEx, tooltip as tt } from 'vortex-api';
 import path = require('path');
 const { ListGroup, ListGroupItem, Panel, Button, FormControl } = require('react-bootstrap');
 import React, { Component } from 'react';
@@ -16,6 +16,7 @@ import { BeatSaverClient, IMapDetails } from '../beatSaverClient';
 import { ILocalPlaylist, IPlaylistEntry } from './types';
 import PlaylistMapList from "./PlaylistMapList";
 import { installPlaylistMaps } from '../install';
+import { LoadingSpinner } from '../controls';
 
 interface IConnectedProps {
     installed: { [modId: string]: IMod; };
@@ -87,7 +88,7 @@ class PlaylistView extends ComponentEx<IProps, {}> {
                 </MainPage.Header>
                 <MainPage.Body>
                     {isLoading
-                        ? this.renderLoadingSpinner()
+                        ? <LoadingSpinner />
                         :
                         <Panel id="playlists-browse">
                             <Panel.Body>
@@ -151,21 +152,8 @@ class PlaylistView extends ComponentEx<IProps, {}> {
         )
     }
 
-    private renderLoadingSpinner = () => {
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <Spinner
-                    style={{
-                        width: '64px',
-                        height: '64px',
-                    }}
-                />
-            </div>
-        );
-    }
-
     private renderListEntry = (playlist: ILocalPlaylist) => {
-        // log('debug', 'attempting render of mod', {mod: mod.name});
+        const { installed } = this.props;
         const { selected } = this.state;
         return (
             <ListGroupItem
@@ -183,6 +171,13 @@ class PlaylistView extends ComponentEx<IProps, {}> {
                 </div>
                 <div className='pv-playlist-item-footer'>
                     <div className='pv-playlist-item-author'>{playlist.authorName ?? 'Unknown'}</div>
+                    <div className='pv-playlist-item-status'>
+                        {this.isInstalled(playlist) 
+                            ? <tt.Icon tooltip="Vortex-managed" name="vortex" set="beatvortex" />
+                            // : <tt.Icon tooltip="External" name="override" />
+                            : <></>
+                        }
+                    </div>
                 </div>
             </ListGroupItem>
         )
@@ -248,6 +243,14 @@ class PlaylistView extends ComponentEx<IProps, {}> {
         log('debug', 'mod list component mounted');
         await this.refreshPlaylists();
         this.setState({ isLoading: false });
+    }
+
+    private isInstalled = (pl: ILocalPlaylist) => {
+        const { installed } = this.props;
+        if (installed && Object.keys(installed).length > 0) {
+            return Object.values(installed).filter(m => m.type == 'bs-playlist').some(m => util.getSafe(m.attributes, ['name'], '') == pl.title);
+        }
+        return false;
     }
 }
 

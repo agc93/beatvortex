@@ -75,7 +75,11 @@ export async function basicInstaller(files: string[], rootPath: string, modName:
             destination: file,
         };
     });
+    try {
     instructions.push(...await enrich?.(modName) ?? []);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -91,8 +95,12 @@ export async function looseInstaller(files: string[], rootPath: string, modName:
             }
         });
     traceLog('mapped loose instructions', {instructions, isArray: Array.isArray(instructions), count: instructions?.length});
-    var meta = await enrich?.(modName) ?? [];
-    instructions.push(...meta);
+    try {
+        var meta = await enrich?.(modName) ?? [];
+        instructions.push(...meta);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -113,7 +121,11 @@ export async function modelInstaller(files: string[], rootPath: string, modName:
             destination: `${getCustomFolder(path.extname(file).replace('.', '') as ModelType)}/${file}`
         }
     ];
-    instructions.push(...await enrich?.(modName) ?? []);
+    try {
+        instructions.push(...await enrich?.(modName) ?? []);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -146,7 +158,11 @@ export async function archiveInstaller(files: string[], rootPath: string, modNam
             destination: `${root == "." ? file : destination}`
         } as IInstruction
     });
-    instructions.push(...await enrich?.(modName) ?? []);
+    try {
+        instructions.push(...await enrich?.(modName) ?? []);
+    } catch (e) {
+        log('error', 'error during metadata installation', {err: e});
+    }
     return instructions;
 }
 
@@ -179,7 +195,7 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
             // gameVersion: details.gameVersion, //we shouldn't do this yet. See below.
             uploadedTimestamp: details.uploadDate,
             category: details.category
-            };
+        };
         instructions = toInstructions(modAtrributes);
         var depInstructions : IInstruction[] = details.dependencies.map(d => {
             return {
@@ -337,20 +353,22 @@ async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlay
     api.store.dispatch(actions.setModEnabled(profileId, installPath, true));
     api.events.emit('mods-enabled', [ installPath ], true, GAME_ID);
     var sourceName = ref.fileUrl ? new URL(ref.fileUrl).host : path.basename(ref.fileName) ?? 'local file';
-    api.sendNotification({
-        id: `ready-to-install-${installPath}`,
-        type: 'success',
-        title: api.translate('Playlist installed'),
-        message: `Installed ${installPath} playlist from ${sourceName}.`,
-        actions: [
-          {
-            title: 'Install Maps', action: dismiss => {
-                installPlaylistMaps(api, info.songs);
-                dismiss();
+    if (info.songs && info.songs.length > 0) {
+        api.sendNotification({
+            id: `ready-to-install-${installPath}`,
+            type: 'success',
+            title: api.translate('Playlist installed'),
+            message: `Installed ${installPath} playlist from ${sourceName}.`,
+            actions: [
+            {
+                title: 'Install Maps', action: dismiss => {
+                    installPlaylistMaps(api, info.songs);
+                    dismiss();
+                },
             },
-          },
-        ],
-      });
+            ],
+        });
+    }
 }
 
 /**
@@ -362,15 +380,15 @@ async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlay
  * @param api - The extension API.
  * @param maps - The set of maps from the installed playlist.
  */
-export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[]) {
+export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEntry[], playlistName?: string) {
     var installed = api.getState().persistent.mods[GAME_ID];
     var toInstall = maps.filter(plm => !Object.values(installed).some(i => (i.id == plm.key) || (i?.attributes['mapHash'] == plm.hash)));
-    api.sendNotification({
+    var installNot = api.sendNotification({
         type: 'info',
-        title: "Now installing playlist",
+        title: `Now installing ${playlistName ?? 'playlist'}`,
         message: `Installing ${toInstall.length} maps from BeatSaver`,
         noDismiss: true,
-        displayMS: 4000
+        displayMS: 5000
     });
     var profileId = getCurrentProfile(api);
     await installMaps(api, toInstall.map(i => i.hash ?? i.key), (api, modIds) => {
@@ -378,6 +396,12 @@ export async function installPlaylistMaps(api: IExtensionApi, maps: IPlaylistEnt
             api.store.dispatch(actions.setModEnabled(profileId, id, true));
         }
         api.events.emit('mods-enabled', modIds, true, GAME_ID);
+        api.dismissNotification(installNot);
+        api.sendNotification({
+            type: 'success',
+            title: `${playlistName ?? 'Playlist'} installed`,
+            message: `Installed and enabled ${toInstall.length} maps`
+        });
     });
     // lol jks we are auto-enabling these now.
 }

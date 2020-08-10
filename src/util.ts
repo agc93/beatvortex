@@ -1,18 +1,21 @@
 import path = require("path");
 import { util as vtx, selectors, fs, log, util, actions } from "vortex-api";
 import nfs = require('fs');
-import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile, IDiscoveryResult } from "vortex-api/lib/types/api";
+import { IExtensionContext, IState, IInstruction, IExtensionApi, IGame, ThunkStore, IProfile, IDiscoveryResult, IMod } from "vortex-api/lib/types/api";
+import marked from "marked";
+
 import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
 import { IVersionList } from "./beatModsClient";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
-export const models = ['avatar', 'platform', 'saber']
+export const models = ['avatar', 'platform', 'saber', 'plat']
 
 export var useTrace: boolean = false;
 
 type ProfileStore = {[profileId: string]: IProfile};
+export interface ModList { [modId: string]: IMod; };
 
 export function getModName(destinationPath: string) : string {
     var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
@@ -68,6 +71,10 @@ export function findGame() {
         .then((game : ISteamEntry) => game.gamePath);
 }
 
+/**
+ * @deprecated
+ * @param api extension API
+ */
 export function getGameInstallPath(api: IExtensionApi) {
     var discovery = util.getSafe(api.getState().settings.gameMode.discovered, [GAME_ID], undefined);
     if (discovery === undefined) {
@@ -81,13 +88,13 @@ export function getGamePath(api: IExtensionApi, useSongPath: boolean): string;
 export function getGamePath(api: IExtensionApi, game: IGame, useSongPath: boolean): string;
 export function getGamePath(api: IExtensionApi, gameOrPath: IGame | boolean, useSongPath?: boolean) {
     const state: IState = api.store.getState();
-    if (gameOrPath as IGame) {
-        var game = gameOrPath as IGame;
-        const discovery = state.settings.gameMode.discovered[game.id];
-        return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
-    } else {
+    if (typeof gameOrPath === 'boolean') {
         useSongPath = gameOrPath as boolean;
         const discovery = state.settings.gameMode.discovered[GAME_ID];
+        return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
+    } else {
+        var game = gameOrPath as IGame;
+        const discovery = state.settings.gameMode.discovered[game.id];
         return useSongPath ? path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels') : discovery.path;
     }
 }
@@ -115,7 +122,6 @@ export function isGameMod(filesOrInstructions: string[]|IInstruction[]) : boolea
 }
 
 export function isModelMod(files: string[]) : boolean {
-
     return files.length == 1 && models.some(m => files[0].toLowerCase().endsWith(m));
         // && models.some(m => path.extname(path.basename(files[0])).toLowerCase() == m);
 }
@@ -216,4 +222,27 @@ export function getCompatibleModVersion(gameVersion: string, list: IVersionList)
     } else {
         return Object.keys(list).find(mv => list[mv].includes(gameVersion));
     }
+}
+
+export function getUserName(state: IState): string {
+    return util.getSafe(state.persistent, ['nexus', 'userInfo', 'name'], undefined);
+}
+
+export function renderMarkdown(inputMd: string): string {
+    var mdOpts: marked.MarkedOptions = {
+        pedantic: false,
+        gfm: true,
+        sanitize: true,
+        smartLists: true
+    };
+    // marked.setOptions(mdOpts);
+    return marked(inputMd, mdOpts);
+}
+
+export function trimString (s: string, c: string) {
+    if (c === "]") c = "\\]";
+    if (c === "\\") c = "\\\\";
+    return s.replace(new RegExp(
+      "^[" + c + "]+|[" + c + "]+$", "g"
+    ), "");
 }

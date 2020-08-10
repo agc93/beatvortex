@@ -1,0 +1,51 @@
+
+  
+  .sv-bookmarklist {
+    @extend %vertical-list;
+  
+    .list-group {
+      overflow-y: auto;
+    }
+  }
+  
+  //base class only
+  
+  
+  //listgroupitem for playlists
+  .sv-bookmark-item {
+  
+    &.selected {
+      background-color: $table-bg-active;
+    }
+  
+    .sv-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      flex: 1 1 0;
+  
+      .sv-item-title {
+        @extend .bv-item-text;
+        font-weight: bolder;
+      }
+  
+      .sv-item-extra {
+        opacity: 0.9;
+        font-size: smaller;
+        padding-left: 6px;
+      }
+    }
+  
+    .sv-item-footer {
+      display: flex;
+      justify-content: space-between;
+  
+      .sv-item-footer-text {
+        @extend .bv-item-text;
+        font-weight: bold;
+      }
+    }
+  }
+  

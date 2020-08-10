@@ -16,6 +16,7 @@ interface IConnectedProps {
 
 interface IActionProps {
     onEnablePlaylists: (enable: boolean) => void;
+    onEnableSync: (enable: boolean) => void;
 }
 
 type IProps = IConnectedProps & IActionProps;
@@ -23,8 +24,8 @@ type IProps = IConnectedProps & IActionProps;
 class PreviewSettings extends ComponentEx<IProps, {}> {
     
     public render(): JSX.Element {
-        const { t, previewSettings, onEnablePlaylists, profiles } = this.props;
-        const { enablePlaylistManager: enablePlaylists } = previewSettings;
+        const { t, previewSettings, onEnablePlaylists, profiles, onEnableSync } = this.props;
+        const { enablePlaylistManager: enablePlaylists, enableSync } = previewSettings;
         return (
             isGameManaged(profiles)
             ? <form>
@@ -40,6 +41,15 @@ class PreviewSettings extends ComponentEx<IProps, {}> {
                         {t("bs:Settings:EnablePreviewPlaylists")}
                         <More id='more-oci-maps' name='Playlist Management Preview'>
                             {t('bs:Settings:EnablePreviewPlaylistsHelp')}
+                        </More>
+                    </Toggle>
+                    <Toggle
+                        checked={enableSync}
+                        onToggle={onEnableSync}
+                    >
+                        {t("bs:Settings:EnablePreviewSync")}
+                        <More id='more-oci-maps' name='Bookmark Sync Preview'>
+                            {t('bs:Settings:EnablePreviewSyncHelp')}
                         </More>
                     </Toggle>
                 </FormGroup>
@@ -64,6 +74,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
         onEnablePlaylists: (enable: boolean) => {
             log('warn', 'beatvortex: enabling preview playlists view');
             return dispatch(enablePreviewFeatures({enablePlaylistManager: enable}));
+        },
+        onEnableSync: (enable: boolean) => {
+            return dispatch(enablePreviewFeatures({enableSync: enable}));
         }
     }
 }

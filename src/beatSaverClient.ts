@@ -3,6 +3,7 @@ import { log, util } from 'vortex-api';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { traceLog } from './util';
 import { cacheBeatSaverMap } from './session';
+import retry from 'async-retry';
 
 /**
  * A simple client class to encapsulate the majority of beatsaver.com-specific logic, including metadata retrieval.
@@ -42,17 +43,18 @@ export class BeatSaverClient {
                 return map;
             }
         }
-        var resp = await axios.request<IMapDetails>({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse<IMapDetails>) => {
-            const { data } = resp;
-            // traceLog(JSON.stringify(data));
+        var resp = await retry(async bail => {
+            var response = await axios.request<IMapDetails>({
+                url: url,
+                headers: {'User-Agent': 'BeatVortex/0.1.0' }
+            });
+            if (response.status === 404) {
+                bail(new Error('Not Found'));
+            }
+            const { data } = response;
             return data;
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
+
+        }, { retries: 3 });
         if (this._api && resp != null) {
             traceLog('adding map to cache', {ident: mapKey, key: resp.key});
             this._api.store.dispatch(cacheBeatSaverMap(resp.hash, resp));

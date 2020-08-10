@@ -7,8 +7,8 @@ import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, fin
 import { ProfileClient } from "vortex-ext-common";
 
 // local modules
-import { showPatchDialog, showTermsNotification, showLooseDllNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
-import { migrate031, getVortexVersion, meetsMinimum } from "./migration";
+import { showPatchDialog, showTermsNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
+import { migrate031, getVortexVersion, meetsMinimum, migrate040 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak, getBSIPALaunchArgs } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
@@ -24,8 +24,10 @@ import { ModelSaberClient } from './modelSaberClient';
 import { BeatModsList } from "./beatmods";
 import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
-import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings, SyncSettings, acceptTerms } from "./settings";
 import { sessionReducer, updateBeatSaberVersion } from './session';
+import { SyncView, syncReducer, SyncService } from './sync';
+import { ServiceStatusDialog } from "./status";
 
 export const GAME_ID = 'beatsaber';
 export const I18N_NAMESPACE = 'beatvortex';
@@ -49,11 +51,14 @@ function main(context: IExtensionContext) {
     const isBeatSaberManaged = (): boolean => {
         return isGameManaged(context.api);
     }
+    // context.requireVersion("^1.3");
     context.once(() => {
         enableTrace();
         context.api.setStylesheet('bs-beatmods-list', path.join(__dirname, 'beatModsList.scss'));
         context.api.setStylesheet('bs-playlist-view', path.join(__dirname, 'playlistView.scss'));
         context.api.setStylesheet('bs-map-attributes', path.join(__dirname, 'attributes.scss'));
+        context.api.setStylesheet('bs-sync-view', path.join(__dirname, 'syncView.scss'));
+        context.api.setStylesheet('bs-common', path.join(__dirname, 'beatVortex.scss'));
         util.installIconSet('beatvortex', path.join(__dirname, 'icons.svg'));
         addTranslations(context.api, 'beatvortex');
         setupUpdates(context.api);
@@ -70,11 +75,12 @@ function main(context: IExtensionContext) {
             });
         }
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
+            setTitle("Verifying BSIPA deployment");
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPADeployment);
         });
         context.api.events.on('did-deploy', (profileId: string, deployment: { [typeId: string]: IDeployedFile[] }, setTitle: (title: string) => void) => {
+            setTitle("Checking BSIPA configuration");
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAUpdateCheck);
-            handleDeploymentEvent(context.api, profileId, deployment, handleVersionUpdate);
             handleDeploymentEvent(context.api, profileId, deployment, handleBSIPAConfigTweak);
         });
         context.api.onAsync('will-purge', async (profileId: string, deployment: { [modType: string]: IDeployedFile[] }) => {
@@ -87,23 +93,13 @@ function main(context: IExtensionContext) {
             await installRemotePlaylist(context.api, installUrl);
             return Promise.resolve();
         });
-        context.api.events.on('start-install', (archivePath: string, callback: (err: Error) => void) => {
-            var looseSupported = meetsMinimum('1.2.17');
-            if (!looseSupported) {
-                var isBeatSaber = selectors.activeGameId(context.api.store.getState()) === GAME_ID;
-                var isLoosePlugin = path.extname(archivePath).toLowerCase() == '.dll';
-                if (isBeatSaber && isLoosePlugin) {
-                    showLooseDllNotification(context.api, path.basename(archivePath));
-                }
-            }
-        });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
-                var profileClient = new ProfileClient(context.api);
-                var skipTerms = profileClient.getProfileSetting(profile, PROFILE_SETTINGS.SkipTerms, false);
+                // var profileClient = new ProfileClient(context.api);
+                var skipTerms = util.getSafe(context.api.getState().settings, ['beatvortex', 'skipTerms'], false);
                 if (!skipTerms) {
                     showTermsNotification(context.api, (dismiss) => {
-                        profileClient.setProfileSetting(profile, PROFILE_SETTINGS.SkipTerms, true);
+                        context.api.store.dispatch(acceptTerms(true));
                         dismiss();
                     });
                 }
@@ -134,16 +130,17 @@ function main(context: IExtensionContext) {
         ...gameMetadata,
         id: GAME_ID,
         queryPath: findGame,
+        parameters: getLaunchVariables(),
         setup: (discovery: IDiscoveryResult) => {
             log('debug', 'running beatvortex setup')
             prepareForModding(discovery);
         },
         environment: {
-            SteamAPPId: STEAMAPP_ID.toString(),
-            gamepath: GAME_PATH
+            SteamAPPId: STEAMAPP_ID.toString()
         }
     });
-    context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
+    // context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
+    context.registerMigration((oldVersion) => migrate040(context.api, oldVersion));
     addTableAttributes(context);
     context.registerAction(
         'categories-icons', 
@@ -156,9 +153,9 @@ function main(context: IExtensionContext) {
             return (selectors.activeGameId(context.api.store.getState()) === GAME_ID);
         }
     );
-    try {
-        // context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
-    } catch {}
+    // context.optional(() => {
+    context.registerToolVariables((opts): {[key:string]: string} => getLaunchParams(context.api));
+    // });
     context.registerAction(
         'mods-multirow-actions', 300, 'playlist', {}, 'Create Playlist', modIds => {
             createPlaylist(context.api, modIds);
@@ -202,14 +199,28 @@ function main(context: IExtensionContext) {
         },
         props: () => ({ api: context.api }),
     });
+    context.registerMainPage('refresh', 'Sync', SyncView, {
+        group: 'per-game',
+        visible: () => {
+            return (selectors.activeGameId(context.api.store.getState()) === GAME_ID)
+                && (util.getSafe<IPreviewSettings>(context.api.getState().settings, ['beatvortex', 'preview'], {})?.enableSync == true);
+        },
+        props: () => ({ api: context.api, service: new SyncService(context.api) }),
+    });
 
     context.registerSettings('Download', GeneralSettings, undefined, undefined, 100);
     context.registerSettings('Download', OneClickSettings, undefined, isBeatSaberManaged, 100);
     context.registerSettings('Interface', PreviewSettings, undefined, isBeatSaberManaged, 100);
-    context.registerSettings('Workarounds', BSIPASettings, undefined, isBeatSaberManaged, 100);
+    context.registerSettings('Workarounds', BSIPASettings, () => ({api: context.api}), isBeatSaberManaged, 100);
+    context.registerSettings('Interface', SyncSettings, undefined, isBeatSaberManaged, 101);
     context.registerReducer(['settings', 'beatvortex'], settingsReducer);
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
+    context.registerReducer(['persistent', 'beatvortex', 'sync'], syncReducer);
 
+    context.registerAction('global-icons', 200, 'dashboard', {}, 'BSMG Services',
+        () => { context.api.store.dispatch(actions.setDialogVisible('bs-service-status-dialog')); });
+
+    context.registerDialog('bs-service-status-dialog', ServiceStatusDialog);
 
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module
@@ -255,13 +266,13 @@ function addModSource(context: IExtensionContext, details: { id: string, name: s
  * 
  */
 function addProfileFeatures(context: IExtensionContext) {
-    context.registerProfileFeature(
+    /* context.registerProfileFeature(
         PROFILE_SETTINGS.SkipTerms,
         'boolean',
         'savegame',
         'Skip Terms of Use',
         "Skips the notification regarding BeatVortex's terms of use",
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
+        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID); */
     context.registerProfileFeature(
         PROFILE_SETTINGS.AllowUnknown,
         'boolean',
@@ -807,20 +818,6 @@ export async function handleYeetDetection(api: IExtensionApi, profile: IProfile,
 }
 
 /**
- * An event handler to detect and store the current game version for use in other extension components.
- * 
- * @param api - The extension API.
- * @param profile - The current profile.
- * @param deployment - The current deployment object.
- */
-export async function handleVersionUpdate(api: IExtensionApi, profile: IProfile, deployment: { [typeId: string]: IDeployedFile[] }): Promise<void> {
-    var client = new IPAVersionClient(api);
-    util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'gameVersion'], client.getUnityGameVersion());
-    util.setSafe(api.getState().persistent, ['beatvortex', 'lastDeploy', 'bsipaVersion'], await client.getBSIPAGameVersion());
-}
-
-
-/**
  * A simple event handler to detect and optionally revert BSIPA patching on purge.
  * 
  * @remarks
@@ -903,8 +900,8 @@ function setupUpdates(api: IExtensionApi) {
         await installBeatModsUpdate(api, gameId, modId);
         return Promise.resolve();
     };
-    api.onAsync('check-mods-version', checkForUpdates);
-    api.onAsync('mod-update', installUpdates);
+    api.events.on('check-mods-version', checkForUpdates);
+    api.events.on('mod-update', installUpdates);
 }
 
 /**
@@ -986,8 +983,19 @@ export async function createPlaylist(api: IExtensionApi, modIds: string[]) {
 }
 
 function getLaunchParams(api: IExtensionApi): {[key:string]: string} {
-    var bsipaOpts = getBSIPALaunchArgs(api.getState());
-    return {'BSIPA_OPTS': bsipaOpts};
+    var opts = {
+        BSIPA_OPTS: ''
+    };
+    if (api) {
+        opts.BSIPA_OPTS = getBSIPALaunchArgs(api.getState());
+        // opts.BSIPA_OPTS = bsipaOpts
+    }
+    return opts;
+}
+
+function getLaunchVariables(): string[] {
+    var params = getLaunchParams(null);
+    return Object.keys(params).map(p => `{${p}}`);
 }
 
 //#endregion

@@ -3,6 +3,7 @@ import { util, actions } from "vortex-api";
 import { IReducerSpec } from 'vortex-api/lib/types/api';
 import { IMapDetails } from "../beatSaverClient";
 import { IModDetails, IVersionList } from "../beatModsClient";
+import { IBookmark } from "../sync";
 import { arrayToObject, traceLog } from "../util";
 
 export const updateBeatModsCache =
@@ -16,6 +17,9 @@ export const cacheBeatSaverMap =
 
 export const updateBeatSaberVersion =
   createAction('BS_CACHE_GAMEVERSION', (version: string) => version);
+
+export const updateBookmarksCache =
+  createAction('BS_CACHE_BOOKMARKS', (user: string, bookmarks: IBookmark[]) => ({user,bookmarks}));
 
 /**
  * reducer for changes to the authentication
@@ -35,6 +39,9 @@ export const sessionReducer: IReducerSpec = {
       },
       [updateBeatSaberVersion as any]: (state, payload: string) => {
         return util.setSafe(state, ['gameVersion'], payload);
+      },
+      [updateBookmarksCache as any]: (state, payload: {user: string, bookmarks: IBookmark[]}) => {
+        return util.setSafe(state, ['bookmarks', payload.user], payload.bookmarks);
       }
     },
     defaults: {
@@ -42,6 +49,7 @@ export const sessionReducer: IReducerSpec = {
       // gameVersions: [],
       beatsaver: {},
       modVersions: {},
-      gameVersion: ''
+      gameVersion: '',
+      bookmarks: {}
     }
   };
