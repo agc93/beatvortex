@@ -24,7 +24,7 @@ import { ModelSaberClient } from './modelSaberClient';
 import { BeatModsList } from "./beatmods";
 import { PlaylistView, PlaylistManager } from "./playlists";
 import { difficultiesRenderer, modesRenderer } from './attributes'
-import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings, SyncSettings } from "./settings";
+import { OneClickSettings, settingsReducer, ILinkHandling, IMetaserverSettings, GeneralSettings, PreviewSettings, IPreviewSettings, BSIPASettings, IBSIPASettings, SyncSettings, acceptTerms } from "./settings";
 import { sessionReducer, updateBeatSaberVersion } from './session';
 import { SyncView, syncReducer, SyncService } from './sync';
 import { ServiceStatusDialog } from "./status";
@@ -95,11 +95,11 @@ function main(context: IExtensionContext) {
         });
         context.api.events.on('profile-did-change', (profileId: string) => {
             handleProfileChange(context.api, profileId, (profile) => {
-                var profileClient = new ProfileClient(context.api);
-                var skipTerms = profileClient.getProfileSetting(profile, PROFILE_SETTINGS.SkipTerms, false);
+                // var profileClient = new ProfileClient(context.api);
+                var skipTerms = util.getSafe(context.api.getState().settings, ['beatvortex', 'skipTerms'], false);
                 if (!skipTerms) {
                     showTermsNotification(context.api, (dismiss) => {
-                        profileClient.setProfileSetting(profile, PROFILE_SETTINGS.SkipTerms, true);
+                        context.api.store.dispatch(acceptTerms(true));
                         dismiss();
                     });
                 }
@@ -266,13 +266,13 @@ function addModSource(context: IExtensionContext, details: { id: string, name: s
  * 
  */
 function addProfileFeatures(context: IExtensionContext) {
-    context.registerProfileFeature(
+    /* context.registerProfileFeature(
         PROFILE_SETTINGS.SkipTerms,
         'boolean',
         'savegame',
         'Skip Terms of Use',
         "Skips the notification regarding BeatVortex's terms of use",
-        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID);
+        () => selectors.activeGameId(context.api.store.getState()) === GAME_ID); */
     context.registerProfileFeature(
         PROFILE_SETTINGS.AllowUnknown,
         'boolean',

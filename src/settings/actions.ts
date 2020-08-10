@@ -22,6 +22,9 @@ export const enableBSIPATweaks =
 export const setSyncSettings =
   createAction('BS_SYNC_SETTING', (syncSettings: ISyncSettings ) => syncSettings);
 
+export const acceptTerms =
+  createAction('BS_ACCEPT_TERMS', (accept: boolean) => accept);
+
 /**
  * reducer for changes to the authentication
  */
@@ -41,14 +44,18 @@ export const settingsReducer: IReducerSpec = {
       },
       [setSyncSettings as any]: (state, payload: ISyncSettings) => {
         return util.merge(state, ['sync'], payload);
-      }
+      },
+      [acceptTerms as any]: (state, payload: boolean) => {
+        return util.setSafe(state, ['skipTerms'], payload);
+      },
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
       metaserver: {enableServer: true, serverUrl: 'https://meta.beatvortex.dev'} as IMetaserverSettings,
       preview: { enablePlaylistManager: false } as IPreviewSettings,
       bsipa: { enableYeetDetection: true, disableUpdates: true, applyToConfig: false } as IBSIPASettings,
-      sync: { syncOnDeploy: false } as ISyncSettings
+      sync: { syncOnDeploy: false } as ISyncSettings,
+      skipTerms: false
     },
   };
 

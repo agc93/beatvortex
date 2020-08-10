@@ -1,10 +1,12 @@
-import { IExtensionApi, IDialogResult } from "vortex-api/lib/types/api";
-import { util, log } from "vortex-api";
+import { IExtensionApi, IDialogResult, IProfile } from "vortex-api/lib/types/api";
+import { util, log, selectors } from "vortex-api";
 import * as semver from "semver";
 import { GAME_ID, I18N_NAMESPACE } from ".";
 import { app, remote } from 'electron';
-import { enableBSIPATweaks, IBSIPASettings } from "./settings";
+import { enableBSIPATweaks, IBSIPASettings, acceptTerms } from "./settings";
 import { renderMarkdown } from "./util";
+import { ProfileClient } from "vortex-ext-common";
+import { PROFILE_SETTINGS } from "./meta";
 
 
 
@@ -88,6 +90,7 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
     // var existingSettings = util.getSafe<IBSIPASettings>(api.getState().settings, ['beatvortex', 'bsipa'], {});
     // var tweaksAlreadyEnabled = existingSettings?.disableUpdates || existingSettings?.disableYeeting;
     api.store.dispatch(enableBSIPATweaks({enableYeetDetection: true, disableUpdates: true, disableYeeting: false, applyToConfig: false}));
+    updateTermsAcceptance(api);
     // var migrations = [];
     // log('debug', 'sending migration notification');
     return new Promise((resolve) => {
@@ -107,7 +110,7 @@ export function migrate040(api: IExtensionApi, oldVersion: string) {
                     }
                 },
                 {
-                    title: 'Understood',
+                    title: 'Dismiss',
                     action: dismiss => {
                       dismiss();
                       resolve();
@@ -128,11 +131,15 @@ function requireVortexVersionNotification(api: IExtensionApi, minVortexVersion: 
         actions: [
             {
                 title: 'Explain',
-                action: () => {
+                action: (dismiss) => {
                     api.showDialog('info', 'Beat Saber Support for Vortex', {
                         text: api.translate(message, { ns: I18N_NAMESPACE }),
                     }, [
-                        { label: 'Close' },
+                        { label: 'Close', action: label => {
+                            dismiss();
+                            callback?.();
+                        } 
+                    },
                     ]);
                 },
             },
@@ -162,4 +169,24 @@ const getReleaseText = () => {
         "- Automatic game upgrade detection has been re-enabled and improved\n" + 
         "- Some new preview features have been added (enable them in Settings)\n\n" +
         "Due to some enhancements in Vortex, we also now recommend launching Beat Saber from Vortex, rather than directly. While launching directly will still work, BSIPA features might conflict with Vortex and lead to some unexpected behaviour."
+}
+
+function updateTermsAcceptance(api: IExtensionApi) {
+    try {
+    var client = new ProfileClient(api);
+    const profiles = util.getSafe(api.getState(), ['persistent', 'profiles'], [])
+    const gameProfiles: IProfile[] = Object.keys(profiles)
+      .filter((id: string) => profiles[id].gameId === GAME_ID)
+      .map((id: string) => profiles[id]);
+      if (gameProfiles.length > 0) {
+          var anyAccepted = gameProfiles.some((p) => {
+              return client.getProfileSetting(p, PROFILE_SETTINGS.SkipTerms, false);
+          });
+          if (anyAccepted) {
+              api.store.dispatch(acceptTerms(true));
+          }
+      }
+    } catch (err) {
+        log('error', 'error during terms migration', {err});
+    }
 }
