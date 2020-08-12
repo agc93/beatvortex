@@ -1,0 +1,19 @@
+name: Deploy Workers
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "functions/**"
+      - ".github/workflows/functions.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish Notices
+        uses: cloudflare/wrangler-action@1.2.0
+        with:
+          apiToken: ${{ secrets.CF_TOKEN }}
+          workingDirectory: 'functions/notices-api'

@@ -22,6 +22,9 @@ This release adds some new features and fixes to the [previous major alpha relea
   - You should also see less "duplicate" mod installs
 - Improved BSMG Services dialog
   - Cleaned up the WIP interface to be more readable and streamlined
+- Adds new in-app notices feature
+  - This will show notifications when you activate Beat Saber (or launch Vortex with Beat Saber active) with any critical messages
+  - You will likely see these messages in future as BeatMods and BeatSaver are both undergoing breaking API changes that may impact BeatVortex
 - Behind-the-scenes improvements to API code
   - The API calls used for BSMG sites should be a little more stable
   - Views that used a lot of API calls (Playlists, Sync, BeatMods) should also error out less

@@ -1,0 +1,6 @@
+name = "notices-api"
+type = "javascript"
+account_id = "1ef3df037031989e64fdae2885fb5aae"
+workers_dev = false
+route = "beatvortex.dev/notices"
+zone_id = "d0b20e5df92d3e885f480e2dec0b7b60"

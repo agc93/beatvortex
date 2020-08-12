@@ -12,7 +12,9 @@ export const updateDownloadedMaps =
 export const syncReducer: IReducerSpec = {
     reducers: {
       [updateDownloadedMaps as any]: (state, payload: {sourceId: string, mapHashes: string[]}) => {
-        return util.merge(state, ['downloaded'], {[payload.sourceId]: payload.mapHashes});
+        var existing = util.getSafe<string[]>(state, ['downloaded', payload.sourceId], []);
+        var mergedHashes = [...new Set(existing.concat(payload.mapHashes))]
+        return util.merge(state, ['downloaded'], {[payload.sourceId]: mergedHashes});
       }
     },
     defaults: {
