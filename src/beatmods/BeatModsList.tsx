@@ -117,7 +117,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             mod.name, 
             (err: Error, id?: string) => {
                 directDownloadInstall(api, mod, err, id, (api) => {
-                    setDownloadModInfo(api.store, id, {...mod, source: 'beatmods'});
+                    setDownloadModInfo(api.store, id, {...mod, source: 'beatmods'}, {beatmods: mod});
                     this.refreshMods();
                 });
             }, 

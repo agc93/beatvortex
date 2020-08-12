@@ -14,6 +14,7 @@ import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 import { updateCategories, checkBeatModsCategories } from "./categories";
+import { beatModsExtractor } from "./extractor";
 
 // clients
 import { BeatSaverClient } from './beatSaverClient';
@@ -221,6 +222,8 @@ function main(context: IExtensionContext) {
         () => { context.api.store.dispatch(actions.setDialogVisible('bs-service-status-dialog')); });
 
     context.registerDialog('bs-service-status-dialog', ServiceStatusDialog);
+
+    context.registerAttributeExtractor(100, beatModsExtractor);
 
     /*
         For reasons entirely unclear to me, this works correctly, adding the features at startup when calling the `addProfileFeatures` in this module
@@ -540,9 +543,9 @@ export function setDownloadModInfo(store: ThunkStore<any>, id: string, details: 
     store.dispatch(actions.setDownloadModInfo(id, 'game', GAME_ID));
     store.dispatch(actions.setDownloadModInfo(id, 'logicalFileName', details.name));
     store.dispatch(actions.setDownloadModInfo(id, 'source', details.source));
-    if (details.id) {
+    /* if (details.id) {
         store.dispatch(actions.setDownloadModInfo(id, 'custom.fileId', details.id));
-    }
+    } */
     //TODO: we should really add more metadata here then use an attribute extractor to save us an API call during installation.
     //Aside from saving an API call, it would also reduce our reliance on the file names to detect sources.
     if (meta && Object.keys(meta).length > 0) {
