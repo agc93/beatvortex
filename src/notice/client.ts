@@ -1,7 +1,8 @@
 import { HttpClient } from "../httpClient";
-import { IExtensionApi } from "vortex-api/lib/types/api";
-import { util } from "vortex-api";
+import { IExtensionApi, INotificationAction } from "vortex-api/lib/types/api";
+import { util, log } from "vortex-api";
 import { noticeStatePath, acknowledgeNotice } from "./store";
+import { renderMarkdown } from "../util";
 
 export class NoticeClient extends HttpClient {
     private _api: IExtensionApi;
@@ -28,28 +29,50 @@ export class NoticeClient extends HttpClient {
         var notices = await this.getNotices();
         return notices == null
             ? {}
-            : Object.keys(notices).filter((id) => read.indexOf(id) == -1).reduce((prev, id) => prev[id] = notices[id], {});
+            : Object.keys(notices).filter((id) => read.indexOf(id) == -1).reduce((prev, id) => {
+                prev[id] = notices[id];
+                return prev;
+            }, {});
     }
 
 }
 
 export async function showNotices(api: IExtensionApi) {
-    var client = new NoticeClient(api);
-    var notices = await client.getUnreadNotices();
-    for (const id of Object.keys(notices)) {
-        var notice = notices[id];
-        api.sendNotification({
-            type: 'info',
-            title: notice.title ?? 'BeatVortex Notice',
-            message: notice.message,
-            noDismiss: true,
-            actions: [
-                {title: 'Acknowledge', action: (dismiss) => {
-                    api.store.dispatch(acknowledgeNotice(id));
-                    dismiss();
-                }}
+    try {
+        var client = new NoticeClient(api);
+        var notices = await client.getUnreadNotices();
+        for (const id of Object.keys(notices)) {
+            var notice = notices[id];
+            var notifActions: INotificationAction[] = [
+                {
+                    title: 'Acknowledge', action: (dismiss) => {
+                        api.store.dispatch(acknowledgeNotice(id));
+                        dismiss();
+                    }
+                }
             ]
-        });
+            if (notice.body) {
+                notifActions.push({
+                    title: 'More...',
+                    action: (dismiss) => {
+                        api.showDialog('info', 'BeatVortex Notice', {
+                            htmlText: renderMarkdown(notice.body)
+                        }, [
+                            {label: 'Close'}
+                        ])
+                    }
+                });
+            }
+            api.sendNotification({
+                type: 'info',
+                title: notice.title ?? 'BeatVortex Notice',
+                message: notice.message,
+                noDismiss: true,
+                actions: notifActions.reverse()
+            });
+        }
+    } catch (err) {
+        log('error', 'error while fetching beatvortex notices', { err });
     }
 }
 
@@ -60,4 +83,5 @@ interface INoticeSet {
 interface INotice {
     title: string;
     message: string;
+    body: string;
 }
