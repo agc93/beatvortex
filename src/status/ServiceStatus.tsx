@@ -74,9 +74,12 @@ class ServiceStatusDialog extends ComponentEx<IProps, IComponentState> {
                     {/* <ListGroup className='diagnostics-files-sessions-panel'>
                       {services.map(this.renderService)}
                   </ListGroup> */}
-                    <PanelGroup accordion>
-                        {liveServices.map(this.renderService)}
-                    </PanelGroup>
+                    <div style={{ margin: '0 1em' }}>
+                        <p style={{ marginTop: 0 }}>Click on any of the services below for more details</p>
+                        <PanelGroup accordion>
+                            {liveServices.map(this.renderService)}
+                        </PanelGroup>
+                    </div>
                 </FlexLayout.Flex>
             );
         }
@@ -112,13 +115,16 @@ class ServiceStatusDialog extends ComponentEx<IProps, IComponentState> {
         return (
             <Panel bsStyle={style} eventKey={index}>
                 <Panel.Heading>
-                    <Panel.Title toggle>{service.id}</Panel.Title>
+                    <Panel.Title toggle>{service.id} - <code style={{ color: 'white', backgroundColor: 'unset' }}>{service.description}</code></Panel.Title>
                 </Panel.Heading>
                 <Panel.Body collapsible>
-                    <h3>{service.description}{' '}<Label bsStyle={style}>{toTitleCase(service.status)}</Label>{' '}</h3>
+                    <h3 style={{ marginTop: 'auto', marginBottom: '0.75em' }}>
+                        <Label bsStyle={style}>{toTitleCase(service.status)}</Label>
+                    </h3>
                     {/* <div>Last Response Time: <Badge>{service.data[0][1]}</Badge></div> */}
                     <div><b>Last Updated: </b><Label className="bv-pad-lateral">{new Date(recentResults[0][0]).toLocaleString(language)}</Label>{'  '}<b>Uptime: </b><Label className="bv-pad-lateral" bsStyle={uptimeStyle}>{uptime}%</Label></div>
-                    <div><h5>Recent Response Time:</h5>
+                    <div>
+                        <h3 style={{ fontSize: '1.5rem' }}>Recent Response Time:</h3>
                         <Breadcrumb>
                             <Breadcrumb.Item active>⬇{Math.min(...recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
                             <Breadcrumb.Item active>~{average(recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
@@ -170,7 +176,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, null, Redux.Action>): I
         onShowError: (message: string, details?: string | Error) => {
 
         }
-            // showError(dispatch, message, details),
+        // showError(dispatch, message, details),
     };
 }
 

@@ -20,6 +20,8 @@ This release adds some new features and fixes to the [previous major alpha relea
 - Improved updates experience
   - Installing updates from your Mods screen will now allow you to keep both versions installed
   - You should also see less "duplicate" mod installs
+- Improved BSMG Services dialog
+  - Cleaned up the WIP interface to be more readable and streamlined
 - Behind-the-scenes improvements to API code
   - The API calls used for BSMG sites should be a little more stable
   - Views that used a lot of API calls (Playlists, Sync, BeatMods) should also error out less
