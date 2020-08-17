@@ -1,8 +1,7 @@
 ---
 title: "Alpha 4.1 Release"
 linkTitle: "Release 0.4.1"
-date: 2020-08-11
-draft: true
+date: 2020-08-17
 aliases:
   - /updates/niobium
   - /updates/v0.4.1
@@ -38,4 +37,4 @@ As with 0.4.0, the changes introduced in this release require some new features 
 
 ### Alternate Downloader Support
 
-This update also includes a new option to enable an "Alternate BeatMods Downloader". This has been included purely as a workaround for bugs in BeatMods that can upset Vortex's integrated download manager. Please only enable this if you cannot install mods from the BeatMods browser, and you really know what you're doing!
+This update also includes a new option to enable an "Alternate BeatMods Downloader". This has been included purely as a workaround for bugs in BeatMods that can upset Vortex's integrated download manager. Please only enable this if you cannot install mods from the BeatMods browser, and if you really know what you're doing!
