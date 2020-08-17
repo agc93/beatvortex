@@ -1,4 +1,43 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 4 Release</title><link>/blog/2020/08/10/alpha-4-release/</link><pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/10/alpha-4-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 4.1 Release</title><link>/blog/2020/08/17/alpha-4.1-release/</link><pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/17/alpha-4.1-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release adds some new features and fixes to the &lt;a href="../updates/v0.4.0">previous major alpha release&lt;/a> including:&lt;/p>
+&lt;ul>
+&lt;li>Improved updates experience
+&lt;ul>
+&lt;li>Installing updates from your Mods screen will now allow you to keep both versions installed&lt;/li>
+&lt;li>You should also see less &amp;ldquo;duplicate&amp;rdquo; mod installs&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Improved BSMG Services dialog
+&lt;ul>
+&lt;li>Cleaned up the WIP interface to be more readable and streamlined&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Adds new in-app notices feature
+&lt;ul>
+&lt;li>This will show notifications when you activate Beat Saber (or launch Vortex with Beat Saber active) with any critical messages&lt;/li>
+&lt;li>You will likely see these messages in future as BeatMods and BeatSaver are both undergoing breaking API changes that may impact BeatVortex&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Behind-the-scenes improvements to API code
+&lt;ul>
+&lt;li>The API calls used for BSMG sites should be a little more stable&lt;/li>
+&lt;li>Views that used a lot of API calls (Playlists, Sync, BeatMods) should also error out less&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Other minor improvements
+&lt;ul>
+&lt;li>Attributes for custom maps (BPM, artist name, map modes) will be hidden when not applicable&lt;/li>
+&lt;li>Minor improvements to game upgrade handling&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>There was a lot of changes in 0.4.0, so make sure you check &lt;a href="../updates/v0.4.0">those release notes&lt;/a> if you haven't already.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;h3 id="alternate-downloader-support">Alternate Downloader Support&lt;/h3>
+&lt;p>This update also includes a new option to enable an &amp;ldquo;Alternate BeatMods Downloader&amp;rdquo;. This has been included purely as a workaround for bugs in BeatMods that can upset Vortex's integrated download manager. Please only enable this if you cannot install mods from the BeatMods browser, and if you really know what you're doing!&lt;/p></description></item><item><title>Blog: Alpha 4 Release</title><link>/blog/2020/08/10/alpha-4-release/</link><pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/10/alpha-4-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
