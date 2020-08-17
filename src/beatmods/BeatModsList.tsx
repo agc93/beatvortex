@@ -1,7 +1,8 @@
-import { MainPage, log, FlexLayout, Icon, actions, Spinner, ComponentEx } from 'vortex-api';
+import { MainPage, log, FlexLayout, Icon, actions, Spinner, ComponentEx, selectors, tooltip, fs } from 'vortex-api';
 const { ListGroup, ListGroupItem, Panel, Button, InputGroup, Breadcrumb, ButtonGroup, FormControl, FormGroup, ControlLabel } = require('react-bootstrap');
 import React, { Component } from 'react';
 import * as Redux from 'redux';
+import path from 'path';
 import { connect } from 'react-redux';
 import { IExtensionApi, IMod, IState } from 'vortex-api/lib/types/api';
 import { IModDetails, BeatModsClient, IVersionList } from '../beatModsClient';
@@ -17,6 +18,7 @@ interface IConnectedProps {
     mods: { [modName: string]: IModDetails; };
     availableVersions: IVersionList,
     gameVersion: string;
+    downloadDirect: boolean;
 }
 
 interface IActionProps {
@@ -105,23 +107,38 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     }
 
     startInstall = (mod: IModDetails) => {
-        var { api } = this.props as IProps;
-        var downloadLinks = BeatModsClient.getDownloads(mod);
-        log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});
-        api.events.emit('start-download', 
-            downloadLinks, 
-            {
-                game: 'beatsaber',
-                name: mod.name
-            }, 
-            mod.name, 
-            (err: Error, id?: string) => {
-                directDownloadInstall(api, mod, err, id, (api) => {
-                    setDownloadModInfo(api.store, id, {...mod, source: 'beatmods'}, {beatmods: mod});
-                    this.refreshMods();
-                });
-            }, 
-            true);
+        var { api, downloadDirect } = this.props as IProps;
+        if (downloadDirect) {
+            this.directInstall(mod);
+        } else {
+            var downloadLinks = BeatModsClient.getDownloads(mod);
+            log('debug', 'emitting download events for selected mod', { mod: mod.name, links: downloadLinks});
+            api.events.emit('start-download', 
+                downloadLinks, 
+                {
+                    game: 'beatsaber',
+                    name: mod.name
+                }, 
+                mod.name, 
+                (err: Error, id?: string) => {
+                    directDownloadInstall(api, mod, err, id, (api) => {
+                        setDownloadModInfo(api.store, id, {...mod, source: 'beatmods'}, {beatmods: mod});
+                        this.refreshMods();
+                    });
+                }, 
+                true);
+        }
+    }
+
+    directInstall = async (mod: IModDetails) => {
+        var { api } = this.props;
+        var client = new BeatModsClient(api);
+        var modFilePath = await client.downloadModFile(mod);
+        // api.events.emit('import-downloads', [modFilePath]);
+        api.events.emit('start-install', modFilePath, (err, modId) => {
+            api.store.dispatch(actions.setModAttribute(GAME_ID, modId, 'fileName', path.basename(modFilePath)));
+            fs.unlinkAsync(modFilePath);
+        });
     }
 
     public render() {
@@ -223,7 +240,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     }
 
     private handleSearchFilter = (evt: React.ChangeEvent<any>) => {
-        log('debug', 'setting mod list filter', {searchFilter: evt.target.value});
+        // log('debug', 'setting mod list filter', {searchFilter: evt.target.value});
         this.setState({searchFilter: evt.target.value});
     }
 
@@ -304,7 +321,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
             compatible: this.isCompatible(mod),
             installed: this.isInstalled(mod),
         };
-        const { t, gameVersion } = this.props;
+        const { t, gameVersion, downloadDirect } = this.props;
         // ready.installReady = ready.compatible && !ready.installed
         return (
             <FlexLayout type='column'>
@@ -355,11 +372,16 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                 }
                             </FlexLayout>
                         </FlexLayout.Flex>
-                        <FlexLayout.Fixed className="description-version-warning">
-                            {gameVersion == mod.gameVersion
-                                ? <></>
-                                : t("bs:BeatModsList:VersionWarning", {gameVersion: mod.gameVersion, installedVersion: gameVersion ?? t('your version')})
-                            }
+                        <FlexLayout.Fixed className="description-warnings">
+                            <FlexLayout type="row">
+                                {gameVersion == mod.gameVersion
+                                    ? <></>
+                                    : t("bs:BeatModsList:VersionWarning", {gameVersion: mod.gameVersion, installedVersion: gameVersion ?? t('your version')})
+                                }
+                                {downloadDirect
+                                    ? <tooltip.Icon style={{alignItems: 'center'}} tooltip='Alternate downloader enabled! Some features might not work correctly.' name='incompatible' />
+                                    : <></>}
+                            </FlexLayout>
                         </FlexLayout.Fixed>
                         <FlexLayout.Fixed>
                             {ready && <Button 
@@ -372,6 +394,12 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                                     ? t('bs:BeatModsList:ReadyToInstall')
                                     : t('bs:BeatModsList:NotCompatible')}
                             </Button>}
+                            {/* {ready && <Button 
+                                className='description-footer-action'
+                                onClick={() => this.directInstall(mod)}
+                                disabled={!ready.compatible || ready.installed}
+                            >{'Direct Install'}
+                            </Button>} */}
                         </FlexLayout.Fixed>
                     </FlexLayout>
                 </FlexLayout.Fixed>
@@ -381,7 +409,6 @@ class BeatModsList extends ComponentEx<IProps, {}> {
     }
 
     async componentDidMount() {
-        log('debug', 'mod list component mounted');
         var modVersion = await this.getVersions();
         var response = await this.refreshMods(modVersion); // we still need to do this, since this call is what populates the session store
         this.setState({isLoading: false});
@@ -395,7 +422,8 @@ function mapStateToProps(state: IState): IConnectedProps {
         installed : util.getSafe(state.persistent, ['mods', GAME_ID], {}),
         mods: state.session['beatvortex']['mods'], //for the record, this not being a getSafe is intentional
         availableVersions: util.getSafe(state.session, ['beatvortex', 'modVersions'], {}),
-        gameVersion: util.getSafe(state.session, ['beatvortex', 'gameVersion'], undefined)
+        gameVersion: util.getSafe(state.session, ['beatvortex', 'gameVersion'], undefined),
+        downloadDirect: util.getSafe(state.settings, ['beatvortex', 'downloadDirect'], false)
     };
   }
   

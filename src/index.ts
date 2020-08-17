@@ -3,12 +3,12 @@ import path = require('path');
 // external modules
 import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod, IDialogResult } from 'vortex-api/lib/types/api';
-import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, getModName, isPlaylistMod, useTrace, toTitleCase, isGameManaged, getGameVersion } from './util';
-import { ProfileClient } from "vortex-ext-common";
+import { isGameMod, isSongHash, isSongMod, types, isActiveGame, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, isPlaylistMod, useTrace, toTitleCase, isGameManaged, getGameVersion } from './util';
+import { ProfileClient, getModName } from "vortex-ext-common";
 
 // local modules
 import { showPatchDialog, showTermsNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
-import { migrate031, getVortexVersion, meetsMinimum, migrate040 } from "./migration";
+import { migrate031, getVortexVersion, meetsMinimum, migrate040, migrate041 } from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak, getBSIPALaunchArgs } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installLocalPlaylist, installRemotePlaylist, looseInstaller} from "./install";
@@ -148,6 +148,7 @@ function main(context: IExtensionContext) {
     });
     // context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
     context.registerMigration((oldVersion) => migrate040(context.api, oldVersion));
+    context.registerMigration((oldVersion) => migrate041(context.api, oldVersion));
     addTableAttributes(context);
     context.registerAction(
         'categories-icons', 
@@ -326,7 +327,7 @@ async function addTableAttributes(context: IExtensionContext) {
         'mods',
         {
             ...tableAttributes.artist,
-            calc: (mod: IMod) => util.getSafe(mod.attributes, ['songAuthor'], ''),
+            calc: (mod: IMod) => util.getSafe(mod.attributes, ['songAuthor'], undefined),
             condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
     );
@@ -343,7 +344,7 @@ async function addTableAttributes(context: IExtensionContext) {
         'mods',
         {
             ...tableAttributes.modes,
-            calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'variants'], []).map(toTitleCase),
+            calc: (mod: IMod) => mod.type == 'bs-map' ? util.getSafe(mod, ['attributes', 'variants'], []).map(toTitleCase) : undefined,
             customRenderer: (mod: IMod) => modesRenderer(context.api, mod),
             condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
@@ -352,7 +353,7 @@ async function addTableAttributes(context: IExtensionContext) {
         'mods',
         {
             ...tableAttributes.bpm,
-            calc: (mod: IMod) => util.getSafe(mod.attributes, ['bpm'], []),
+            calc: (mod: IMod) => mod.type == 'bs-map' ? util.getSafe(mod.attributes, ['bpm'], []) : undefined,
             condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }
     );
@@ -820,7 +821,9 @@ export async function handleYeetDetection(api: IExtensionApi, profile: IProfile,
         var disableMods = await showPreYeetDialog(api);
         if (disableMods) {
             var installedMods =  api.getState().persistent.mods[GAME_ID];
-            var enabledMods = deployment['bs-mod'].map(df => df.source).map(dfs => installedMods[dfs]).filter(m => m.id.toLowerCase().indexOf('bsipa') == -1);
+            // debugger;
+            // var enabledMods = deployment['bs-mod'].map(df => df.source).map(dfs => installedMods[dfs] || Object.values(installedMods).find(m => getModName(m) == dfs)).filter(m => !m.id.toLowerCase().includes('bsipa'));
+            var enabledMods = deployment['bs-mod'].map(df => df.source).map(dfs => installedMods[dfs]).filter(m => !m.id.toLowerCase().includes('bsipa'));
             log('info', 'identified mods eligible for yeeting', {mods: enabledMods.length});
             for (const mod of enabledMods) {
                 traceLog('attempting to disable mod', {id: mod.id, name: mod.attributes.modName})

@@ -17,10 +17,10 @@ export var useTrace: boolean = false;
 type ProfileStore = {[profileId: string]: IProfile};
 export interface ModList { [modId: string]: IMod; };
 
-export function getModName(destinationPath: string) : string {
+/* export function getModName(destinationPath: string) : string {
     var modName = path.basename(destinationPath).split('.').slice(0, -1).join('.');
     return modName;
-}
+} */
 
 export async function getAllFiles(dir) {
   const dirents = await nfs.promises.readdir(dir, { withFileTypes: true });

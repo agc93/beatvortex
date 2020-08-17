@@ -4,7 +4,7 @@ import path = require('path');
 import { log, selectors, fs } from "vortex-api";
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
-import { getModName } from "./util";
+import { getModName } from "vortex-ext-common";
 
 export type PlaylistRef = {source: string, fileUrl: string, fileName: string};
 

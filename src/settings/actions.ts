@@ -25,6 +25,9 @@ export const setSyncSettings =
 export const acceptTerms =
   createAction('BS_ACCEPT_TERMS', (accept: boolean) => accept);
 
+export const enableDirectDownloader =
+  createAction('BS_AXIOS_DOWNLOAD', (enable: boolean) => enable);
+
 /**
  * reducer for changes to the authentication
  */
@@ -48,6 +51,9 @@ export const settingsReducer: IReducerSpec = {
       [acceptTerms as any]: (state, payload: boolean) => {
         return util.setSafe(state, ['skipTerms'], payload);
       },
+      [enableDirectDownloader as any]: (state, payload: boolean) => {
+        return util.setSafe(state, ['downloadDirect'], payload);
+      }
     },
     defaults: {
       enableOCI: {enableMaps: false, enableModels: false, enablePlaylists: false} as ILinkHandling,
@@ -55,7 +61,8 @@ export const settingsReducer: IReducerSpec = {
       preview: { enablePlaylistManager: false } as IPreviewSettings,
       bsipa: { enableYeetDetection: true, disableUpdates: true, applyToConfig: false } as IBSIPASettings,
       sync: { syncOnDeploy: false } as ISyncSettings,
-      skipTerms: false
+      skipTerms: false,
+      downloadDirect: false
     },
   };
 

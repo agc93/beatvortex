@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { log, actions, util } from 'vortex-api';
+import { log, actions, util, fs } from 'vortex-api';
 import path = require('path');
 import { getGameVersion, traceLog } from './util';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
@@ -73,6 +73,7 @@ export class BeatModsClient extends HttpClient {
         var name = path.basename(fileName, path.extname(fileName));
         var splitCount = (name.match(/-/g) || []).length;
         if (splitCount == 1) {
+            traceLog('detected archive matching BeatMods name format', {fileName});
             var [mod, version] = name.split('-');
             return mod && version && version.split('.').length > 1;
         }
@@ -202,6 +203,14 @@ export class BeatModsClient extends HttpClient {
             this._api.store.dispatch(updateBeatModsVersions(versionResponse));
         }
         return versionResponse;
+    }
+
+    downloadModFile = async (mod: IModDetails, targetDir?: string): Promise<string> => {
+        targetDir = targetDir ?? path.join(util.getVortexPath('temp'), 'beatmods');
+        await fs.ensureDirWritableAsync(targetDir, () => Promise.resolve());
+        var filePath = path.join(targetDir, path.basename(mod.downloads[0].url));
+        var data = await this.downloadZipFile(BeatModsClient.getDownloads(mod)[0], filePath);
+        return data;
     }
 
     static getDownloads(mod: IModDetails) : string[] {

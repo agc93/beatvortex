@@ -1,162 +1,165 @@
-#beatmods-browse {    
-    .menu-layer {
-      left: 0;
-    }
+#beatmods-browse {
+  .menu-layer {
+    left: 0;
   }
-  
-  .beatmods-modlist {
-    // width: 30%;
-    margin-right: 4px;
-    border-right: $border-width solid $border-color;
-    overflow: auto;
-  
-    .list-group {
-      overflow-y: auto;
-    }
-  }
-  
-  .beatmods-list-status {
-    font-size: smaller;
-    font-style: italic;
-    color: $text-color-disabled;
-  
-    .btn {
-      @extend .btn-embed;
-      margin-left: 1em;
-    }
-  }
-  
-  .beatmods-text {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  
-  .beatmods-item {
-  
-    &.selected {
-      background-color: $table-bg-active;
-    }
-  
-    .beatmods-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      flex-wrap: nowrap;
-      overflow: hidden;
-      flex: 1 1 0;
-  
-      .beatmods-name {
-        @extend .beatmods-text;
-        font-weight: bolder;
-      }
-  
-      .beatmods-version {
-        opacity: 0.9;
-        font-size: small;
-        padding-left: 6px;
-      }
+}
 
-      .beatmods-required {
-          @extend .beatmods-name;
-          text-align: right;
-          float: right;
-          margin-left: 1.5em;
-      }
-    
-      .extension-stats {
-        display: flex;
-        font-size: smaller;
-        .extension-endorsements {
-          margin-left: 1em;
-        }
-      }
-    }
-  
-    .beatmods-description {
-      @extend .extension-text;
-    }
-  
-    .beatmods-footer {
-      display: flex;
-      justify-content: space-between;
-  
-      .beatmods-author {
-        @extend .beatmods-text;
-        font-weight: bold;
-      }
-    }
+.beatmods-modlist {
+  // width: 30%;
+  margin-right: 4px;
+  border-right: $border-width solid $border-color;
+  overflow: auto;
+
+  .list-group {
+    overflow-y: auto;
   }
-  
-  .description-header {
-    border-bottom: $border-width solid $border-color;
+}
+
+.beatmods-list-status {
+  font-size: smaller;
+  font-style: italic;
+  color: $text-color-disabled;
+
+  .btn {
+    @extend .btn-embed;
+    margin-left: 1em;
+  }
+}
+
+.beatmods-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.beatmods-item {
+
+  &.selected {
+    background-color: $table-bg-active;
+  }
+
+  .beatmods-header {
     display: flex;
-    justify-content: center;
-  
-    .description-header-content {
-      margin-left: $gutter-width;
-      justify-content: space-evenly;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    flex: 1 1 0;
+
+    .beatmods-name {
+      @extend .beatmods-text;
+      font-weight: bolder;
     }
-  
-    .description-image-container {
-      width: 256px;
-      height: 192px;
-  
+
+    .beatmods-version {
+      opacity: 0.9;
+      font-size: small;
+      padding-left: 6px;
+    }
+
+    .beatmods-required {
+      @extend .beatmods-name;
+      text-align: right;
+      float: right;
+      margin-left: 1.5em;
+    }
+
+    .extension-stats {
       display: flex;
-      align-items: center;
-  
-      .extension-picture {
-        max-width: 256px;
-        text-align: center;
-  
-        .zoomable-image {
-          max-width: 100%;
-          max-height: 192px;
-        }
+      font-size: smaller;
+
+      .extension-endorsements {
+        margin-left: 1em;
       }
     }
-    .description-name {
-      font-weight: bolder;
-      font-size: x-large;
-    }
-  
-    .description-author {
+  }
+
+  .beatmods-description {
+    @extend .extension-text;
+  }
+
+  .beatmods-footer {
+    display: flex;
+    justify-content: space-between;
+
+    .beatmods-author {
+      @extend .beatmods-text;
       font-weight: bold;
-      font-style: italic;
-      margin-left: 1em;
-    }
-
-    .description-actions {
-        @extend .description-text;
-        margin-left: 1em;
-        margin-right: 1em;
     }
   }
-  
-  .description-text {
-    height: 100%;
-    overflow: auto;
-    margin: 1em;
+}
+
+.description-header {
+  border-bottom: $border-width solid $border-color;
+  display: flex;
+  justify-content: center;
+
+  .description-header-content {
+    margin-left: $gutter-width;
+    justify-content: space-evenly;
   }
 
-  .description-footer {
-      max-height: '20%';
-      border-top: $border-width solid $border-color;
-      min-height: '10%';
-  }
-  .description-footer-action {
-      float: right;
-      padding: 1em;
-      margin: 0.5em;
-      margin-top: 1.5em;
+  .description-image-container {
+    width: 256px;
+    height: 192px;
+
+    display: flex;
+    align-items: center;
+
+    .extension-picture {
+      max-width: 256px;
+      text-align: center;
+
+      .zoomable-image {
+        max-width: 100%;
+        max-height: 192px;
+      }
+    }
   }
 
-  .description-footer-deps {
-      padding: 1.5em;
+  .description-name {
+    font-weight: bolder;
+    font-size: x-large;
   }
 
-  .description-version-warning {
-      float: right;
-      margin: 1em;
-      max-width: 20%;
+  .description-author {
+    font-weight: bold;
+    font-style: italic;
+    margin-left: 1em;
   }
+
+  .description-actions {
+    @extend .description-text;
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+}
+
+.description-text {
+  height: 100%;
+  overflow: auto;
+  margin: 1em;
+}
+
+.description-footer {
+  max-height: '20%';
+  border-top: $border-width solid $border-color;
+  min-height: '10%';
+}
+
+.description-footer-action {
+  float: right;
+  padding: 1em;
+  margin: 0.5em;
+  margin-top: 1.5em;
+}
+
+.description-footer-deps {
+  padding: 1.5em;
+}
+
+.description-warnings {
+  float: right;
+  margin: 1em;
+  max-width: 20%;
+}

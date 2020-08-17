@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { log, util } from 'vortex-api';
+import { log, util, fs } from 'vortex-api';
 import path = require('path');
 import { models, toTitleCase, traceLog } from './util';
 import retry from 'async-retry';
@@ -16,6 +16,21 @@ import * as Redux from 'redux';
 export class HttpClient {
 
     protected retryCount: number = 3;
+
+    protected downloadZipFile = async <T>(url: string, destinationFile: string): Promise<string> => {
+        var result = await axios.request({
+            responseType: 'arraybuffer',
+            url: url,
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/zip',
+            }
+        });
+        const outputFilename = destinationFile;
+        let buffer = Buffer.from(result.data);
+        fs.writeFileSync(outputFilename, buffer);
+        return outputFilename;
+    }
 
     /**
      * Helper method for retrieving data from the a JSON API.

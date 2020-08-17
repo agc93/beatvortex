@@ -1,5 +1,5 @@
 import { IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ISupportedResult, IMod } from 'vortex-api/lib/types/api';
-import { toInstructions } from "vortex-ext-common";
+import { toAttributeInstructions, getModName } from "vortex-ext-common";
 import { BeatModsClient } from "./beatModsClient";
 import { GAME_ID } from '.';
 import path from 'path';
@@ -8,7 +8,7 @@ import { InstructionType } from 'vortex-api/lib/extensions/mod_management/types/
 import { BeatSaverClient } from './beatSaverClient';
 import { getCustomFolder, ModelType, ModelSaberClient } from './modelSaberClient';
 import { PlaylistClient, IPlaylistInfo, PlaylistRef } from "./playlistClient";
-import { isSongMod, isModelMod, isGameMod, getCurrentProfile, getModName, traceLog } from './util';
+import { isSongMod, isModelMod, isGameMod, getCurrentProfile, traceLog } from './util';
 import { installMaps, IPlaylistEntry } from './playlists';
 
 export interface ModInstaller {
@@ -196,7 +196,7 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
             uploadedTimestamp: details.uploadDate,
             category: details.category
         };
-        instructions = toInstructions(modAtrributes);
+        instructions = toAttributeInstructions(modAtrributes);
         var depInstructions : IInstruction[] = details.dependencies.map(d => {
             return {
                 type: 'rule',
@@ -261,7 +261,7 @@ export async function installBeatSaverArchive(modName: string) : Promise<IInstru
                 songAuthor: mapDetails.metadata.songAuthorName,
                 variants: mapDetails.metadata.characteristics.map(c => c.name)
               };
-            instructions.push(...toInstructions(mapAtrributes));
+            instructions.push(...toAttributeInstructions(mapAtrributes));
         } catch (error) {
             log('warn', 'error during map installation', {error});
             // ignored
@@ -294,7 +294,7 @@ export async function installModelSaberFile(modName: string) : Promise<IInstruct
             source: 'modelsaber',
             uploadedTimestamp: new Date(Date.parse(modelDetails.date)).toISOString()
         };
-        instructions.push(...toInstructions(modelAttributes));
+        instructions.push(...toAttributeInstructions(modelAttributes));
     } else {
         log('warn', "beatvortex doesn't currently include metadata for manually installed models!");
     }
