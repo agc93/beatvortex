@@ -308,15 +308,6 @@ export async function installRemotePlaylist(api: IExtensionApi, installUrl: stri
     installPlaylist(api, ref, info);
 }
 
-export async function installLocalPlaylist(api: IExtensionApi, info: IPlaylistInfo) {
-    var ref: PlaylistRef = {
-        fileName: `${info.playlistTitle}.bplist`,
-        fileUrl: undefined,
-        source: 'Local'
-    }
-    installPlaylist(api, ref, info);
-}
-
 /**
  * Installs the given playlist as a mod.
  * 
@@ -327,7 +318,7 @@ export async function installLocalPlaylist(api: IExtensionApi, info: IPlaylistIn
  * @param api The extension API.
  * @param installUrl The playlist URL to install
  */
-async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlaylistInfo) {
+export async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info: IPlaylistInfo) {
     var client = new PlaylistClient();
     var targetPath = await client.saveToFile(api, ref, info);
     var installPath = path.basename(path.dirname(targetPath));

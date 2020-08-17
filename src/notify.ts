@@ -149,7 +149,7 @@ export async function showPreYeetDialog(api: IExtensionApi, callback?: () => voi
     return toRun;
 }
 
-export async function showPlaylistCreationDialog(api: IExtensionApi, callback?: () => void): Promise<{continue: boolean, title: string, image: string}> {
+export async function showPlaylistCreationDialog(api: IExtensionApi): Promise<{continue: boolean, title: string, image: string}> {
     var result: IDialogResult = await api.showDialog(
         'question',
         'Create Playlist',

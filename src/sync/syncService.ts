@@ -8,7 +8,6 @@ import { util, actions, log, fs } from "vortex-api";
 import { SyncSources, updateDownloadedMaps } from "./actions";
 import { traceLog, getCurrentProfile, ModList, getGamePath } from "../util";
 import { PlaylistManager, installMaps } from "../playlists";
-import { installLocalPlaylist, installPlaylistMaps } from "../install";
 import { updateBookmarksCache } from "../session";
 
 export class SyncService {
@@ -91,7 +90,7 @@ export class SyncService {
             return true;
         }
         var bmPlaylist = this._mgr.createPlaylistContent('Bookmarks', []);
-        await installLocalPlaylist(this._api, bmPlaylist);
+        await this._mgr.installLocalPlaylist(this._api, bmPlaylist);
         // return await this._mgr.isPlaylistInstalled('Bookmarks');
         return true;
     }

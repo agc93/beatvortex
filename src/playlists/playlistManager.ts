@@ -3,11 +3,12 @@ import path = require('path');
 import retry = require('async-retry');
 import asyncPool from "tiny-async-pool";
 import { ILocalPlaylist, IPlaylistEntry } from ".";
-import { getAllFiles, ModList, traceLog, getUserName } from "../util";
+import { getAllFiles, ModList, traceLog, getUserName, isActiveGame } from "../util";
 import { BeatSaverClient, IMapDetails } from "../beatSaverClient";
 import { IExtensionApi, IMod, IModTable } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
 import { IPlaylistInfo, PlaylistClient, PlaylistRef } from "../playlistClient";
+import { installPlaylist } from "../install";
 
 /**
  * This class was intended as a utility class encompassing local-only playlist 
@@ -23,17 +24,10 @@ export class PlaylistManager {
     /**
      *
      */
-    constructor(api: IExtensionApi);
-    constructor(installPath: string);
-    constructor(init: string|IExtensionApi) {
-        if (typeof init === 'string') {
-            this.installPath = init;
-        } else {
-            this._api = init;
+    constructor(api: IExtensionApi) {
+            this._api = api;
             this.installPath = this._api.getState().settings.gameMode.discovered[GAME_ID].path
         }
-        // this._client = new BeatSaverClient();
-    }
 
     playlistExists = async (name: string): Promise<boolean> => {
         var playlists = await this.getInstalledPlaylists();
@@ -161,6 +155,65 @@ export class PlaylistManager {
             playlist.songs = maps;
             playlist.image = image ?? undefined;
             return playlist;
+        }
+    }
+
+    installLocalPlaylist = async (api: IExtensionApi, info: IPlaylistInfo) => {
+        var ref: PlaylistRef = {
+            fileName: `${info.playlistTitle}.bplist`,
+            fileUrl: undefined,
+            source: 'Local'
+        }
+        installPlaylist(api, ref, info);
+    }
+
+    createPlaylist = async (modIds: string[], metadataCallback: (api: IExtensionApi) => Promise<{title: string, image: string}>): Promise<void> => {
+        var api = this._api;
+        if (!isActiveGame(api)) {
+            return;
+        }
+        var mods = api.getState().persistent.mods[GAME_ID];
+        var compatibleMods = modIds
+            .map(mid => mods[mid])
+            .filter(m => util.getSafe(m.attributes, ['source'], undefined) == 'beatsaver');
+        if (compatibleMods.length == 0) {
+            api.sendNotification({
+                title: 'Playlist Creation Failed',
+                message: 'None of the selected mods are BeatSaver maps!',
+                type: 'error'
+            });
+        } else {
+            var result = await metadataCallback(api);
+            if (!result) {
+                return;
+            }
+            if (result) {
+                var content = this.createPlaylistContent(result.title, compatibleMods.map(m => m.id), null, result.image);
+                api.sendNotification({
+                    id: `playlist-creation`,
+                    type: 'success',
+                    title: 'Playlist created',
+                    message: `Created new playlist with ${compatibleMods.length} maps`,
+                    actions: [
+                      {
+                        title: 'Save to file', action: async () => {
+                          const playlistsPath = path.join(util.getVortexPath('temp'), 'BeatSaberPlaylists');
+                          await fs.ensureDirWritableAsync(playlistsPath, () => Promise.resolve());
+                          const tmpPath = path.join(playlistsPath, util.deriveInstallName(result.title, undefined) + ".bplist");
+                          const formatted = JSON.stringify(content, null, '\t');
+                          await fs.writeFileAsync(tmpPath, formatted);
+                          util.opn(playlistsPath).catch(() => null);
+                        },
+                      },
+                      {
+                          title: 'Install', action: async (dismiss) => {
+                              await this.installLocalPlaylist(api, content)
+                              dismiss();
+                          }
+                      }
+                    ],
+                  });
+            }
         }
     }
 }

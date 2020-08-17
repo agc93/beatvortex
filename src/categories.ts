@@ -3,6 +3,7 @@ import { actions, selectors, util } from "vortex-api";
 import { GAME_ID } from ".";
 import { BeatModsClient } from "./beatModsClient";
 import { traceLog } from "./util";
+import { showCategoriesUpdateNotification } from "./notify";
 
 interface ICategory {
     name: string;
@@ -82,6 +83,12 @@ export async function retrieveCategories(api: IExtensionApi, startingCount: numb
         ++counter;
     });
     return res;
-    
+}
 
+export function installCategories(api: IExtensionApi, gameMode: string) {
+    var isInstalled = checkBeatModsCategories(api);
+    if (!isInstalled) {
+        updateCategories(api, false);
+        showCategoriesUpdateNotification(api);
+    }
 }

@@ -1,6 +1,7 @@
 import { log, util } from "vortex-api";
 import { IExtensionApi, AttributeExtractor } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
+import { traceLog } from "./util";
 
 /*
 Extractors (in BeatVortex specifically) should *only* be used for where concepts in an external source and in Vortex exist, but don't align.
@@ -13,7 +14,7 @@ We *do not* use it for primary metadata because installations from files won't h
 
 export const beatModsExtractor = (modInfo: any, modPath: string):  Promise<any> => {
     let downloadGame: string = util.getSafe(modInfo, ['download', 'game'], util.getSafe(modInfo, ['download', 'modInfo', 'game'], undefined));
-    log('debug', 'running attribute extractor', {game: downloadGame});
+    traceLog('running attribute extractor', {game: downloadGame});
     if (downloadGame && downloadGame == GAME_ID) {
         return Promise.resolve({
             fileId: util.getSafe(modInfo, ['download', 'modInfo', 'beatmods', '_id'], undefined)

@@ -54,8 +54,8 @@ class PlaylistView extends ComponentEx<IProps, {}> {
     };
 
     async refreshPlaylists(version?: string) {
-        var { gamePath, installed } = this.props;
-        var client = new PlaylistManager(gamePath);
+        var { gamePath, api } = this.props;
+        var client = new PlaylistManager(api);
         var playlists = await client.getInstalledPlaylists();
         // var titles = playlists.map(p => p.title);
         // log('debug', 'beatvortex fetched installed playlists', { count: playlists.length, titles: titles });
