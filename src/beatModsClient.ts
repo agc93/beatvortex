@@ -197,7 +197,7 @@ export class BeatModsClient extends HttpClient {
     getAllGameVersions = async (): Promise<IVersionList> => {
         log('debug', 'beatvortex: retrieving versions from alias file');
         var url = 'https://alias.beatmods.com/aliases.json';
-        var versionResponse = await this.getApiResponse<IVersionList>(url, (data) => data);
+        var versionResponse = await this.getApiResponse<IVersionList>(url, (data) => data, null, {disableCache: true});
         if (this._api && versionResponse != null) {
             log('debug', 'populating session cache with game versions', {count: Object.keys(versionResponse).length});
             this._api.store.dispatch(updateBeatModsVersions(versionResponse));

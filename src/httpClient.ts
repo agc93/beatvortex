@@ -7,6 +7,10 @@ import { IExtensionApi, IState } from 'vortex-api/lib/types/api';
 import { ThunkDispatch } from 'redux-thunk';
 import * as Redux from 'redux';
 
+export interface IHttpClientOptions {
+    disableCache?: true;
+}
+
 /**
  * A simple client base class to encapsulate retrieving data from a JSON API endpoint.
  *
@@ -42,14 +46,14 @@ export class HttpClient {
      * @param returnHandler - A callback to take the API response and return specific data.
      * @returns The repsonse after transformation by the returnHandler. Returns null on error/not found.
      */
-    protected getApiResponse = async <T>(url: string, returnHandler?: (data: any) => T, onError?: (err: Error) => any): Promise<T | null> | null => {
+    protected getApiResponse = async <T>(url: string, returnHandler?: (data: any) => T, onError?: (err: Error) => any, options?: IHttpClientOptions): Promise<T | null> | null => {
         returnHandler = returnHandler ?? ((data) => data);
         try {
             var resp = await retry(async bail => {
                 try {
                     var response = await axios.request<T>({
                         url: url,
-                        headers: { 'User-Agent': 'BeatVortex/0.1.0' }
+                        headers: this.getHeaders(options)
                     });
                     const { data } = response;
                     return returnHandler(data);
@@ -74,6 +78,16 @@ export class HttpClient {
                 throw (err);
             }
         }
+    }
+
+    private getHeaders(options?: IHttpClientOptions) {
+        var headers = {};
+        headers['User-Agent'] = 'BeatVortex/0.1.0';
+        if (options?.disableCache === true) {
+            headers['pragma'] = 'no-cache';
+            headers['cache-control'] = 'no-cache';
+        }
+        return headers;
     }
 
     protected getType(fileName: string) {

@@ -332,6 +332,8 @@ export async function installPlaylist(api: IExtensionApi, ref: PlaylistRef, info
             name: info.playlistTitle,
             author: info.playlistAuthor,
             pictureUrl: info.image,
+            //TODO: this ^^ is actually a really bad idea.
+            // playlist images are often literal megabytes of base64'd content that we should be scaling before we put it in attributes
             installTime: new Date(),
             // version: '1.0.0',
             notes: `Installed from ${ref.fileUrl ?? ref.fileName}`,
