@@ -5,12 +5,12 @@
   "main": "./dist/index.js",
   "scripts": {
     "webpack": "node ./node_modules/webpack/bin/webpack --config webpack.config.js --display-error-details --progress --profile --color",
-    "build": "npm run webpack && extractInfo && copyfiles -f ./gameart.png ./src/language*.json ./src/**/*.scss ./src/*.scss ./src/**/*.svg ./dist/ && npm run ns",
-    "ns": "json -I -f dist/info.json -e \"this.namespace=\\\"beatvortex\\\"\"",
+    "build": "npm run webpack && extractInfo && copyfiles -f ./gameart.png ./src/language*.json ./src/**/*.scss ./src/*.scss ./src/**/*.svg ./dist/",
     "tsdoc": "typedoc"
   },
   "config": {
-    "game": "Beat Saber"
+    "game": "Beat Saber",
+    "namespace": "beatvortex"
   },
   "author": "agc93",
   "license": "MIT",
@@ -57,7 +57,7 @@
     "ts-loader": "^6.0.4",
     "typedoc": "^0.17.4",
     "typescript": "^3.5.2",
-    "vortex-api": "github:Nexus-Mods/vortex-api#deaf31a5aa466e38d782e5b268e2151b1ad5fcfc",
+    "vortex-api": "github:Nexus-Mods/vortex-api#a6a7b2e0f851485c2955a4a76e5258a8632f7656",
     "vortex-ext-common": "^0.0.8",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4"
