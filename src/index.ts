@@ -299,6 +299,7 @@ function addInstallers(context: IExtensionContext) {
  * @param ns The namespace to load translations for
  */
 async function addTranslations(api: IExtensionApi, ns: string = 'beatvortex'): Promise<void> {
+    api.getI18n().loadNamespaces(ns);
     var re = new RegExp(/^language_([a-z]{2}\b(-[a-z]{2})?)\.json/);
     var langFiles = (await fs.readdirAsync(__dirname)).filter((f: string) => re.test(f));
     langFiles.forEach(async (lang: string) => {

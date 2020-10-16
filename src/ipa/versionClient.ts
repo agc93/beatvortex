@@ -29,10 +29,15 @@ export class IPAVersionClient {
             traceLog('read unity file into buffer', {length: fileBuffer.length, path: unityFile});
             var key = fileBuffer.indexOf(Buffer.from(searchKey));
             if (key) {
-                var padding = 111 + searchKey.length;
-                var versionString = fileBuffer.toString('utf8', key + padding, key + padding + 6);
-                traceLog('found key in Unity file', {key, versionString});
-                return versionString;
+                var rawData = fileBuffer.toString('utf8', key, key + 256);
+                var versionMatch = /\d+\.\d+\.\d+/.exec(rawData);
+                if (versionMatch.length > 0) {
+                    var versionString = versionMatch[0];
+                    traceLog('found key in Unity file', {key, versionString});
+                    return versionString;
+                }
+                traceLog('failed to extract version number from unity data');
+                
             } else {
                 traceLog('failed to find key in unity file', {unityFile});
             }
