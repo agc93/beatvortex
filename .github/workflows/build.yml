@@ -19,16 +19,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 12
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 12.x
     - run: npm ci
     - run: npm run build --if-present
     - uses: actions/upload-artifact@v1
@@ -68,4 +64,47 @@ jobs:
           ./extension/game-beatsaber.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  nexus:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.x'
+    - name: Restore Tools
+      shell: bash
+      run: |
+          dotnet tool install -g NexusUploader
+    - name: Download build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: game-beatsaber
+        path: extension
+    - name: Create Zip File
+      uses: thedoctor0/zip-release@master
+      with:
+        filename: './game-beatsaber.zip'
+        path: '.'
+        directory: './extension'
+    - name: Set version output
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}
+    - name: Validate unex config
+      shell: bash
+      run: |
+        unex check -c
+      env:
+        UNEX_APIKEY: ${{ secrets.NEXUS_TOKEN }}
+        UNEX_COOKIES: ${{ secrets.NEXUS_COOKIES }}
+        UNEX_DEBUG: true
+    - name: Run Nexus uploader
+      shell: bash
+      run: |
+        unex upload 96 ./extension/game-beatsaber.zip -v ${{ steps.vars.outputs.tag }}
+      env:
+        UNEX_APIKEY: ${{ secrets.NEXUS_TOKEN }}
+        UNEX_COOKIES: ${{ secrets.NEXUS_COOKIES }}
+        UNEX_DEBUG: true
 

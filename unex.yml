@@ -1,0 +1,12 @@
+Game: site
+ModId: 96
+FileName: BeatVortex Extension
+PreviousFile: auto
+FileDescription: |-
+  Requires Vortex ~ 1.3.0
+
+  Download and install using the Extensions pane in Vortex.
+
+  To manually install, extract to %APPDATA%\Vortex\plugins\game-beatsaber.
+
+  Read about the changes in this release at beatvortex.dev/updates/v{{Version}}
