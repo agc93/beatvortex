@@ -1,4 +1,24 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Mon, 19 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 4.2 Release</title><link>/blog/2020/10/19/alpha-4.2-release/</link><pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate><guid>/blog/2020/10/19/alpha-4.2-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Wed, 04 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 4.3 Release</title><link>/blog/2020/11/04/alpha-4.3-release/</link><pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate><guid>/blog/2020/11/04/alpha-4.3-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release is a minor fix for the &lt;a href="../../updates/v0.4.1">previous alpha release&lt;/a> including:&lt;/p>
+&lt;ul>
+&lt;li>Improved BSIPA version detection
+&lt;ul>
+&lt;li>In short, errors should be handled better now and you should see a notification when BeatVortex can't detect your BSIPA configuration.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Fixed some behind-the-scenes issues
+&lt;ul>
+&lt;li>This &lt;em>should&lt;/em> resolve some React-related deprecation warnings&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>There was a lot of changes in &lt;a href="../../updates/v0.4.0">0.4.0&lt;/a> and &lt;a href="../../updates/v0.4.1">0.4.1&lt;/a>, so make sure you check those release notes if you haven't already.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;h3 id="beatmods-mod-availability">BeatMods mod availability&lt;/h3>
+&lt;p>Most mods should now be available from BeatMods for the 1.12.2 update as authors update their mods. If you cannot find or install mods after the 1.12.2 update, check if they are available on &lt;a href="https://beatmods.com">BeatMods&lt;/a>. They may not have been updated for the latest game version.&lt;/p></description></item><item><title>Blog: Alpha 4.2 Release</title><link>/blog/2020/10/19/alpha-4.2-release/</link><pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate><guid>/blog/2020/10/19/alpha-4.2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
