@@ -113,7 +113,7 @@ class ServiceStatusDialog extends ComponentEx<IProps, IComponentState> {
         const uptime = Math.round(service.uptime * 100);
         const uptimeStyle = uptime == 100 ? "success" : uptime > 80 ? "warning" : "danger";
         return (
-            <Panel bsStyle={style} eventKey={index}>
+            <Panel key={service.id} bsStyle={style} eventKey={index}>
                 <Panel.Heading>
                     <Panel.Title toggle>{service.id} - <code style={{ color: 'white', backgroundColor: 'unset' }}>{service.description}</code></Panel.Title>
                 </Panel.Heading>
@@ -126,9 +126,9 @@ class ServiceStatusDialog extends ComponentEx<IProps, IComponentState> {
                     <div>
                         <h3 style={{ fontSize: '1.5rem' }}>Recent Response Time:</h3>
                         <Breadcrumb>
-                            <Breadcrumb.Item active>⬇{Math.min(...recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
-                            <Breadcrumb.Item active>~{average(recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
-                            <Breadcrumb.Item active>⬆{Math.max(...recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
+                            <Breadcrumb.Item active key={`${service.id}-min`}>⬇{Math.min(...recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
+                            <Breadcrumb.Item active key={`${service.id}-avg`}>~{average(recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
+                            <Breadcrumb.Item active key={`${service.id}-max`}>⬆{Math.max(...recentResults.map(di => di[1]))}ms</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
                 </Panel.Body>

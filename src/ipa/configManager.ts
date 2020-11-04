@@ -43,9 +43,20 @@ export class BSIPAConfigManager {
     readConfig = async () : Promise<IBSIPAConfig | null> => {
         var configPath = this.getConfigPath();
         if (nfs.existsSync(configPath)) {
-            var configContent = await fs.readFileAsync(configPath, { encoding: 'utf-8' });
-            var config = JSON.parse(configContent);
-            return config;
+            try {
+                var configContent = await fs.readFileAsync(configPath, { encoding: 'utf-8' });
+                var config = JSON.parse(configContent);
+                return config;
+            } catch (err) {
+                log('error', 'error encountered reading BSIPA configuration', {err});
+                this._api.sendNotification({
+                    type: 'warning',
+                    message: 'Failed to read BSIPA configuration. Some features may not work correctly!',
+                    displayMS: 5000,
+                    title: 'Error reading BSIPA configuraion file',
+                });
+            }
+            
         }
         return null;
     }
