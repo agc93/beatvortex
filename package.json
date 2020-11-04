@@ -1,6 +1,6 @@
 {
   "name": "game-beatsaber",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "BeatVortex adds support for Beat Saber mods in Vortex",
   "main": "./dist/index.js",
   "scripts": {
@@ -24,7 +24,6 @@
     "devDependencies is used for deps that should be safe to update at any time"
   ],
   "dependencies": {
-    "bluebird": "^3.7.2",
     "electron": "^8.5.2",
     "i18next": "^19.0.1",
     "immutability-helper": "^3.1.1",
@@ -51,7 +50,6 @@
     "async-retry": "^1.3.1",
     "axios": "^0.19.2",
     "copyfiles": "^2.3.0",
-    "json": "^9.0.6",
     "marked": "^1.1.1",
     "tiny-async-pool": "^1.1.0",
     "ts-loader": "^6.0.4",
