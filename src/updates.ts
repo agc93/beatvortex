@@ -76,20 +76,29 @@ export async function installBeatModsUpdate(api: IExtensionApi, gameId: string, 
     var versions = await client.getModVersionsByName(modId);
     var update = versions.find(v => v._id == util.getSafe(mod.attributes, ['newestFileId'], undefined));
     var downloadLinks = BeatModsClient.getDownloads(update);
-    log('debug', 'emitting download events for selected mod', { mod: update.name, links: downloadLinks});
-    api.events.emit('start-download', 
-        downloadLinks, 
-        {
-            game: 'beatsaber',
-            source: 'beatmods',
-            name: update.name
-        }, 
-        update.name, 
-        (err: Error, id?: string) => {
-            directDownloadInstall(api, update, err, id, (api) => {
-                setDownloadModInfo(api.store, id, {...update, source: 'beatmods', id: update._id}, {beatmods: update});
-                // setDownloadModInfo(api.store, id, {...update, source: 'beatmods', id: update._id});
-            });
-        }, 
-        true);
+    if (downloadLinks && downloadLinks.length > 0) {
+        log('debug', 'emitting download events for selected mod', { mod: update.name, links: downloadLinks});
+        api.events.emit('start-download', 
+            downloadLinks, 
+            {
+                game: 'beatsaber',
+                source: 'beatmods',
+                name: update.name
+            }, 
+            update.name, 
+            (err: Error, id?: string) => {
+                directDownloadInstall(api, update, err, id, (api) => {
+                    setDownloadModInfo(api.store, id, {...update, source: 'beatmods', id: update._id}, {beatmods: update});
+                    // setDownloadModInfo(api.store, id, {...update, source: 'beatmods', id: update._id});
+                });
+            }, 
+            true);
+    } else {
+        api.sendNotification({
+            group: 'bs-update-error',
+            type: 'warning',
+            message: 'Could not get download info for update file',
+            title: 'Failed to install mod update!'
+        });
+    }
 }

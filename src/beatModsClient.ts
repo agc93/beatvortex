@@ -214,7 +214,7 @@ export class BeatModsClient extends HttpClient {
     }
 
     static getDownloads(mod: IModDetails) : string[] {
-        return mod.downloads.map(m => `https://beatmods.com${m.url}`);
+        return mod?.downloads ? mod.downloads.map(m => `https://beatmods.com${m.url}`) : [];
     }
 }
 

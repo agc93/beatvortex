@@ -374,6 +374,7 @@ async function prepareForModding(discovery: IDiscoveryResult) {
     GAME_PATH = discovery.path;
     let mapsPath = path.join(discovery.path, 'Beat Saber_Data', 'CustomLevels');
     let playlistsPath = path.join(discovery.path, 'Playlists')
+    await fs.ensureDirAsync(playlistsPath);
     await fs.ensureDirWritableAsync(mapsPath);
     await fs.ensureDirWritableAsync(playlistsPath);
     // I don't honestly know how much of this duplication is actually necessary, but it works now, so I'm going to leave it
