@@ -24,7 +24,7 @@
     "devDependencies is used for deps that should be safe to update at any time"
   ],
   "dependencies": {
-    "electron": "^8.5.2",
+    "electron": "^9.4.0",
     "i18next": "^19.0.1",
     "immutability-helper": "^3.1.1",
     "react": "^16.12.0",
