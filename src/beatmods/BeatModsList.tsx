@@ -117,9 +117,10 @@ class BeatModsList extends ComponentEx<IProps, {}> {
                 downloadLinks, 
                 {
                     game: 'beatsaber',
-                    name: mod.name
+                    name: mod.name,
+                    source: "beatmods"
                 }, 
-                mod.name, 
+                undefined,  //Vortex's broken af naming behaviour has been fixed at some point 
                 (err: Error, id?: string) => {
                     directDownloadInstall(api, mod, err, id, (api) => {
                         setDownloadModInfo(api.store, id, {...mod, source: 'beatmods'}, {beatmods: mod});
@@ -205,6 +206,7 @@ class BeatModsList extends ComponentEx<IProps, {}> {
         var {installed} = (this.props as IProps);
         if (installed && Object.keys(installed)) {
             var keys = Object.keys(installed);
+            //TODO: this should use the mod attributes, not `isBeatModsArchive`
             var isInstalled = installed && Object.keys(installed) && Object.keys(installed).filter(BeatModsClient.isBeatModsArchive).some(m => m == `${mod.name}-${mod.version}`);
             traceLog('pulled installed mod list', {match: isInstalled ?? 'unknown', count: keys.length, keys});
             return isInstalled;

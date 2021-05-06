@@ -85,7 +85,7 @@ export async function installBeatModsUpdate(api: IExtensionApi, gameId: string, 
                 source: 'beatmods',
                 name: update.name
             }, 
-            update.name, 
+            undefined, //Vortex's broken af naming behaviour has been fixed at some point 
             (err: Error, id?: string) => {
                 directDownloadInstall(api, update, err, id, (api) => {
                     setDownloadModInfo(api.store, id, {...update, source: 'beatmods', id: update._id}, {beatmods: update});
