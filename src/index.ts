@@ -5,6 +5,7 @@ import { fs, log, util, selectors, actions } from "vortex-api";
 import { IExtensionContext, IDiscoveryResult, IGame, IState, ISupportedResult, ProgressDelegate, IInstallResult, IExtensionApi, IProfile, ThunkStore, IDeployedFile, IInstruction, ILink, IMod, IDialogResult } from 'vortex-api/lib/types/api';
 import { isGameMod, isSongHash, isSongMod, types, getGamePath, findGame, isModelMod, isModelModInstructions, getProfile, enableTrace, traceLog, isPlaylistMod, useTrace, toTitleCase, isGameManaged, getGameVersion } from './util';
 import { ProfileClient, getModName, isActiveGame } from "vortex-ext-common";
+import { NoticesHandler } from "vortex-ext-notices";
 
 // local modules
 import { showPatchDialog, showTermsNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
@@ -15,7 +16,7 @@ import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSa
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 import { updateCategories, checkBeatModsCategories, installCategories } from "./categories";
 import { beatModsExtractor } from "./extractor";
-import { noticeReducer, noticeStatePath, showNotices } from "./notice";
+// import { noticeReducer, noticeStatePath, showNotices } from "./notice";
 import { registerProtocols } from "./oneClick";
 
 // clients
@@ -46,6 +47,7 @@ function main(context: IExtensionContext) {
         return isGameManaged(context.api);
     }
     // context.requireVersion("^1.3");
+    var notices = NoticesHandler.create(GAME_ID, 'https://beatvortex.dev/notices', "BeatVortex");
     context.once(() => {
         enableTrace();
         addStylesheets(context.api);
@@ -99,11 +101,12 @@ function main(context: IExtensionContext) {
                 installCategories(context.api, mode);
             });
           });
-          context.api.events.on('gamemode-activated', (gameMode: string) => {
+          notices.registerEvent(context.api);
+          /* context.api.events.on('gamemode-activated', (gameMode: string) => {
               handleActivatedEvent(gameMode, (mode) => {
                 showNotices(context.api);
               });
-          });
+          }); */
           context.api.events.on('gamemode-activated', (gameMode: string) => {
               handleActivatedEvent(gameMode, (mode) => {
                 var version = new IPAVersionClient(context.api)?.getUnityGameVersion() ?? getGameVersion(context.api);
@@ -192,7 +195,8 @@ function main(context: IExtensionContext) {
     context.registerReducer(['settings', 'beatvortex'], settingsReducer);
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
     context.registerReducer(['persistent', 'beatvortex', 'sync'], syncReducer);
-    context.registerReducer(noticeStatePath.root, noticeReducer);
+    context.registerReducer(notices.store.path, notices.store.reducer);
+    // context.registerReducer(noticeStatePath.root, noticeReducer);
 
     /** BSMG Services dialog */
     context.registerAction('global-icons', 200, 'dashboard', {}, 'BSMG Services',
