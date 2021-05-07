@@ -16,7 +16,6 @@ import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSa
 import { checkForBeatModsUpdates, installBeatModsUpdate } from "./updates";
 import { updateCategories, checkBeatModsCategories, installCategories } from "./categories";
 import { beatModsExtractor } from "./extractor";
-// import { noticeReducer, noticeStatePath, showNotices } from "./notice";
 import { registerProtocols } from "./oneClick";
 
 // clients
@@ -102,11 +101,6 @@ function main(context: IExtensionContext) {
             });
           });
           notices.registerEvent(context.api);
-          /* context.api.events.on('gamemode-activated', (gameMode: string) => {
-              handleActivatedEvent(gameMode, (mode) => {
-                showNotices(context.api);
-              });
-          }); */
           context.api.events.on('gamemode-activated', (gameMode: string) => {
               handleActivatedEvent(gameMode, (mode) => {
                 var version = new IPAVersionClient(context.api)?.getUnityGameVersion() ?? getGameVersion(context.api);
@@ -196,7 +190,6 @@ function main(context: IExtensionContext) {
     context.registerReducer(['session', 'beatvortex'], sessionReducer);
     context.registerReducer(['persistent', 'beatvortex', 'sync'], syncReducer);
     context.registerReducer(notices.store.path, notices.store.reducer);
-    // context.registerReducer(noticeStatePath.root, noticeReducer);
 
     /** BSMG Services dialog */
     context.registerAction('global-icons', 200, 'dashboard', {}, 'BSMG Services',
