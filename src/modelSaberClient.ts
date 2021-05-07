@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { log } from 'vortex-api';
 import path = require('path');
 import { models, toTitleCase } from './util';
-import { HttpClient } from './httpClient';
+import { HttpClient } from 'vortex-ext-http';
 
 /**
  * Gets the correct installation folder path for the given custom model.
@@ -34,6 +34,12 @@ export function getCustomFolder(type: ModelType) {
  * This client uses *only* unauthenticated endpoints, no auth has been implemented.
  */
 export class ModelSaberClient extends HttpClient {
+    /**
+     *
+     */
+    constructor() {
+        super("BeatVortex/0.2.0");
+    }
     /**
      * Determines if the given link is a valid modelsaber.com installation link.
      * @remarks

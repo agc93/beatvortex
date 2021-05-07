@@ -4,7 +4,7 @@ import path = require('path');
 import { getGameVersion, traceLog } from './util';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { updateBeatModsCache, updateBeatModsVersions } from "./session";
-import { HttpClient } from './httpClient';
+import { HttpClient } from "vortex-ext-http";
 
 export interface ModList { [modName: string]: IModDetails; };
 export interface IVersionList { [modVersion: string]: string[] };
@@ -22,7 +22,7 @@ export class BeatModsClient extends HttpClient {
      *
      */
     constructor(api?: IExtensionApi) {
-        super();
+        super("BeatVortex/0.2.0");
         this._api = api;
     }
 
@@ -108,16 +108,17 @@ export class BeatModsClient extends HttpClient {
             return null;
         }
         var url =  `https://beatmods.com/api/mod/${modId}`;
-        var resp = await axios.request<IModDetails>({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse<IModDetails>) => {
-            const { data } = resp;
-            return data;
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
+        var resp = await this.getApiResponse<IModDetails>(url, (data) => data, (err) => log('error', err.message));
+        // var resp = await axios.request<IModDetails>({
+        //     url: url,
+        //     headers: {'User-Agent': 'BeatVortex/0.1.0' }
+        // }).then((resp: AxiosResponse<IModDetails>) => {
+        //     const { data } = resp;
+        //     return data;
+        // }).catch(err => {
+        //     log('error', err);
+        //     return null;
+        // });
         if (this._api && resp != null) {
             this._api.store.dispatch(updateBeatModsCache([resp]));
         }
@@ -209,7 +210,7 @@ export class BeatModsClient extends HttpClient {
         targetDir = targetDir ?? path.join(util.getVortexPath('temp'), 'beatmods');
         await fs.ensureDirWritableAsync(targetDir, () => Promise.resolve());
         var filePath = path.join(targetDir, path.basename(mod.downloads[0].url));
-        var data = await this.downloadZipFile(BeatModsClient.getDownloads(mod)[0], filePath);
+        var data = await this.downloadFile(BeatModsClient.getDownloads(mod)[0], filePath);
         return data;
     }
 

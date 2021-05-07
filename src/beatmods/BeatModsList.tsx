@@ -12,6 +12,7 @@ import { setDownloadModInfo, GAME_ID, directDownloadInstall } from '..';
 import { rsort } from "semver";
 import { withTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
+import { getModName } from "vortex-ext-common";
 
 interface IConnectedProps {
     installed: { [modId: string]: IMod; };
@@ -206,8 +207,11 @@ class BeatModsList extends ComponentEx<IProps, {}> {
         var {installed} = (this.props as IProps);
         if (installed && Object.keys(installed)) {
             var keys = Object.keys(installed);
-            //TODO: this should use the mod attributes, not `isBeatModsArchive`
-            var isInstalled = installed && Object.keys(installed) && Object.keys(installed).filter(BeatModsClient.isBeatModsArchive).some(m => m == `${mod.name}-${mod.version}`);
+            var isInstalled = installed && 
+                Object.keys(installed) && 
+                Object.values(installed)
+                    .filter(m => util.getSafe<string>(m.attributes, ['source'], "") == "beatmods")
+                    .some(m => getModName(m, "").indexOf(mod.name) !== -1 && util.getSafeCI(m.attributes, ['version'], "") == mod.version);
             traceLog('pulled installed mod list', {match: isInstalled ?? 'unknown', count: keys.length, keys});
             return isInstalled;
         } else {

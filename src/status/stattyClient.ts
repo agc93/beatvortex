@@ -1,5 +1,5 @@
 import { trimString } from '../util';
-import { HttpClient } from '../httpClient';
+import { HttpClient } from 'vortex-ext-http';
 import { IStatResult } from './types';
 
 /**
@@ -13,7 +13,7 @@ export class StattyClient extends HttpClient {
      * @param baseUrl the base API URL (don't include /api/)
      */
     constructor(baseUrl: string) {
-        super();
+        super("BeatVortex/0.2.0");
         this.baseUrl = trimString(baseUrl, '/');
     }
     

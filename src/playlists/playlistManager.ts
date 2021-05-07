@@ -2,8 +2,9 @@ import { fs, log, util, actions } from "vortex-api";
 import path = require('path');
 import retry = require('async-retry');
 import asyncPool from "tiny-async-pool";
+import { isActiveGame } from "vortex-ext-common";
 import { ILocalPlaylist, IPlaylistEntry } from ".";
-import { getAllFiles, ModList, traceLog, getUserName, isActiveGame } from "../util";
+import { getAllFiles, ModList, traceLog, getUserName } from "../util";
 import { BeatSaverClient, IMapDetails } from "../beatSaverClient";
 import { IExtensionApi, IMod, IModTable } from "vortex-api/lib/types/api";
 import { directDownloadInstall, setDownloadModInfo, GAME_ID } from "..";
@@ -169,7 +170,7 @@ export class PlaylistManager {
 
     createPlaylist = async (modIds: string[], metadataCallback: (api: IExtensionApi) => Promise<{title: string, image: string}>): Promise<void> => {
         var api = this._api;
-        if (!isActiveGame(api)) {
+        if (!isActiveGame(api, GAME_ID)) {
             return;
         }
         var mods = api.getState().persistent.mods[GAME_ID];

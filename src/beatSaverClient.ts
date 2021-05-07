@@ -4,7 +4,7 @@ import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { traceLog } from './util';
 import { cacheBeatSaverMap } from './session';
 import retry from 'async-retry';
-import { HttpClient, CachedHttpClient } from './httpClient';
+import { HttpClient, CachedHttpClient } from 'vortex-ext-http';
 
 /**
  * A simple client class to encapsulate the majority of beatsaver.com-specific logic, including metadata retrieval.
@@ -19,7 +19,7 @@ export class BeatSaverClient extends CachedHttpClient {
      *
      */
     constructor(api?: IExtensionApi) {
-        super(api);
+        super(api, "BeatVortex/0.2.0");
         // this._api = api;
     }
 

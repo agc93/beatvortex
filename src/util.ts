@@ -73,17 +73,7 @@ export function findGame() {
 
 /**
  * @deprecated
- * @param api extension API
  */
-export function getGameInstallPath(api: IExtensionApi) {
-    var discovery = util.getSafe(api.getState().settings.gameMode.discovered, [GAME_ID], undefined);
-    if (discovery === undefined) {
-        return null;
-    } else {
-        return (discovery as IDiscoveryResult).path;
-    }
-}
-
 export function getGamePath(api: IExtensionApi, useSongPath: boolean): string;
 export function getGamePath(api: IExtensionApi, game: IGame, useSongPath: boolean): string;
 export function getGamePath(api: IExtensionApi, gameOrPath: IGame | boolean, useSongPath?: boolean) {
@@ -136,19 +126,19 @@ export function isModelModInstructions(instructions: IInstruction[]) : boolean {
     return isModelMod(files);
 }
 
-// WARNING: I'm honestly not sure this is working, and I have no idea why not. I think the type checking might not be right?
-// you'd be right, because that wasn't how the JS type system works....at all.
-export function isActiveGame(api: IExtensionApi): boolean;
-export function isActiveGame(context: IExtensionContext): boolean;
-export function isActiveGame(store: ThunkStore<any>): boolean;
-export function isActiveGame(context : IExtensionContext | IExtensionApi | ThunkStore<any>) : boolean {
-    return selectors.activeGameId(
-        (context as any).api 
-            ? (context as IExtensionContext).api.store.getState()
-            : (context as any).store
-                ? (context as IExtensionApi).store.getState()
-                : (context as ThunkStore<any>)) === GAME_ID;
-}
+// // WARNING: I'm honestly not sure this is working, and I have no idea why not. I think the type checking might not be right?
+// // you'd be right, because that wasn't how the JS type system works....at all.
+// export function isActiveGame(api: IExtensionApi): boolean;
+// export function isActiveGame(context: IExtensionContext): boolean;
+// export function isActiveGame(store: ThunkStore<any>): boolean;
+// export function isActiveGame(context : IExtensionContext | IExtensionApi | ThunkStore<any>) : boolean {
+//     return selectors.activeGameId(
+//         (context as any).api 
+//             ? (context as IExtensionContext).api.store.getState()
+//             : (context as any).store
+//                 ? (context as IExtensionApi).store.getState()
+//                 : (context as ThunkStore<any>)) === GAME_ID;
+// }
 
 export function isGameManaged(profiles: ProfileStore): boolean;
 export function isGameManaged(api: IExtensionApi): boolean;

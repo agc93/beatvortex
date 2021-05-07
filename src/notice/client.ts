@@ -1,4 +1,4 @@
-import { HttpClient } from "../httpClient";
+import { HttpClient } from "vortex-ext-http";
 import { IExtensionApi, INotificationAction } from "vortex-api/lib/types/api";
 import { util, log } from "vortex-api";
 import { noticeStatePath, acknowledgeNotice } from "./store";
@@ -10,7 +10,7 @@ export class NoticeClient extends HttpClient {
      *
      */
     constructor(api: IExtensionApi) {
-        super();
+        super("BeatVortex/0.2.0");
         this._api = api;
     }
 
