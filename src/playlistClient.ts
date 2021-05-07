@@ -1,22 +1,23 @@
 import { IPlaylistEntry } from "./playlists";
-import axios, { AxiosResponse } from 'axios';
 import path = require('path');
 import { log, selectors, fs } from "vortex-api";
 import { IExtensionApi } from "vortex-api/lib/types/api";
 import { GAME_ID } from ".";
 import { getModName } from "vortex-ext-common";
+import { HttpClient } from "vortex-ext-http";
 
 export type PlaylistRef = {source: string, fileUrl: string, fileName: string};
 
 /**
  * Prototype client for retrieving and handling playlist/bplist files.
  */
-export class PlaylistClient {
+export class PlaylistClient extends HttpClient {
     _baseUrl: string;
     /**
      *
      */
     constructor(linkBase?: string) {
+        super("BeatVortex/0.2.0");
         this._baseUrl = linkBase ?? 'https://bsaber.com/PlaylistAPI/';
     }
 
@@ -46,17 +47,7 @@ export class PlaylistClient {
     getPlaylist = async (name: string): Promise<IPlaylistInfo> => {
         name = name.endsWith('.bplist') ? name : `${name}.bplist`;
         var url = `${this._baseUrl}${name}`;
-        var resp = await axios.request<IPlaylistInfo>({
-            url: url,
-            headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        }).then((resp: AxiosResponse<IPlaylistInfo>) => {
-            const { data } = resp;
-            // traceLog(JSON.stringify(data));
-            return data;
-        }).catch(err => {
-            log('error', err);
-            return null;
-        });
+        var resp = await this.getApiResponse<IPlaylistInfo>(url);
         return resp;
     }
 

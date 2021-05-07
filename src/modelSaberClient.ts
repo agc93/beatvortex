@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import { log } from 'vortex-api';
 import path = require('path');
 import { models, toTitleCase } from './util';

@@ -1,9 +1,7 @@
-import axios, { AxiosResponse } from 'axios';
 import { log, util } from 'vortex-api';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
 import { traceLog } from './util';
 import { cacheBeatSaverMap } from './session';
-import retry from 'async-retry';
 import { HttpClient, CachedHttpClient } from 'vortex-ext-http';
 
 /**

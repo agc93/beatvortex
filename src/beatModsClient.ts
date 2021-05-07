@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import { log, actions, util, fs } from 'vortex-api';
 import path = require('path');
 import { getGameVersion, traceLog } from './util';
@@ -109,16 +108,6 @@ export class BeatModsClient extends HttpClient {
         }
         var url =  `https://beatmods.com/api/mod/${modId}`;
         var resp = await this.getApiResponse<IModDetails>(url, (data) => data, (err) => log('error', err.message));
-        // var resp = await axios.request<IModDetails>({
-        //     url: url,
-        //     headers: {'User-Agent': 'BeatVortex/0.1.0' }
-        // }).then((resp: AxiosResponse<IModDetails>) => {
-        //     const { data } = resp;
-        //     return data;
-        // }).catch(err => {
-        //     log('error', err);
-        //     return null;
-        // });
         if (this._api && resp != null) {
             this._api.store.dispatch(updateBeatModsCache([resp]));
         }
