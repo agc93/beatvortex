@@ -8,6 +8,7 @@ import { GAME_ID } from ".";
 import { ISteamEntry } from "vortex-api/lib/util/api";
 import { STEAMAPP_ID } from "./meta";
 import { IVersionList } from "./beatModsClient";
+import {IMapDetails} from "./beatSaverClient";
 
 export const types = ['libs', 'plugins', 'beatsaber_data', 'ipa' ];
 export const models = ['avatar', 'platform', 'saber', 'plat']
@@ -235,4 +236,14 @@ export function trimString (s: string, c: string) {
     return s.replace(new RegExp(
       "^[" + c + "]+|[" + c + "]+$", "g"
     ), "");
+}
+
+export function getDifficulties(detail: IMapDetails): {abbrev: string, present: boolean}[] {
+    return [
+        {abbrev: "E", present: detail.versions[0].diffs.some(d => d.difficulty == "Easy")},
+        {abbrev: "N", present: detail.versions[0].diffs.some(d => d.difficulty == "Normal")},
+        {abbrev: "H", present: detail.versions[0].diffs.some(d => d.difficulty == "Hard")},
+        {abbrev: "Ex", present: detail.versions[0].diffs.some(d => d.difficulty == "Expert")},
+        {abbrev: "Ex+", present: detail.versions[0].diffs.some(d => d.difficulty == "ExpertPlus")}
+    ];
 }

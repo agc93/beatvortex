@@ -8,6 +8,7 @@ import { GAME_ID } from '..';
 import { BeatSaverClient, IMapDetails } from '../beatSaverClient';
 import { ILocalPlaylist, IPlaylistEntry } from './types';
 import { MapDetails, LoadingSpinner } from "../controls";
+import {getDifficulties} from "../util";
 
 interface IConnectedProps {
     installed: { [modId: string]: IMod; };
@@ -89,17 +90,17 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         // log('debug', 'attempting render of mod', {mod: mod.name});
         const { selected } = this.state;
         const { installed } = this.props
-        return detail?.key 
+        return detail?.id
             ? (
             <ListGroupItem
-                key={detail.key}
+                key={detail.id}
                 className={"pv-playlist-map"}
-                active={detail.key == selected}
-                onClick={(e) => this.selectListEntry(e, detail.key)}
+                active={detail.id == selected}
+                onClick={(e) => this.selectListEntry(e, detail.id)}
             >
                 <div className="pv-maplist-header">
                     <span className='pv-installed-status'>
-                        <Icon name={Object.keys(installed).some(i => i == detail.key)
+                        <Icon name={Object.keys(installed).some(i => i == detail.id)
                         ? 'checkbox-checked' : 'checkbox-unchecked'} />
                         <>  </>
                     </span>
@@ -114,7 +115,7 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
         const selected = mapKey ?? evt.currentTarget.getAttribute('key');
         var currentMap = (selected == undefined || !selected || details.length == 0)
             ? null
-            : details.filter(d => d?.key).find(iter => iter.key == selected);
+            : details.filter(d => d?.id).find(iter => iter.id == selected);
         this.setState({ selected, currentMap } as IPlaylistMapListState);
     }
 
@@ -138,13 +139,7 @@ class PlaylistMapList extends ComponentEx<IProps, {}> {
     }
 
     private renderDifficulties = (detail: IMapDetails) => {
-        var difficultyMap: {abbrev: string, present: boolean}[] = [
-            {abbrev: "E", present: detail.metadata.difficulties.easy},
-            {abbrev: "N", present: detail.metadata.difficulties.normal},
-            {abbrev: "H", present: detail.metadata.difficulties.hard},
-            {abbrev: "Ex", present: detail.metadata.difficulties.expert},
-            {abbrev: "Ex+", present: detail.metadata.difficulties.expertPlus}
-        ];
+        var difficultyMap = getDifficulties(detail);
         return (
             difficultyMap.map(dm => {
                 return (

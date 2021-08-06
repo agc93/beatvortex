@@ -62,7 +62,7 @@ export function migrate031(api: IExtensionApi, oldVersion: string) {
             api, 
             minVortexVersion, 
             api.translate("A number of the extra features added in v{{extensionVersion}} of the BeatVortex extension require a newer Vortex version!\n\nWe *strongly* recommend either upgrading Vortex to the latest version, or disabling BeatVortex until you upgrade. If you continue, we won't be able to help you, and can't guarantee that things won't break.\nWe're sorry for the inconvenience!", { ns: I18N_NAMESPACE, extensionVersion: extVersion }), 
-            () => resolve()
+            () => resolve(null)
         );
     });
 }
@@ -84,7 +84,7 @@ export function migrate041(api: IExtensionApi, oldVersion: string) {
                     action: (dismiss) => {
                         showUpgradeDialog(api, extVersion, getReleaseText(), () => {
                             dismiss();
-                            resolve();
+                            resolve(null);
                         });
                     }
                 },
@@ -92,7 +92,7 @@ export function migrate041(api: IExtensionApi, oldVersion: string) {
                     title: 'Dismiss',
                     action: dismiss => {
                       dismiss();
-                      resolve();
+                      resolve(null);
                     }
                 }
             ]

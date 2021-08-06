@@ -120,7 +120,7 @@ export class PlaylistManager {
             playlistAuthor: author,
             image: image,
             songs: maps.map((m): IPlaylistEntry => {
-                return m.length === 4 ? {key: m, hash: undefined} : {hash: m, key: undefined};
+                return m.length < 6 ? {key: m, hash: undefined} : {hash: m, key: undefined};
             })
         };
         return playlist;
@@ -138,7 +138,7 @@ export class PlaylistManager {
             var mods = this._api.getState().persistent.mods[GAME_ID];
             var maps = mapIdents.map((mi): IPlaylistEntry => {
                 var mod: IMod;
-                if (mi.length == 4) {
+                if (mi.length < 6) {
                     mod = mods[mi];
                 } else {
                     mod = Object.values(mods).find(m => util.getSafe(m.attributes, ['mapHash'], '') == mi);
@@ -150,7 +150,7 @@ export class PlaylistManager {
                         songName: util.getSafe(mod.attributes, ['modName'], undefined),
                     }
                 } else {
-                    return mi.length == 4 ? {key: mi, hash: undefined} : {hash: mi, key:undefined}
+                    return mi.length < 6 ? {key: mi, hash: undefined} : {hash: mi, key:undefined}
                 }
             });
             playlist.songs = maps;
@@ -232,7 +232,7 @@ export const installMaps = async (api: IExtensionApi, mapIdents: string[], callb
         return client.getMapDetails(id);
     }));
     log('info', `downloading ${details.length} maps`);
-    if (details != null && details.length > 0) {
+    if (details != undefined && details.length > 0) {
         const installMap = async (map: IMapDetails): Promise<void> => {
             log('debug', `got details from beatsaver API`, map);
             var link = client.buildDownloadLink(map);
@@ -245,7 +245,7 @@ export const installMaps = async (api: IExtensionApi, mapIdents: string[], callb
                 }, 
                 null, 
                 (err: Error, id?: string) => {
-                    directDownloadInstall(api, map, err, id, (api) => setDownloadModInfo(api.store, id, {...map, source: 'beatsaver', id: map.key}));
+                    directDownloadInstall(api, map, err, id, (api) => setDownloadModInfo(api.store, id, {...map, source: 'beatsaver', id: map.id}));
                     if (err) {
                         reject(err);
                     } else {
@@ -258,7 +258,7 @@ export const installMaps = async (api: IExtensionApi, mapIdents: string[], callb
         await asyncPool(5, details, installMap);
         // await Promise.all(details.map(installMap));
         if (callbackFn) {
-            callbackFn(api, details.map(m => m.key));
+            callbackFn(api, details.map(m => m.id));
         }
         
     } else {

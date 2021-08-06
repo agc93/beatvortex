@@ -5,7 +5,7 @@ import { ComponentEx, tooltip, types, util } from 'vortex-api';
 import { toTitleCase } from "../util";
 import { IExtensionApi, IMod } from 'vortex-api/lib/types/api';
 
-const diffSort = ['easy', 'normal', 'hard', 'expert', 'expertPlus'];
+const diffSort = ['easy', 'normal', 'hard', 'expert', 'expertplus'];
 
 interface IDifficultiesProps {
   mod: types.IMod;
@@ -22,14 +22,14 @@ class MapDifficulties extends ComponentEx<IDifficultiesProps, {}> {
     } else {
         content = difficulties
             .sort((a, b) => {
-                return diffSort.indexOf(a) - diffSort.indexOf(b);
+                return diffSort.indexOf(a.toLowerCase()) - diffSort.indexOf(b.toLowerCase());
             })
             .map(d => {
             return (
                 <IconX
                     key={d}
                     set='beatvortex'
-                    name={d}
+                    name={d.toLowerCase()}
                     tooltip={toTitleCase(d)}
                 />
             )

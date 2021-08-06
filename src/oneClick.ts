@@ -20,7 +20,7 @@ import { ILinkHandling } from "./settings";
 async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boolean) {
     log('info', `handling link launch from ${url} (install: ${install})`);
     var client = new BeatSaverClient(api);
-    var re = /\w+:\/\/([a-f0-9]{4}).*/;
+    var re = /\w+:\/\/([a-f0-9]{4,6}).*/;
     var match = re.exec(url);
     if (!match || match.length != 2) {
         //err
@@ -41,11 +41,11 @@ async function handleMapLinkLaunch(api: IExtensionApi, url: string, install: boo
                 game: 'beatsaber',
                 name: details.name
             },
-            details.name,
-            (err: Error, id?: string) => directDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, { ...details, source: 'beatsaber', id: details.key })),
+            null,
+            (err: Error, id?: string) => directDownloadInstall(api, details, err, id, (api) => setDownloadModInfo(api.store, id, { ...details, source: 'beatsaber', id: details.id })),
             true);
     } else {
-        var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
+        var allowUnknown = new ProfileClient(api).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
         if (allowUnknown) {
             api.sendNotification({
                 message: `Installing unknown map ${mapKey}. No metadata will be available!`,
@@ -87,11 +87,11 @@ async function handleModelLinkLaunch(api: IExtensionApi, url: string, install: b
                 game: 'beatsaber',
                 name: modelDetails.name
             },
-            modelDetails.name,
+            null,
             (err: Error, id?: string) => handleDownloadInstall(api, modelDetails, err, id, (api) => setDownloadModInfo(api.store, id, { ...modelDetails, source: 'modelsaber', id: modelDetails.id.toString() })),
             true);
     } else {
-        var allowUnknown = new ProfileClient(api.store).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
+        var allowUnknown = new ProfileClient(api).getProfileSetting(PROFILE_SETTINGS.AllowUnknown, false);
         if (allowUnknown) {
             api.sendNotification({
                 message: `Installing unknown model ${modelDetails.name}. No metadata will be available!`,

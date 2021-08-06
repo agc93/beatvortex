@@ -233,34 +233,45 @@ export async function installBeatModsArchive(modName: string) : Promise<IInstruc
  */
 export async function installBeatSaverArchive(modName: string) : Promise<IInstruction[]> {
     let instructions : IInstruction[] = [];
-    if (BeatSaverClient.isArchiveName(modName, true)) { //beatsaver.com zip download
-        //TODO: this will blow up on web UI archives since they're named weird
-        log('debug', 'attempting to get map name from beatsaver.com', {name: modName});
+    // if (BeatSaverClient.isArchiveName(modName, true)) { //beatsaver.com zip download
+    var client = new BeatSaverClient();
+     //TODO: this will blow up on web UI archives since they're named weird
+    log('debug', 'attempting to get map name from beatsaver.com', {name: modName});
+    let modId: string = undefined;
+    if (BeatSaverClient.isArchiveName(modName)) {
+        modId = modName
+    } else {
+        var search = await client.searchMapName(modName);
+        if (search.length === 1) {
+            modId = search[0].id;
+        }
+    }
+    if (modId !== undefined) {
         try {
-            var mapDetails = await new BeatSaverClient().getMapDetails(modName);
-            var mapName = mapDetails?.name 
-                ? `${mapDetails.name} [${mapDetails.key}]`
+            var mapDetails = await client.getMapDetails(modId);
+            var mapName = mapDetails?.name
+                ? `${mapDetails.name} [${mapDetails.id}]`
                 : modName;
             log('debug', `fetched map ${modName} as ${mapName}`);
             var mapAtrributes = {
                 allowRating: false,
                 downloadGame: GAME_ID,
-                modId: mapDetails.key,
+                modId: mapDetails.id,
                 modName: mapDetails.name,
                 description: mapDetails.description,
                 author: mapDetails.metadata.levelAuthorName,
                 customFileName: mapName,
-                logicalFileName: mapDetails.key,
-                mapHash: mapDetails.hash,
+                logicalFileName: mapDetails.id,
+                // mapHash: mapDetails.hash,
                 uploadedTimestamp: mapDetails.uploaded,
-                pictureUrl: `https://beatsaver.com${mapDetails.coverURL}`,
+                pictureUrl: client.buildCoverLink(mapDetails),
                 source: 'beatsaver',
-                difficulties: Object.keys(mapDetails.metadata.difficulties).filter(d => mapDetails.metadata.difficulties[d] == true),
+                difficulties: mapDetails.versions[0].diffs.map(d => d.difficulty),
                 bpm: mapDetails.metadata.bpm,
                 duration: mapDetails.metadata.duration,
                 songAuthor: mapDetails.metadata.songAuthorName,
-                variants: mapDetails.metadata.characteristics.map(c => c.name)
-              };
+                variants: mapDetails.versions[0].diffs.map(d => d.characteristic)
+            };
             instructions.push(...toAttributeInstructions(mapAtrributes));
         } catch (error) {
             log('warn', 'error during map installation', {error});

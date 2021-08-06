@@ -335,7 +335,10 @@ async function addTableAttributes(context: IExtensionContext) {
         'mods',
         {
             ...tableAttributes.difficulties,
-            calc: (mod: IMod) => util.getSafe(mod, ['attributes', 'difficulties'], []).map(toTitleCase),
+            calc: (mod: IMod) => {
+                const attr = util.getSafe(mod, ['attributes', 'difficulties'], []);
+                return attr.map ? attr.map(toTitleCase) : [];
+            },
             customRenderer: (mod: IMod) => difficultiesRenderer(context.api, mod),
             condition: () => selectors.activeGameId(context.api.getState()) === GAME_ID
         }

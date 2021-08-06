@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as React from 'react';
 import { IMapDetails } from "../beatSaverClient";
+import {getDifficulties} from "../util";
 
 export interface IBaseProps {
   details: IMapDetails;
@@ -43,7 +44,7 @@ class MapDetails extends ComponentEx<IProps, IComponentState> {
                         <div className="pv-map-meta">
                             <div className="pv-map-meta-title">{detail.name} by {detail.metadata?.levelAuthorName ?? 'an unknown user'}</div>
                             <div className="pv-map-meta-extra">
-                                <div className="pv-map-meta-source">Uploaded to BeatSaver as {detail.key} on {d.toLocaleDateString()}</div>
+                                <div className="pv-map-meta-source">Uploaded to BeatSaver as {detail.id} on {d.toLocaleDateString()}</div>
                                 <div className="pv-map-meta-difficulties">Difficulties: {this.renderDifficulties(detail)}</div>
                             </div>
                         </div>
@@ -60,13 +61,7 @@ class MapDetails extends ComponentEx<IProps, IComponentState> {
     }
 
     private renderDifficulties = (detail: IMapDetails) => {
-        var difficultyMap: {abbrev: string, present: boolean}[] = [
-            {abbrev: "E", present: detail.metadata.difficulties.easy},
-            {abbrev: "N", present: detail.metadata.difficulties.normal},
-            {abbrev: "H", present: detail.metadata.difficulties.hard},
-            {abbrev: "Ex", present: detail.metadata.difficulties.expert},
-            {abbrev: "Ex+", present: detail.metadata.difficulties.expertPlus}
-        ];
+        var difficultyMap = getDifficulties(detail)
         return (
             difficultyMap.map(dm => {
                 return (
