@@ -55,9 +55,9 @@
     "ts-loader": "^6.2.2",
     "typedoc": "^0.17.4",
     "typescript": "^3.5.2",
-    "vortex-api": "github:Nexus-Mods/vortex-api#e5e6410",
-    "vortex-ext-common": "^0.2.1",
-    "vortex-ext-http": "^0.0.3",
+    "vortex-api": "github:Nexus-Mods/vortex-api#e891c2f",
+    "vortex-ext-common": "^0.3.4",
+    "vortex-ext-http": "^0.0.4",
     "vortex-ext-notices": "0.0.2",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.10"
