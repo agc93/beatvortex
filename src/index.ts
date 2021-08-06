@@ -9,7 +9,7 @@ import { NoticesHandler } from "vortex-ext-notices";
 
 // local modules
 import { showPatchDialog, showTermsNotification, showBSIPAUpdatesNotification, showCategoriesUpdateNotification, showPreYeetDialog, showRestartRequiredNotification, showPlaylistCreationDialog } from "./notify";
-import { migrate040, migrate041 } from "./migration";
+import {migrate040, migrate041, migrate050} from "./migration";
 import { isIPAInstalled, isIPAReady, tryRunPatch, tryUndoPatch, BSIPAConfigManager, IPAVersionClient, handleBSIPAConfigTweak, getBSIPALaunchArgs } from "./ipa";
 import { gameMetadata, STEAMAPP_ID, PROFILE_SETTINGS, tableAttributes } from './meta';
 import { archiveInstaller, basicInstaller, installBeatModsArchive, installBeatSaverArchive, modelInstaller, installModelSaberFile, testMapContent, testModelContent, testPluginContent, installRemotePlaylist, looseInstaller} from "./install";
@@ -125,6 +125,7 @@ function main(context: IExtensionContext) {
     // context.registerMigration((oldVersion) => migrate031(context.api, oldVersion));
     context.registerMigration((oldVersion) => migrate040(context.api, oldVersion));
     context.registerMigration((oldVersion) => migrate041(context.api, oldVersion));
+    context.registerMigration((oldVersion) => migrate050(context.api, oldVersion));
     addTableAttributes(context);
     context.registerAction(
         'categories-icons', 

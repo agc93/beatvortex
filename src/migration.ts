@@ -100,6 +100,44 @@ export function migrate041(api: IExtensionApi, oldVersion: string) {
     })
 }
 
+export function migrate050(api: IExtensionApi, oldVersion: string) {
+    const updateMessage = "BeatVortex 0.5.x includes a few new features you might want to know about:\n\n" +
+        "- Updated to the latest BeatSaver API so map details should work again\n" +
+        "- Improvements to BeatMods updates and metadata\n" +
+        "- A ton of behind-the-scenes code changes to improve reliability and consistency\n\n" +
+        "Given the unannounced BeatSaver changes and the rushed fixes that called for, please make sure to report any issues you run into."
+    const extVersion = '0.5.0';
+    if (semver.neq(oldVersion, '0.0.0') && (semver.gte(oldVersion, extVersion))) {
+        return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+        return api.sendNotification({
+            id: 'beatvortex-migration-050',
+            type: 'success',
+            message: api.translate(`BeatVortex successfully updated to ${extVersion}`),
+            noDismiss: true,
+            actions: [
+                {
+                    title: 'More...',
+                    action: (dismiss) => {
+                        showUpgradeDialog(api, extVersion, updateMessage, () => {
+                            dismiss();
+                            resolve(null);
+                        });
+                    }
+                },
+                {
+                    title: 'Dismiss',
+                    action: dismiss => {
+                        dismiss();
+                        resolve(null);
+                    }
+                }
+            ]
+        });
+    })
+}
+
 export function migrate040(api: IExtensionApi, oldVersion: string) {
     const extVersion = '0.4.0';
     var minVortexVersion = minimumVersions[extVersion];
