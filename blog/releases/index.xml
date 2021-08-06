@@ -1,4 +1,33 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Wed, 04 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 4.3 Release</title><link>/blog/2020/11/04/alpha-4.3-release/</link><pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate><guid>/blog/2020/11/04/alpha-4.3-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Releases</title><link>/blog/releases/</link><description>Recent content in Releases on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="/blog/releases/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 5.0 Release</title><link>/blog/2021/08/06/alpha-5.0-release/</link><pubDate>Fri, 06 Aug 2021 00:00:00 +0000</pubDate><guid>/blog/2021/08/06/alpha-5.0-release/</guid><description>
+&lt;div class="pageinfo pageinfo-primary">
+&lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>This release is a pretty big update to catch up to some changes in the BSMG services and fix some long-running bugs and issues:&lt;/p>
+&lt;ul>
+&lt;li>Updated to latest BeatSaver API
+&lt;ul>
+&lt;li>BeatSaver has been transitioned to a new owner and new service, which unfortunately completely broke API compatibility&lt;/li>
+&lt;li>BeatVortex now uses the new BeatSaver API so map details and installation should work properly again&lt;/li>
+&lt;li>Given the rushed nature of these changes, please report any issues you find.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Improvements to BeatMods updates
+&lt;ul>
+&lt;li>Some changes in Vortex ended up making BeatMods updates a lot less consistent than they should have been&lt;/li>
+&lt;li>You should now have a much smoother time updating mods and resolving dependencies&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Refactored a &lt;em>lot&lt;/em> of things under the covers
+&lt;ul>
+&lt;li>Dependencies have been updated, libraries have been brought in, code has been refactored out&amp;hellip;&lt;/li>
+&lt;li>There's a lot here but &lt;em>hopefully&lt;/em> you shouldn't notice any of it!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>There was a lot of changes in this release, just most of them were behind the scenes, so make sure to check the &lt;a href="../../updates/">earlier release notes&lt;/a> if you need to get caught up.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.4 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.4.x. If you're still using Vortex 1.3.x, you can continue using BeatVortex 0.4.3. Check &lt;a href="../../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;h3 id="beatmods-mod-availability">BeatMods mod availability&lt;/h3>
+&lt;p>Most mods should now be available from BeatMods for the latest game update as authors update their mods. If you cannot find or install mods after a game update, check if they are available on &lt;a href="https://beatmods.com">BeatMods&lt;/a>. They may not have been updated for the latest game version.&lt;/p></description></item><item><title>Blog: Alpha 4.3 Release</title><link>/blog/2020/11/04/alpha-4.3-release/</link><pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate><guid>/blog/2020/11/04/alpha-4.3-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
