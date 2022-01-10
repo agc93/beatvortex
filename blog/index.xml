@@ -1,4 +1,4 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 5.0 Release</title><link>/blog/2021/08/06/alpha-5.0-release/</link><pubDate>Fri, 06 Aug 2021 00:00:00 +0000</pubDate><guid>/blog/2021/08/06/alpha-5.0-release/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BeatVortex – Updates</title><link>/blog/</link><description>Recent content in Updates on BeatVortex</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Alpha 5.0 Release</title><link>/blog/2021/08/06/alpha-5.0-release/</link><pubDate>Fri, 06 Aug 2021 00:00:00 +0000</pubDate><guid>/blog/2021/08/06/alpha-5.0-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -20,12 +20,12 @@
 &lt;li>Refactored a &lt;em>lot&lt;/em> of things under the covers
 &lt;ul>
 &lt;li>Dependencies have been updated, libraries have been brought in, code has been refactored out&amp;hellip;&lt;/li>
-&lt;li>There's a lot here but &lt;em>hopefully&lt;/em> you shouldn't notice any of it!&lt;/li>
+&lt;li>There&amp;rsquo;s a lot here but &lt;em>hopefully&lt;/em> you shouldn&amp;rsquo;t notice any of it!&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
 &lt;p>There was a lot of changes in this release, just most of them were behind the scenes, so make sure to check the &lt;a href="../updates/">earlier release notes&lt;/a> if you need to get caught up.&lt;/p>
-&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.4 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.4.x. If you're still using Vortex 1.3.x, you can continue using BeatVortex 0.4.3. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.4 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.4.x. If you&amp;rsquo;re still using Vortex 1.3.x, you can continue using BeatVortex 0.4.3. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we&amp;rsquo;re handling supported updates.&lt;/p>
 &lt;h3 id="beatmods-mod-availability">BeatMods mod availability&lt;/h3>
 &lt;p>Most mods should now be available from BeatMods for the latest game update as authors update their mods. If you cannot find or install mods after a game update, check if they are available on &lt;a href="https://beatmods.com">BeatMods&lt;/a>. They may not have been updated for the latest game version.&lt;/p></description></item><item><title>Blog: Alpha 4.3 Release</title><link>/blog/2020/11/04/alpha-4.3-release/</link><pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate><guid>/blog/2020/11/04/alpha-4.3-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
@@ -35,7 +35,7 @@
 &lt;ul>
 &lt;li>Improved BSIPA version detection
 &lt;ul>
-&lt;li>In short, errors should be handled better now and you should see a notification when BeatVortex can't detect your BSIPA configuration.&lt;/li>
+&lt;li>In short, errors should be handled better now and you should see a notification when BeatVortex can&amp;rsquo;t detect your BSIPA configuration.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Fixed some behind-the-scenes issues
@@ -44,8 +44,8 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>There was a lot of changes in &lt;a href="../updates/v0.4.0">0.4.0&lt;/a> and &lt;a href="../updates/v0.4.1">0.4.1&lt;/a>, so make sure you check those release notes if you haven't already.&lt;/p>
-&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;p>There was a lot of changes in &lt;a href="../updates/v0.4.0">0.4.0&lt;/a> and &lt;a href="../updates/v0.4.1">0.4.1&lt;/a>, so make sure you check those release notes if you haven&amp;rsquo;t already.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you&amp;rsquo;re still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we&amp;rsquo;re handling supported updates.&lt;/p>
 &lt;h3 id="beatmods-mod-availability">BeatMods mod availability&lt;/h3>
 &lt;p>Most mods should now be available from BeatMods for the 1.12.2 update as authors update their mods. If you cannot find or install mods after the 1.12.2 update, check if they are available on &lt;a href="https://beatmods.com">BeatMods&lt;/a>. They may not have been updated for the latest game version.&lt;/p></description></item><item><title>Blog: Alpha 4.2 Release</title><link>/blog/2020/10/19/alpha-4.2-release/</link><pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate><guid>/blog/2020/10/19/alpha-4.2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
@@ -55,7 +55,7 @@
 &lt;ul>
 &lt;li>Improved game version detection
 &lt;ul>
-&lt;li>Currently, BeatVortex doesn't correctly read the game version for version 1.12 and later&lt;/li>
+&lt;li>Currently, BeatVortex doesn&amp;rsquo;t correctly read the game version for version 1.12 and later&lt;/li>
 &lt;li>This update should resolve this and correctly identify newer game versions&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -66,8 +66,8 @@
 &lt;/li>
 &lt;li>Minor behind-the-scenes improvements&lt;/li>
 &lt;/ul>
-&lt;p>There was a lot of changes in &lt;a href="../updates/v0.4.0">0.4.0&lt;/a> and &lt;a href="../updates/v0.4.1">0.4.1&lt;/a>, so make sure you check those release notes if you haven't already.&lt;/p>
-&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;p>There was a lot of changes in &lt;a href="../updates/v0.4.0">0.4.0&lt;/a> and &lt;a href="../updates/v0.4.1">0.4.1&lt;/a>, so make sure you check those release notes if you haven&amp;rsquo;t already.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you&amp;rsquo;re still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we&amp;rsquo;re handling supported updates.&lt;/p>
 &lt;h3 id="beatmods-mod-availability">BeatMods mod availability&lt;/h3>
 &lt;p>You might have noticed that there are no updated game mods available from BeatMods. This is expected after new game versions, and mods will likely be available for 1.12.2 and later in the coming days/weeks.&lt;/p></description></item><item><title>Blog: Alpha 4.1 Release</title><link>/blog/2020/08/17/alpha-4.1-release/</link><pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/17/alpha-4.1-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
@@ -105,10 +105,10 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>There was a lot of changes in 0.4.0, so make sure you check &lt;a href="../updates/v0.4.0">those release notes&lt;/a> if you haven't already.&lt;/p>
-&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;p>There was a lot of changes in 0.4.0, so make sure you check &lt;a href="../updates/v0.4.0">those release notes&lt;/a> if you haven&amp;rsquo;t already.&lt;/p>
+&lt;p>As with 0.4.0, the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you&amp;rsquo;re still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we&amp;rsquo;re handling supported updates.&lt;/p>
 &lt;h3 id="alternate-downloader-support">Alternate Downloader Support&lt;/h3>
-&lt;p>This update also includes a new option to enable an &amp;ldquo;Alternate BeatMods Downloader&amp;rdquo;. This has been included purely as a workaround for bugs in BeatMods that can upset Vortex's integrated download manager. Please only enable this if you cannot install mods from the BeatMods browser, and if you really know what you're doing!&lt;/p></description></item><item><title>Blog: Alpha 4 Release</title><link>/blog/2020/08/10/alpha-4-release/</link><pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/10/alpha-4-release/</guid><description>
+&lt;p>This update also includes a new option to enable an &amp;ldquo;Alternate BeatMods Downloader&amp;rdquo;. This has been included purely as a workaround for bugs in BeatMods that can upset Vortex&amp;rsquo;s integrated download manager. Please only enable this if you cannot install mods from the BeatMods browser, and if you really know what you&amp;rsquo;re doing!&lt;/p></description></item><item><title>Blog: Alpha 4 Release</title><link>/blog/2020/08/10/alpha-4-release/</link><pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate><guid>/blog/2020/08/10/alpha-4-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -117,13 +117,13 @@
 &lt;ul>
 &lt;li>BeatMods updates and categories for everyone
 &lt;ul>
-&lt;li>We've promoted BeatMods update and categories support out of preview features and they're now enabled by default for all users&lt;/li>
+&lt;li>We&amp;rsquo;ve promoted BeatMods update and categories support out of preview features and they&amp;rsquo;re now enabled by default for all users&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>BSIPA integration improvements
 &lt;ul>
-&lt;li>There's been more tweaks and improvements to the BSIPA integration&lt;/li>
-&lt;li>Thanks to improvements in Vortex, we now automatically disable BSIPA's auto-updates when you launch Beat Saber from Vortex&lt;/li>
+&lt;li>There&amp;rsquo;s been more tweaks and improvements to the BSIPA integration&lt;/li>
+&lt;li>Thanks to improvements in Vortex, we now automatically disable BSIPA&amp;rsquo;s auto-updates when you launch Beat Saber from Vortex&lt;/li>
 &lt;li>See below for more info on the BSIPA changes&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -136,7 +136,7 @@
 &lt;/li>
 &lt;li>New BSMG Services dialog
 &lt;ul>
-&lt;li>If you're having issues downloading mods or maps from any of the BSMG sites (BeatMods, BeatSaver, ModelSaber etc), there's a new dialog to let you know when those services are down or degraded.&lt;/li>
+&lt;li>If you&amp;rsquo;re having issues downloading mods or maps from any of the BSMG sites (BeatMods, BeatSaver, ModelSaber etc), there&amp;rsquo;s a new dialog to let you know when those services are down or degraded.&lt;/li>
 &lt;li>Check the global menu (three dots in the top right of the Vortex window) to find it.&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -144,46 +144,46 @@
 &lt;ul>
 &lt;li>We now limit concurrent downloads from BeatSaver to avoid hitting limits (and not overload it!)&lt;/li>
 &lt;li>Playlist manager&lt;sup>preview&lt;/sup> should be much more stable now&lt;/li>
-&lt;li>We've cleaned up a lot of old features that weren't in use anymore&lt;/li>
+&lt;li>We&amp;rsquo;ve cleaned up a lot of old features that weren&amp;rsquo;t in use anymore&lt;/li>
 &lt;li>Some UI components (especially Playlists and Sync) should now be much faster and more intuitive&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>A lot of the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you're still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we're handling supported updates.&lt;/p>
+&lt;p>A lot of the changes introduced in this release require some new features and fixes only available in Vortex 1.3 and above. As such, this version is &lt;strong>only&lt;/strong> supported in Vortex 1.3.x. If you&amp;rsquo;re still using Vortex 1.2.x, you can continue using BeatVortex 0.3.9. Check &lt;a href="../blog/2020/07/22/vortex-beatvortex-and-updates/">this post&lt;/a> for more information on how we&amp;rsquo;re handling supported updates.&lt;/p>
 &lt;h3 id="bsipa-integration">BSIPA integration&lt;/h3>
-&lt;p>As covered in the &lt;a href="../docs/usage/bsipa/">documentation&lt;/a>, BSIPA has a lot of extra features that overlap a bit with some of BeatVortex's features. In particular, BSIPA has its own game update handling and automatic mod updates that will conflict with Vortex and can lead to some odd stuff™.&lt;/p>
-&lt;p>To make this easier, we now disable BSIPA's plugin updates by default &lt;em>when launching the game through Vortex&lt;/em>. You can control which BSIPA features are enabled using the toggles in the Workarounds tab of your Vortex settings. If you want these toggles to apply when launching the game directly (or through Steam), enable the &lt;em>Apply these settings to the BSIPA configuration file&lt;/em> option in Workarounds.&lt;/p>
+&lt;p>As covered in the &lt;a href="../docs/usage/bsipa/">documentation&lt;/a>, BSIPA has a lot of extra features that overlap a bit with some of BeatVortex&amp;rsquo;s features. In particular, BSIPA has its own game update handling and automatic mod updates that will conflict with Vortex and can lead to some odd stuff™.&lt;/p>
+&lt;p>To make this easier, we now disable BSIPA&amp;rsquo;s plugin updates by default &lt;em>when launching the game through Vortex&lt;/em>. You can control which BSIPA features are enabled using the toggles in the Workarounds tab of your Vortex settings. If you want these toggles to apply when launching the game directly (or through Steam), enable the &lt;em>Apply these settings to the BSIPA configuration file&lt;/em> option in Workarounds.&lt;/p>
 &lt;blockquote>
 &lt;p>See the &lt;a href="../docs/usage/bsipa">BSIPA docs page&lt;/a> for more information on this feature&lt;/p>
 &lt;/blockquote>
 &lt;h3 id="sync-suppreviewsup">Sync &lt;sup>preview&lt;/sup>&lt;/h3>
 &lt;p>The new Sync view is available as a preview feature that can be enabled in your &lt;em>Interface&lt;/em> settings. You can use this new view to automatically download and install maps you bookmark on BeastSaber to your local mod library.&lt;/p>
 &lt;p>You will need to configure your BeastSaber username in Settings first, then you can use the &lt;strong>Sync&lt;/strong> button to fetch your bookmarked maps and &lt;strong>Install&lt;/strong> to immediately download and install any unsynced maps. Your bookmarks will also be automatically added to a &lt;em>Bookmarks&lt;/em> playlist.&lt;/p>
-&lt;p>If you are already using BeatSyncConsole, &lt;em>keep using it&lt;/em>! BeatSyncConsole is dramatically more full-featured, flexible and configurable than BeatVortex's Sync. The Sync view is an alternative for those who want a simpler way of downloading bookmarks without needing to set up or run an external tool.&lt;/p></description></item><item><title>Blog: Vortex, BeatVortex and Updates</title><link>/blog/2020/07/22/vortex-beatvortex-and-updates/</link><pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/22/vortex-beatvortex-and-updates/</guid><description>
+&lt;p>If you are already using BeatSyncConsole, &lt;em>keep using it&lt;/em>! BeatSyncConsole is dramatically more full-featured, flexible and configurable than BeatVortex&amp;rsquo;s Sync. The Sync view is an alternative for those who want a simpler way of downloading bookmarks without needing to set up or run an external tool.&lt;/p></description></item><item><title>Blog: Vortex, BeatVortex and Updates</title><link>/blog/2020/07/22/vortex-beatvortex-and-updates/</link><pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/22/vortex-beatvortex-and-updates/</guid><description>
 &lt;p>Hey everyone!&lt;/p>
 &lt;p>Thanks as always for using BeatVortex!&lt;/p>
-&lt;p>As I've been adding more features, fixes and more tightly integrating with both Vortex and Beat Saber, the extension itself has been growing in complexity quite dramatically. BeatVortex is now made up of almost 4000 lines of code and is one of the more complex Vortex extensions around today. As such, adding new features and fixes can be quite a complex affair.&lt;/p>
-&lt;p>For that reason, I want to be clear about a change I'm making around updates: going forward, each major version of BeatVortex will only be &lt;strong>supported&lt;/strong> on the current Vortex version when it's released or later. For example, when I released 0.3.1, Vortex was up to 1.2.13, so BeatVortex 0.3.x would support any version of Vortex from 1.2.13 onwards.&lt;/p>
-&lt;p>This is mostly important for upcoming releases: BeatVortex 0.4.x will &lt;strong>only&lt;/strong> be supported on Vortex 1.3 or later. I'll do my best to make sure newer versions still &lt;em>run&lt;/em> with older Vortex versions, but I can't provide support or guarantee there won't be problems. If you have automatic Vortex updates enabled, or update regularly, this shouldn't really affect you!&lt;/p>
-&lt;p>As always, if you have problems, questions or feedback, feel free to &lt;a href="https://www.nexusmods.com/site/mods/96?tab=posts">leave a comment&lt;/a> or &lt;a href="https://github.com/agc93/beatvortex/issues">raise an issue&lt;/a>. If you're curious, I've included a bit more detail on this decision below.&lt;/p>
+&lt;p>As I&amp;rsquo;ve been adding more features, fixes and more tightly integrating with both Vortex and Beat Saber, the extension itself has been growing in complexity quite dramatically. BeatVortex is now made up of almost 4000 lines of code and is one of the more complex Vortex extensions around today. As such, adding new features and fixes can be quite a complex affair.&lt;/p>
+&lt;p>For that reason, I want to be clear about a change I&amp;rsquo;m making around updates: going forward, each major version of BeatVortex will only be &lt;strong>supported&lt;/strong> on the current Vortex version when it&amp;rsquo;s released or later. For example, when I released 0.3.1, Vortex was up to 1.2.13, so BeatVortex 0.3.x would support any version of Vortex from 1.2.13 onwards.&lt;/p>
+&lt;p>This is mostly important for upcoming releases: BeatVortex 0.4.x will &lt;strong>only&lt;/strong> be supported on Vortex 1.3 or later. I&amp;rsquo;ll do my best to make sure newer versions still &lt;em>run&lt;/em> with older Vortex versions, but I can&amp;rsquo;t provide support or guarantee there won&amp;rsquo;t be problems. If you have automatic Vortex updates enabled, or update regularly, this shouldn&amp;rsquo;t really affect you!&lt;/p>
+&lt;p>As always, if you have problems, questions or feedback, feel free to &lt;a href="https://www.nexusmods.com/site/mods/96?tab=posts">leave a comment&lt;/a> or &lt;a href="https://github.com/agc93/beatvortex/issues">raise an issue&lt;/a>. If you&amp;rsquo;re curious, I&amp;rsquo;ve included a bit more detail on this decision below.&lt;/p>
 &lt;hr>
-&lt;p>There's two major things that control what Vortex versions BeatVortex can support: features and fixes. The simple one is features: if BeatVortex wants to use a new feature or API only included in newer releases, then we need to require that version of Vortex. For example, that was the case for resolving dependencies, some installation features and the upcoming features in 1.3.x. The burden here is that newer versions of BeatVortex might be installed in Vortex versions that don't include those features.&lt;/p>
-&lt;p>Fixes is the much more complicated one, but also usually the &amp;ldquo;harder&amp;rdquo; limit of the two. In the process of building BeatVortex, I've found a number of bugs and inconsistencies in Vortex that the team has been great about fixing. While some of them are pretty minor (like &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6315">this&lt;/a> or &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6322">this&lt;/a>), a few of the bugs we've picked up have been fatal for some or all of BeatVortex. Issues in things like &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6268">mod types&lt;/a>, &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6283">dependency resolution&lt;/a>, and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">mod updates&lt;/a> can be pretty much fatal and can be harder to handle. For example, anyone using Vortex &amp;lt;1.2.17 would get an error &lt;em>every time they checked for updates&lt;/em> and someone using Vortex &amp;lt;1.2.12 would get warning about conflicts even where there weren't any.&lt;/p>
-&lt;p>If you're curious where this whole change came from, it was an upcoming feature in 1.3: dynamic tool parameters. The Vortex team added one of my &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6629">requested features&lt;/a> so we can pass arguments to BSIPA dynamically. However, implementing that meant refactoring a ton of old code in a not-very-backwards-compatible way so it won't work quite right with anything before 1.3.&lt;/p></description></item><item><title>Blog: Alpha 3.9 Release</title><link>/blog/2020/07/12/alpha-3.9-release/</link><pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/12/alpha-3.9-release/</guid><description>
+&lt;p>There&amp;rsquo;s two major things that control what Vortex versions BeatVortex can support: features and fixes. The simple one is features: if BeatVortex wants to use a new feature or API only included in newer releases, then we need to require that version of Vortex. For example, that was the case for resolving dependencies, some installation features and the upcoming features in 1.3.x. The burden here is that newer versions of BeatVortex might be installed in Vortex versions that don&amp;rsquo;t include those features.&lt;/p>
+&lt;p>Fixes is the much more complicated one, but also usually the &amp;ldquo;harder&amp;rdquo; limit of the two. In the process of building BeatVortex, I&amp;rsquo;ve found a number of bugs and inconsistencies in Vortex that the team has been great about fixing. While some of them are pretty minor (like &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6315">this&lt;/a> or &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6322">this&lt;/a>), a few of the bugs we&amp;rsquo;ve picked up have been fatal for some or all of BeatVortex. Issues in things like &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6268">mod types&lt;/a>, &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6283">dependency resolution&lt;/a>, and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">mod updates&lt;/a> can be pretty much fatal and can be harder to handle. For example, anyone using Vortex &amp;lt;1.2.17 would get an error &lt;em>every time they checked for updates&lt;/em> and someone using Vortex &amp;lt;1.2.12 would get warning about conflicts even where there weren&amp;rsquo;t any.&lt;/p>
+&lt;p>If you&amp;rsquo;re curious where this whole change came from, it was an upcoming feature in 1.3: dynamic tool parameters. The Vortex team added one of my &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6629">requested features&lt;/a> so we can pass arguments to BSIPA dynamically. However, implementing that meant refactoring a ton of old code in a not-very-backwards-compatible way so it won&amp;rsquo;t work quite right with anything before 1.3.&lt;/p></description></item><item><title>Blog: Alpha 3.9 Release</title><link>/blog/2020/07/12/alpha-3.9-release/</link><pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/12/alpha-3.9-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
 &lt;p>This is a general bugfix and polish release for the &lt;a href="../updates/">0.3.x release&lt;/a>.&lt;/p>
 &lt;p>This includes fixes for a number of bugs and some minor improvements:&lt;/p>
 &lt;ul>
-&lt;li>Beat Saber-specific attributes should now only show when you're managing your Beat Saber mods. Thanks @Pickysaurus!&lt;/li>
+&lt;li>Beat Saber-specific attributes should now only show when you&amp;rsquo;re managing your Beat Saber mods. Thanks @Pickysaurus!&lt;/li>
 &lt;li>Fixed a potential bug that would prevent deployments on new installs.&lt;/li>
 &lt;li>Tweaked some attributes for installed mods&lt;/li>
 &lt;li>Some more minor fixes, refactoring and cleanup&lt;/li>
 &lt;/ul>
 &lt;p>For the major updates in this release tree, please check the &lt;a href="../updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
 &lt;h2 id="looking-forward">Looking forward&lt;/h2>
-&lt;p>Barring any huge problems, this will be the last of the 0.3.x releases, and I'll be pushing for a 0.4 release in the next few weeks (time permitting). While it won't pack quite the feature list that 0.3.1 did, 0.4.x should still be a good milestone. Thanks to everyone who has reported bugs, helped out with questions, or has just downloaded and used BeatVortex!&lt;/p></description></item><item><title>Blog: Alpha 3.8 Release</title><link>/blog/2020/07/06/alpha-3.8-release/</link><pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/06/alpha-3.8-release/</guid><description>
+&lt;p>Barring any huge problems, this will be the last of the 0.3.x releases, and I&amp;rsquo;ll be pushing for a 0.4 release in the next few weeks (time permitting). While it won&amp;rsquo;t pack quite the feature list that 0.3.1 did, 0.4.x should still be a good milestone. Thanks to everyone who has reported bugs, helped out with questions, or has just downloaded and used BeatVortex!&lt;/p></description></item><item><title>Blog: Alpha 3.8 Release</title><link>/blog/2020/07/06/alpha-3.8-release/</link><pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate><guid>/blog/2020/07/06/alpha-3.8-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -198,7 +198,7 @@
 &lt;/li>
 &lt;li>Improved game version detection that should be more consistent across the extension.&lt;/li>
 &lt;li>A few other minor bugs squashed and general performance improvements in a few places.&lt;/li>
-&lt;li>We've also changed the icons for playlist-related UI components (creating playlists and the playlist manager) to a new custom one that should be a bit clearer.&lt;/li>
+&lt;li>We&amp;rsquo;ve also changed the icons for playlist-related UI components (creating playlists and the playlist manager) to a new custom one that should be a bit clearer.&lt;/li>
 &lt;/ul>
 &lt;p>For the major updates in this release tree, please check the &lt;a href="../updates/v0.3.3">docs for the previous feature release&lt;/a>.&lt;/p>
 &lt;h3 id="a-note-on-bugs">A note on bugs&lt;/h3>
@@ -232,7 +232,7 @@
 &lt;ul>
 &lt;li>Game detection failing or not discovering Beat Saber could crash the Settings page
 &lt;ul>
-&lt;li>Most relevant settings should now only show up if you're actually managing your Beat Saber installation with Vortex&lt;/li>
+&lt;li>Most relevant settings should now only show up if you&amp;rsquo;re actually managing your Beat Saber installation with Vortex&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Metaserver registration has been patched to avoid a sort-of-bug in modmeta-db
@@ -242,7 +242,7 @@
 &lt;/li>
 &lt;li>Automatic game update detection has been disabled by default
 &lt;ul>
-&lt;li>This feature hasn't been tested enough for my liking and was causing some earlier bugs so I have disabled it by default for now.&lt;/li>
+&lt;li>This feature hasn&amp;rsquo;t been tested enough for my liking and was causing some earlier bugs so I have disabled it by default for now.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -258,12 +258,12 @@
 &lt;ul>
 &lt;li>Path detection failing would cause the extension to fail to load
 &lt;ul>
-&lt;li>As it turns out, there's scenarios where Vortex knows about a game, but not where it's installed. This should now be handled properly.&lt;/li>
+&lt;li>As it turns out, there&amp;rsquo;s scenarios where Vortex knows about a game, but not where it&amp;rsquo;s installed. This should now be handled properly.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Playlist creation was shown for all games, not just Beat Saber
 &lt;ul>
-&lt;li>This was a stupid mistake. I've tried to isolate Beat Saber-specific functionality to managing Beat Saber mods and missed this.&lt;/li>
+&lt;li>This was a stupid mistake. I&amp;rsquo;ve tried to isolate Beat Saber-specific functionality to managing Beat Saber mods and missed this.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -284,11 +284,11 @@
 &lt;ul>
 &lt;li>Added &lt;em>preview&lt;/em> support for automatic updates for BeatMods mods!
 &lt;ul>
-&lt;li>This has barely been tested, and we're in uncharted territory, so only enable this one if you're truly brave.&lt;/li>
+&lt;li>This has barely been tested, and we&amp;rsquo;re in uncharted territory, so only enable this one if you&amp;rsquo;re truly brave.&lt;/li>
 &lt;li>Enable them from the Settings page then click &lt;em>Check for Updates&lt;/em> in your Mods list to check for updates from BeatMods&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>Session caching: we've started integrating caching support for BeatMods and BeatSaver.
+&lt;li>Session caching: we&amp;rsquo;ve started integrating caching support for BeatMods and BeatSaver.
 &lt;ul>
 &lt;li>This should pretty dramatically cut down the load on those services by caching requests for the current session.&lt;/li>
 &lt;/ul>
@@ -301,24 +301,24 @@
 &lt;li>Automatic game upgrade detection
 &lt;ul>
 &lt;li>BeatVortex will now detect when Beat Saber has been updated since the last time you ran the game (with BSIPA installed) and offer to disable your mods&lt;/li>
-&lt;li>You can then check for updates and re-enable mods once you know they're compatible.&lt;/li>
+&lt;li>You can then check for updates and re-enable mods once you know they&amp;rsquo;re compatible.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Extra warnings and detections: BeatVortex will now try and warn you about some common mistakes/errors, such as when mods are going to be &lt;a href="../docs/usage/bsipa">yeeted&lt;/a>, when you have conflicting update setups, or when installing the wrong files.&lt;/li>
 &lt;li>BSIPA Config Tweaks: check the &lt;a href="../docs/usage/bsipa">new BSIPA docs page&lt;/a> to learn more.&lt;/li>
 &lt;li>Playlist Management improvements
 &lt;ul>
-&lt;li>There's been a lot of behind-the-scenes updates to the Playlists manager that should make it snappier and stabler.&lt;/li>
-&lt;li>We've also fixed the pretty huge bug where the map list would be for the wrong playlist.&lt;/li>
+&lt;li>There&amp;rsquo;s been a lot of behind-the-scenes updates to the Playlists manager that should make it snappier and stabler.&lt;/li>
+&lt;li>We&amp;rsquo;ve also fixed the pretty huge bug where the map list would be for the wrong playlist.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
 &lt;p>As with &lt;a href="../updates/v0.3.1">v0.3.1&lt;/a>, this release requires the features and fixes from recent Vortex updates and we &lt;strong>strongly&lt;/strong> recommend only using this version of the extension with Vortex 1.2.17 &lt;em>or higher&lt;/em>.&lt;/p>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p>
 &lt;h3 id="updating-mods-for-fun-and-profit">Updating mods for fun and profit&lt;/h3>
-&lt;p>Beat Saber is now the first game to support Vortex's mod updates from anywhere other than Nexus Mods! We've been working with the Vortex/Nexus Mods team to test out this functionality (and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">iron out the kinks&lt;/a>), but it's now possible to use Vortex's built-in updates tools without using Nexus Mods.&lt;/p></description></item><item><title>Blog: Alpha 3.2 Release</title><link>/blog/2020/06/16/alpha-3.2-release/</link><pubDate>Tue, 16 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/16/alpha-3.2-release/</guid><description>
+&lt;p>Beat Saber is now the first game to support Vortex&amp;rsquo;s mod updates from anywhere other than Nexus Mods! We&amp;rsquo;ve been working with the Vortex/Nexus Mods team to test out this functionality (and &lt;a href="https://github.com/Nexus-Mods/Vortex/issues/6567">iron out the kinks&lt;/a>), but it&amp;rsquo;s now possible to use Vortex&amp;rsquo;s built-in updates tools without using Nexus Mods.&lt;/p></description></item><item><title>Blog: Alpha 3.2 Release</title><link>/blog/2020/06/16/alpha-3.2-release/</link><pubDate>Tue, 16 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/16/alpha-3.2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -338,8 +338,8 @@
 &lt;/ul>
 &lt;p>As with &lt;a href="../updates/v0.3.1">v0.3.1&lt;/a>, this release requires the features and fixes from recent Vortex updates and we &lt;strong>strongly&lt;/strong> recommend only using this version of the extension with Vortex 1.2.13 &lt;em>or higher&lt;/em>.&lt;/p>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 3 Release</title><link>/blog/2020/06/02/alpha-3-release/</link><pubDate>Tue, 02 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/02/alpha-3-release/</guid><description>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 3 Release</title><link>/blog/2020/06/02/alpha-3-release/</link><pubDate>Tue, 02 Jun 2020 00:00:00 +0000</pubDate><guid>/blog/2020/06/02/alpha-3-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -356,12 +356,12 @@
 &lt;/ul>
 &lt;p>A few of the changes introduced in this release including dependencies, metaserver integration and custom mod types require some new features and fixes included in Vortex 1.2.12 and 1.2.13. As such, we &lt;strong>strongly&lt;/strong> recommend only using this version of the extension with Vortex 1.2.13 &lt;em>or higher&lt;/em>.&lt;/p>
 &lt;h3 id="dependencies">Dependencies&lt;/h3>
-&lt;p>As covered in the &lt;a href="../docs/developer/dependencies">developer docs&lt;/a>, dependencies is a trickier problem than you'd think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will also automatically attempt to download and install the required dependencies when you install a new mod. However, this &lt;strong>requires Vortex 1.2.13 or later&lt;/strong>.&lt;/p>
+&lt;p>As covered in the &lt;a href="../docs/developer/dependencies">developer docs&lt;/a>, dependencies is a trickier problem than you&amp;rsquo;d think. As of 0.3.1, Vortex will warn you about missing dependencies and let you check dependencies for individual packages. It will also automatically attempt to download and install the required dependencies when you install a new mod. However, this &lt;strong>requires Vortex 1.2.13 or later&lt;/strong>.&lt;/p>
 &lt;h3 id="what-happened-to-030">What happened to 0.3.0?&lt;/h3>
-&lt;p>There was briefly a 0.3.0 release, but it wasn't in a state I liked so we skipped straight to 0.3.1 with some more big changes folded in.&lt;/p>
+&lt;p>There was briefly a 0.3.0 release, but it wasn&amp;rsquo;t in a state I liked so we skipped straight to 0.3.1 with some more big changes folded in.&lt;/p>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2.3 Release</title><link>/blog/2020/04/20/alpha-2.3-release/</link><pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/20/alpha-2.3-release/</guid><description>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your settings and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2.3 Release</title><link>/blog/2020/04/20/alpha-2.3-release/</link><pubDate>Mon, 20 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/20/alpha-2.3-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -372,10 +372,10 @@
 &lt;/ul>
 &lt;h3 id="combined-mods">&amp;ldquo;Combined&amp;rdquo; mods&lt;/h3>
 &lt;p>There was a bug in versions prior to 0.2.2 that would cause some mods (SongCore, for example) to fail during installation. For those interested, this bug was caused by BeatVortex detecting the song files included in a mod and assuming that the archive was a map to be deployed to &lt;code>CustomLevels&lt;/code>. This meant that any mod that included &lt;em>both&lt;/em> plugin files and map files would fail since the installer would try and deploy them to the wrong location.&lt;/p>
-&lt;p>Mods that contain map files packaged for the installation root (i.e. &lt;code>Beat Saber_Data/CustomLevels/&lt;/code>) will now be picked up as mods, rather than song maps, and be deployed correctly. Make sure you don't change the mod type for these mods as this will almost certainly break deployment.&lt;/p>
+&lt;p>Mods that contain map files packaged for the installation root (i.e. &lt;code>Beat Saber_Data/CustomLevels/&lt;/code>) will now be picked up as mods, rather than song maps, and be deployed correctly. Make sure you don&amp;rsquo;t change the mod type for these mods as this will almost certainly break deployment.&lt;/p>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2.2 Release</title><link>/blog/2020/04/19/alpha-2.2-release/</link><pubDate>Sun, 19 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/19/alpha-2.2-release/</guid><description>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2.2 Release</title><link>/blog/2020/04/19/alpha-2.2-release/</link><pubDate>Sun, 19 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/19/alpha-2.2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -399,8 +399,8 @@
 &lt;li>Adds compatibility filtering to the BeatMods browser for different Beat Saber versions&lt;/li>
 &lt;/ul>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2 Release</title><link>/blog/2020/04/16/alpha-2-release/</link><pubDate>Thu, 16 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/16/alpha-2-release/</guid><description>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha 2 Release</title><link>/blog/2020/04/16/alpha-2-release/</link><pubDate>Thu, 16 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/16/alpha-2-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -413,8 +413,8 @@
 &lt;li>Adds more support for ModelSaber mods (some caveats apply, check the docs)&lt;/li>
 &lt;/ul>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha Release</title><link>/blog/2020/04/08/alpha-release/</link><pubDate>Wed, 08 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/08/alpha-release/</guid><description>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Alpha Release</title><link>/blog/2020/04/08/alpha-release/</link><pubDate>Wed, 08 Apr 2020 00:00:00 +0000</pubDate><guid>/blog/2020/04/08/alpha-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
@@ -430,10 +430,10 @@
 &lt;li>Major under-the-hood refactorings that should improve performance and cut down on errors&lt;/li>
 &lt;/ul>
 &lt;h3 id="a-note-to-mod-assistant-users">A note to Mod Assistant users&lt;/h3>
-&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you've turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
-&lt;p>If you're encountering problems with OneClick installs, I'd recommend turning off the OneClick support from whichever application you don't want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Initial Release</title><link>/blog/2020/03/31/initial-release/</link><pubDate>Tue, 31 Mar 2020 00:00:00 +0000</pubDate><guid>/blog/2020/03/31/initial-release/</guid><description>
+&lt;p>In the pre-alpha release, Mod Assistant and BeatVortex had no real overlap so there was no compatibility concerns. With the new OneClick support&lt;sup>preview&lt;/sup>, we finally have our first real compatibility point: who gets launched when you open a OneClick link. Ideally, BeatVortex should not pick up OneClick links until you specifically turn it on in your profile and restart Vortex. Likewise, once you&amp;rsquo;ve turned it on, Vortex &lt;strong>should&lt;/strong> &lt;em>replace&lt;/em> Mod Assistant to handle these links.&lt;/p>
+&lt;p>If you&amp;rsquo;re encountering problems with OneClick installs, I&amp;rsquo;d recommend turning off the OneClick support from whichever application you don&amp;rsquo;t want handling your installs. This is still in preview so if you encounter problems, please open an issue on GitHub with as much detail as you can.&lt;/p></description></item><item><title>Blog: Initial Release</title><link>/blog/2020/03/31/initial-release/</link><pubDate>Tue, 31 Mar 2020 00:00:00 +0000</pubDate><guid>/blog/2020/03/31/initial-release/</guid><description>
 &lt;div class="pageinfo pageinfo-primary">
 &lt;p>This release is now available &lt;a href="https://www.nexusmods.com/site/mods/96?tab=files">on Nexus Mods&lt;/a>.&lt;/p>
 &lt;/div>
-&lt;p>This release is the first pre-alpha of the BeatVortex extension. While you can install this release into Vortex, be aware that it's functionality is &lt;em>very&lt;/em> limited in this version.&lt;/p>
+&lt;p>This release is the first pre-alpha of the BeatVortex extension. While you can install this release into Vortex, be aware that it&amp;rsquo;s functionality is &lt;em>very&lt;/em> limited in this version.&lt;/p>
 &lt;p>Mods will be installed and deployed, but install behaviour is not well-defined and you may encounter some unhandled issues. Additionally, this release only supports installing mods from archives and does not support mod metadata. These will be added in future releases.&lt;/p></description></item></channel></rss>
