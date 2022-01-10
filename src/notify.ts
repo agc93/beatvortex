@@ -61,7 +61,7 @@ export async function showPatchDialog(api: IExtensionApi, toPatch: boolean, patc
 
 export function showTermsDialog(api: IExtensionApi, callback?: () => void) {
     var msg = 'By proceeding you are agreeing to the following terms:\n' +
-        "You may experience problems that don't exist in the vanilla game. 99.9% of bugs, crashes, and lag are due to mods. \nMods are subject to being broken by updates and that's normal - be patient and respectful when this happens, as modders are volunteers with real lives. \nBeat Games aren't purposefully trying to break mods. They wish to work on the codebase and sometimes this breaks mods, but they are not out to kill mods. \nDo not attack the devs for issues related to mods, and vice versa - modders and devs are two separate groups.";
+        fullTerms;
     api.showDialog('info', 'Terms of Use', {
         text: msg,
     }, [
@@ -187,3 +187,10 @@ export function showRestartRequiredNotification(api: IExtensionApi, message: str
         message: message
     });
 }
+
+
+const fullTerms: string = 
+    "Modding Beat Saber means you are likely to experience problems that would not occur in an unmodded game. The vast majority of crashes and bugs that modded setups may experience are a result of the modding process and/or the mods that you use. \n" + 
+    "Game updates will break mods, and likely frequently. There is no guarantee that mods will be updated in line with game versions, nor any guarantee on how quickly mods will be updated, if they are at all. \n" + 
+    "The developers (including Beat Games) are *not* responsible for mods, nor do they provide any guarantee of stability or functionality for mods. Do not hold the developers responsible for any issues with modded games, including when updates break the game. \n" + 
+    "Additionally, the functionality provided by BeatVortex is not part of regular Vortex, nor is it in any way affiliated with Beat Saber Modding Group (BSMG). Issues with the extension should not be taken up with BSMG nor with Nexus Mods as this is an unaffiliated community project.";

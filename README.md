@@ -23,5 +23,3 @@ There's a heap of documentation, including detailed guides on getting started wi
 ---
 
 **Disclaimer**: This project is not associated with any of the authors of Mod Assistant (or other modding tools/mods), nor with Nexus Mods.
-
-**Credit**: This application contains the terms of use from the BSMG Wiki, and is reproduced under the terms of the CC BY-NC-SA license. The text contained in the terms of use is © 2019 Beat Saber Modding Group.

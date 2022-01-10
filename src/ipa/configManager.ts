@@ -32,10 +32,14 @@ export class BSIPAConfigManager {
         if (nfs.existsSync(configPath)) {
             var configContent = await fs.readFileAsync(configPath, { encoding: 'utf-8' });
             var config = JSON.parse(configContent);
-            config.Updates.AutoUpdate = targetState;
-            config.Updates.AutoCheckUpdates = targetState;
-            await fs.writeFileAsync(configPath, JSON.stringify(config, null, 2));
-            return config;
+            if (config != null && config?.Updates?.AutoUpdate) {
+                config.Updates.AutoUpdate = targetState;
+                config.Updates.AutoCheckUpdates = targetState;
+                await fs.writeFileAsync(configPath, JSON.stringify(config, null, 2));
+                return config;
+            } else {
+                log('warn', 'Update disable failed!');
+            }
         }
         return null;
     }
