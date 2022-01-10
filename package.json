@@ -25,7 +25,7 @@
     "devDependencies is used for deps that should be safe to update at any time"
   ],
   "dependencies": {
-    "electron": "^11.4.0",
+    "electron": "^13.1.6",
     "i18next": "^19.0.1",
     "immutability-helper": "^3.0.1",
     "react": "^16.12.0",
@@ -53,13 +53,13 @@
     "marked": "^2.0.3",
     "tiny-async-pool": "^1.1.0",
     "ts-loader": "^6.2.2",
-    "typedoc": "^0.17.4",
-    "typescript": "^3.5.2",
+    "typedoc": "^0.22.10",
+    "typescript": "^4.5.4",
     "vortex-api": "github:Nexus-Mods/vortex-api#e891c2f",
     "vortex-ext-common": "^0.3.4",
     "vortex-ext-http": "^0.0.4",
     "vortex-ext-notices": "0.0.2",
-    "webpack": "^4.35.0",
+    "webpack": "^4.46.0",
     "webpack-cli": "^3.3.10"
   }
 }

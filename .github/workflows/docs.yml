@@ -19,14 +19,14 @@ jobs:
       with:
         submodules: recursive  # Fetch Hugo themes
         fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
-    - name: Use Node.js 10.x
+    - name: Use Node.js 14.x
       uses: actions/setup-node@v1
       with:
-        node-version: 10.x
+        node-version: 14.x
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
       with:
-        hugo-version: '0.62.2'
+        hugo-version: '0.91.2'
         extended: true
     - run: npm install
       working-directory: './docs'
