@@ -52,14 +52,14 @@
     "copyfiles": "^2.4.1",
     "marked": "^2.0.3",
     "tiny-async-pool": "^1.1.0",
-    "ts-loader": "^6.2.2",
+    "ts-loader": "^9.4.2",
     "typedoc": "^0.22.10",
     "typescript": "^4.5.4",
     "vortex-api": "github:Nexus-Mods/vortex-api#e891c2f",
     "vortex-ext-common": "^0.3.4",
     "vortex-ext-http": "^0.0.4",
     "vortex-ext-notices": "0.0.2",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.10"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }
